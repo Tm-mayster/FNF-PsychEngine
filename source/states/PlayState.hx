@@ -1275,14 +1275,8 @@ class PlayState extends MusicBeatState
 	{
 		// FlxG.log.add(ChartParser.parse());
 		songSpeed = PlayState.SONG.speed;
-		songSpeedType = ClientPrefs.getGameplaySetting('scrolltype');
-		switch(songSpeedType)
-		{
-			case "multiplicative":
-				songSpeed = SONG.speed * ClientPrefs.getGameplaySetting('scrollspeed');
-			case "constant":
-				songSpeed = ClientPrefs.getGameplaySetting('scrollspeed');
-		}
+		songSpeedType = ScrollUtil.isConstant() ? "constant" : "multiplicative";
+		songSpeed = ScrollUtil.songSpeed(SONG.speed);
 
 		var songData = SONG;
 		Conductor.bpm = songData.bpm;

@@ -49,8 +49,8 @@ class OptionsState extends MusicBeatState
 	{
 		items = [
 			{kind: 'header', label: 'ИГРА'},
-			{kind: 'scroll', label: 'Скорость скролла', desc: 'Как быстро летят ноты. В режиме «множитель» умножается на скорость песни.'},
-			{kind: 'scrolltype', label: 'Режим скролла', desc: 'Множитель: у каждой песни своя скорость.\nПостоянная: одинаковая во всех песнях.'},
+			{kind: 'scrolltype', label: 'Режим скролла', desc: 'osu!mania: скорость 1–40, как в osu! (время ноты на экране = 11485 / скорость мс).\nC-mod (Etterna): постоянная скорость C100–C2000.\nМножитель x: старый режим FNF, умножает скорость песни.'},
+			{kind: 'scroll', label: 'Скорость скролла', desc: 'ВЛЕВО/ВПРАВО — изменить. В osu!mania шаг 1, в C-mod шаг 10, в множителе 0.05. Скорость одинакова во всех песнях (кроме режима x).'},
 			{kind: 'bool', label: 'Ноты сверху вниз', field: 'downScroll', desc: 'Стрелки внизу экрана, ноты падают сверху.'},
 			{kind: 'bool', label: 'Стрелки по центру', field: 'middleScroll', desc: 'Ваши стрелки посередине экрана.'},
 			{kind: 'bool', label: 'Стрелки противника', field: 'opponentStrums', desc: 'Показывать ноты противника.'},
@@ -64,7 +64,7 @@ class OptionsState extends MusicBeatState
 			{kind: 'num', label: 'Запас кадров', field: 'safeFrames', min: 2, max: 10, step: 0.1, decimals: 1, desc: 'Сколько кадров можно нажать раньше или позже ноты.'},
 
 			{kind: 'header', label: 'ЗВУК И ЗАДЕРЖКА'},
-			{kind: 'open', label: 'Калибровка задержки', target: 'offset', desc: 'Подогнать задержку звука и ввода в такт музыке.'},
+			{kind: 'open', label: 'Калибровка задержки', target: 'offset', desc: 'Играет песня — нажимайте в такт, и игра сама подберёт задержку.'},
 			{kind: 'num', label: 'Задержка нот', field: 'noteOffset', min: -500, max: 500, step: 1, decimals: 0, suffix: ' мс', desc: 'Сдвиг всех нот. Плюс — ноты позже, минус — раньше.'},
 			{kind: 'bool', label: 'Пауза при сворачивании', field: 'autoPause', desc: 'Игра останавливается, когда окно не активно.',
 				after: function() { FlxG.autoPause = ClientPrefs.data.autoPause; }},
@@ -175,10 +175,9 @@ class OptionsState extends MusicBeatState
 				var idx = it.values.indexOf(cur);
 				return '< ' + (idx >= 0 ? it.names[idx] : cur) + ' >';
 			case 'scroll':
-				var sp:Float = Math.round(ClientPrefs.getGameplaySetting('scrollspeed') * 100) / 100;
-				return ClientPrefs.getGameplaySetting('scrolltype') == 'constant' ? '< ' + sp + ' >' : '< x' + sp + ' >';
+				return '< ' + ScrollUtil.valueText() + ' >';
 			case 'scrolltype':
-				return ClientPrefs.getGameplaySetting('scrolltype') == 'constant' ? 'ПОСТОЯННАЯ' : 'МНОЖИТЕЛЬ';
+				return '< ' + ScrollUtil.typeName() + ' >';
 			case 'open':
 				return 'ОТКРЫТЬ';
 			case 'fps':
@@ -239,10 +238,7 @@ class OptionsState extends MusicBeatState
 			case 'bool':
 				Reflect.setProperty(ClientPrefs.data, it.field, !(Reflect.getProperty(ClientPrefs.data, it.field) == true));
 			case 'scroll':
-				var constant = ClientPrefs.getGameplaySetting('scrolltype') == 'constant';
-				var sp:Float = ClientPrefs.getGameplaySetting('scrollspeed');
-				sp = FlxMath.bound(Math.round((sp + dir * 0.05) * 100) / 100, 0.35, constant ? 6 : 3);
-				ClientPrefs.data.gameplaySettings.set('scrollspeed', sp);
+				ScrollUtil.change(dir);
 			case 'fps':
 				var steps = [60, 75, 120, 144, 165, 240, 360, 500, 1000];
 				var cur:Int = ClientPrefs.data.framerate;
@@ -254,9 +250,7 @@ class OptionsState extends MusicBeatState
 				ClientPrefs.data.framerate = steps[i];
 				applyFramerate();
 			case 'scrolltype':
-				var next = ClientPrefs.getGameplaySetting('scrolltype') == 'constant' ? 'multiplicative' : 'constant';
-				ClientPrefs.data.gameplaySettings.set('scrolltype', next);
-				ClientPrefs.data.gameplaySettings.set('scrollspeed', next == 'constant' ? 2.6 : 1.0);
+				ScrollUtil.cycleType(dir);
 			default:
 				return;
 		}
@@ -287,7 +281,8 @@ class OptionsState extends MusicBeatState
 					case 'colors': openSubState(new options.NotesColorSubState());
 					case 'offset':
 						ClientPrefs.saveSettings();
-						MusicBeatState.switchState(new options.NoteOffsetState());
+						states.FohCalibrationState.returnToOptions = true;
+						MusicBeatState.switchState(new states.FohCalibrationState());
 				}
 		}
 	}

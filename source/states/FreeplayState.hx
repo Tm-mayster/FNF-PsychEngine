@@ -334,11 +334,7 @@ class FreeplayState extends MusicBeatState
 
 			if (FlxG.keys.justPressed.Q || FlxG.keys.justPressed.E)
 			{
-				var constant:Bool = ClientPrefs.getGameplaySetting('scrolltype') == 'constant';
-				var v:Float = ClientPrefs.getGameplaySetting('scrollspeed');
-				v = FlxMath.bound(Math.round((v + (FlxG.keys.justPressed.E ? 0.05 : -0.05)) * 100) / 100, 0.35, constant ? 6 : 3);
-				ClientPrefs.data.gameplaySettings.set('scrollspeed', v);
-				ClientPrefs.saveSettings();
+				ScrollUtil.change(FlxG.keys.justPressed.E ? 1 : -1);
 				FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 				updateStats();
 			}
@@ -612,9 +608,7 @@ class FreeplayState extends MusicBeatState
 		}
 
 		var r = function(v:Float) return Math.round(v * 10) / 10;
-		var constant:Bool = ClientPrefs.getGameplaySetting('scrolltype') == 'constant';
-		var sp:Float = Math.round(ClientPrefs.getGameplaySetting('scrollspeed') * 100) / 100;
-		var scroll:String = constant ? 'Скролл: $sp (пост.)  Q/E' : 'Скролл: x$sp  Q/E';
+		var scroll:String = 'Скролл: ' + ScrollUtil.label() + '  Q/E';
 		if (st[0] < 0)
 		{
 			statsText.text = 'Чарт не найден\n' + scroll;

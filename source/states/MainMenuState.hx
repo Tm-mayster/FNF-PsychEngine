@@ -47,8 +47,8 @@ class MainMenuState extends MusicBeatState
 		entries = [
 			{id: 'story_mode', label: 'Сюжет', desc: 'Пройти недели по порядку: песни идут одна за другой, счёт суммируется.'},
 			{id: 'freeplay', label: 'Свободная игра', desc: 'Любая песня и любая сложность. Видно NPS и уровень сложности каждого чарта.'},
-			{id: 'scroll', label: '', desc: 'ВЛЕВО/ВПРАВО — изменить скорость.\nENTER — переключить режим:\n• множитель: скорость чарта × значение;\n• постоянная: одинаковая во всех песнях.'},
-			{id: 'calibrate', label: 'Калибровка задержки', desc: 'Подстройка задержки звука и ввода. Нажимайте в такт, пока ноты не совпадут с музыкой.'},
+			{id: 'scroll', label: '', desc: 'ВЛЕВО/ВПРАВО — изменить скорость.\nENTER — сменить режим:\n• osu!mania 1–40 (как в osu!);\n• C-mod как в Etterna;\n• множитель x (старый FNF).'},
+			{id: 'calibrate', label: 'Калибровка задержки', desc: 'Играет песня — нажимайте в такт, и игра сама вычислит задержку вашего звука и клавиатуры.'},
 			#if MODS_ALLOWED {id: 'mods', label: 'Моды', desc: 'Включение, выключение и порядок модов.'}, #end
 			{id: 'options', label: 'Настройки', desc: 'Управление, графика, звук и игровые параметры.'},
 			#if ACHIEVEMENTS_ALLOWED {id: 'achievements', label: 'Достижения', desc: 'Награды за пройденные песни и особые условия.'}, #end
@@ -56,19 +56,8 @@ class MainMenuState extends MusicBeatState
 		];
 	}
 
-	inline function scrollType():String
-		return ClientPrefs.getGameplaySetting('scrolltype');
-
-	inline function scrollSpeed():Float
-		return ClientPrefs.getGameplaySetting('scrollspeed');
-
 	function scrollLabel():String
-	{
-		var v:Float = Math.round(scrollSpeed() * 100) / 100;
-		return (scrollType() == 'constant')
-			? 'Скролл: < $v > пост.'
-			: 'Скролл: < x$v > множ.';
-	}
+		return 'Скролл: < ' + ScrollUtil.label() + ' >';
 
 	override function create()
 	{
@@ -192,7 +181,7 @@ class MainMenuState extends MusicBeatState
 		var e = entries[curSelected];
 		var extra:String = '';
 		if (e.id == 'scroll')
-			extra = '\n\nСейчас: ' + scrollLabel().substr(8);
+			extra = '\n\nСейчас: ' + ScrollUtil.typeName() + ', ' + ScrollUtil.valueText();
 		if (e.id == 'calibrate')
 			extra = '\n\nТекущая задержка: ' + ClientPrefs.data.noteOffset + ' мс';
 		descText.text = e.label.length > 0 ? e.label.toUpperCase() + '\n\n' + e.desc + extra : e.desc + extra;
@@ -207,24 +196,14 @@ class MainMenuState extends MusicBeatState
 
 	function changeScroll(dir:Int)
 	{
-		var constant:Bool = scrollType() == 'constant';
-		var step:Float = 0.05;
-		var minV:Float = 0.35;
-		var maxV:Float = constant ? 6 : 3;
-		var v:Float = FlxMath.bound(Math.round((scrollSpeed() + dir * step) * 100) / 100, minV, maxV);
-		ClientPrefs.data.gameplaySettings.set('scrollspeed', v);
-		ClientPrefs.saveSettings();
+		ScrollUtil.change(dir);
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.5);
 		refresh();
 	}
 
 	function toggleScrollType()
 	{
-		var next:String = scrollType() == 'constant' ? 'multiplicative' : 'constant';
-		ClientPrefs.data.gameplaySettings.set('scrolltype', next);
-		// sensible defaults when switching
-		ClientPrefs.data.gameplaySettings.set('scrollspeed', next == 'constant' ? 2.6 : 1.0);
-		ClientPrefs.saveSettings();
+		ScrollUtil.cycleType(1);
 		FlxG.sound.play(Paths.sound('confirmMenu'), 0.6);
 		refresh();
 	}
@@ -328,9 +307,8 @@ class MainMenuState extends MusicBeatState
 				case 'freeplay':
 					MusicBeatState.switchState(new FreeplayState());
 				case 'calibrate':
-					options.NoteOffsetState.returnToMainMenu = true;
-					OptionsState.onPlayState = false;
-					MusicBeatState.switchState(new options.NoteOffsetState());
+					FohCalibrationState.returnToOptions = false;
+					MusicBeatState.switchState(new FohCalibrationState());
 				#if MODS_ALLOWED
 				case 'mods':
 					MusicBeatState.switchState(new ModsMenuState());

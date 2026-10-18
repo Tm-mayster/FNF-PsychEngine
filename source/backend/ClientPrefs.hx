@@ -48,7 +48,9 @@ import states.TitleState;
 	public var comboStacking:Bool = true;
 	public var gameplaySettings:Map<String, Dynamic> = [
 		'scrollspeed' => 1.0,
-		'scrolltype' => 'multiplicative', 
+		'osuspeed' => 24,
+		'cmodspeed' => 700,
+		'scrolltype' => 'osu', 
 		// anyone reading this, amod is multiplicative speed mod, cmod is constant speed mod, and xmod is bpm based speed mod.
 		// an amod example would be chartSpeed * multiplier
 		// cmod would just be constantSpeed = chartSpeed
@@ -210,6 +212,7 @@ class ClientPrefs {
 			for (name => value in savedMap)
 				data.gameplaySettings.set(name, value);
 		}
+		ScrollUtil.migrate();
 		
 		// flixel automatically saves your volume!
 		if(FlxG.save.data.volume != null)
