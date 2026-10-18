@@ -228,7 +228,7 @@ class ClientPrefs {
 			{
 				var loadedControls:Map<String, Array<FlxKey>> = save.data.keyboard;
 				for (control => keys in loadedControls)
-					if(keyBinds.exists(control)) keyBinds.set(control, keys);
+					if(keyBinds.exists(control)) keyBinds.set(control, sanitizeKeys(keys));
 			}
 			if(save.data.gamepad != null)
 			{
@@ -244,6 +244,20 @@ class ClientPrefs {
 	{
 		if(!customDefaultValue) defaultValue = defaultData.gameplaySettings.get(name);
 		return /*PlayState.isStoryMode ? defaultValue : */ (data.gameplaySettings.exists(name) ? data.gameplaySettings.get(name) : defaultValue);
+	}
+
+	// Field of Hopes: drop broken entries (ANY would make an action fire on every key press)
+	public static function sanitizeKeys(keys:Array<FlxKey>):Array<FlxKey>
+	{
+		var out:Array<FlxKey> = [];
+		if (keys != null)
+			for (k in keys)
+			{
+				var v:Int = k;
+				if (v > 0 && v != (FlxKey.ANY : Int) && !out.contains(k)) out.push(k);
+			}
+		while (out.length < 2) out.push(NONE);
+		return out;
 	}
 
 	public static function reloadVolumeKeys()
