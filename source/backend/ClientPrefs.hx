@@ -77,8 +77,8 @@ import states.TitleState;
 	public var goodWindow:Float = 90.0;
 	public var badWindow:Float = 135.0;
 	public var safeFrames:Float = 10.0;
-	/** Field of Hopes: osu!mania-style Overall Difficulty, sets all hit windows */
-	public var hitOD:Float = 3;
+	/** Field of Hopes: hit window preset — fnf (stock Psych / FNF), soft, strict */
+	public var hitPreset:String = 'fnf';
 	public var guitarHeroSustains:Bool = true;
 	public var discordRPC:Bool = true;
 	public var loadingScreen:Bool = true;
@@ -217,10 +217,10 @@ class ClientPrefs {
 		}
 		ScrollUtil.migrate();
 		// Field of Hopes: hit windows come from OD (like osu!mania), OD 3 by default
-		if (FlxG.save.data.fohOdMigrated != true)
+		if (FlxG.save.data.fohHitPresetMigrated != true)
 		{
-			data.hitOD = 3;
-			FlxG.save.data.fohOdMigrated = true;
+			data.hitPreset = 'fnf';
+			FlxG.save.data.fohHitPresetMigrated = true;
 		}
 		applyOD();
 		// Field of Hopes: compensate the remaining audio output delay once (~20 ms with the low-latency audio config)
@@ -295,14 +295,19 @@ class ClientPrefs {
 		FlxG.sound.volumeUpKeys = turnOn ? TitleState.volumeUpKeys : emptyArray;
 	}
 
-	/** osu!mania windows: 300 = 64-3·OD, 200 = 97-3·OD, 100 = 127-3·OD, 50 (last chance) = 151-3·OD ms */
+	/** hit windows: FNF = the usual Friday Night Funkin' / Psych Engine values (like Vs. Sarvente and other mods) */
 	public static function applyOD()
 	{
-		var od:Float = Math.max(0, Math.min(10, data.hitOD));
-		data.sickWindow = 64 - 3 * od;
-		data.goodWindow = 97 - 3 * od;
-		data.badWindow = 127 - 3 * od;
-		data.safeFrames = (151 - 3 * od) / 1000 * 60;
+		switch (data.hitPreset)
+		{
+			case 'soft':
+				data.sickWindow = 60; data.goodWindow = 110; data.badWindow = 150; data.safeFrames = 11;
+			case 'strict':
+				data.sickWindow = 33; data.goodWindow = 66; data.badWindow = 100; data.safeFrames = 8;
+			default:
+				data.hitPreset = 'fnf';
+				data.sickWindow = 45; data.goodWindow = 90; data.badWindow = 135; data.safeFrames = 10;
+		}
 	}
 
 	public static function odWindowsText():String

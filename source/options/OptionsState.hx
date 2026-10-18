@@ -58,8 +58,8 @@ class OptionsState extends MusicBeatState
 			{kind: 'bool', label: 'Отключить сброс (R)', field: 'noReset', desc: 'Клавиша сброса не перезапускает песню.'},
 			{kind: 'num', label: 'Громкость щелчка', field: 'hitsoundVolume', min: 0, max: 1, step: 0.1, decimals: 1, desc: 'Звук при попадании по ноте. 0 — выключен.',
 				after: function() { FlxG.sound.play(Paths.sound('hitsound'), ClientPrefs.data.hitsoundVolume); }},
-			{kind: 'num', label: 'Строгость попаданий (OD)', field: 'hitOD', min: 0, max: 10, step: 0.5, decimals: 1,
-				desc: 'Как в osu!mania: чем больше OD, тем точнее надо нажимать.\nOD 0 — очень мягко, OD 3 — по умолчанию, OD 6 — как обычный FNF, OD 8+ — для профи.\nОкна считаются как в osu!: Sick = 64 − 3·OD мс, Good = 97 − 3·OD, Bad = 127 − 3·OD.',
+			{kind: 'list', label: 'Строгость попаданий', field: 'hitPreset', values: ['fnf', 'soft', 'strict'], names: ['Как в FNF', 'Мягкая', 'Строгая'],
+				desc: 'Как в FNF — обычные окна Friday Night Funkin\' и Psych-модов (Sick ±45 мс, Good ±90, Bad ±135).\nМягкая — для новичков. Строгая — для тех, кто играет в osu!mania / Etterna.',
 				after: function() { ClientPrefs.applyOD(); }},
 
 			{kind: 'header', label: 'ЗВУК И ЗАДЕРЖКА'},
@@ -210,7 +210,7 @@ class OptionsState extends MusicBeatState
 		cursor.y = rows[curSelected].y;
 		var it = items[curSelected];
 		descText.text = it.label.toUpperCase() + '\n\n' + (it.desc != null ? it.desc : '')
-			+ (it.field == 'hitOD' ? '\n\nСейчас: ' + ClientPrefs.odWindowsText() : '');
+			+ (it.field == 'hitPreset' ? '\n\nСейчас: ' + ClientPrefs.odWindowsText() : '');
 	}
 
 	function move(dir:Int)
