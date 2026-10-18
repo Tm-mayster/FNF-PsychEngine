@@ -99,7 +99,7 @@
 	<define name="CHECK_FOR_UPDATES" if="desktop officialBuild"/>
 
 	<section if="MODS_ALLOWED">
-		<assets path='example_mods' rename='mods' embed='false' type='template' unless="mac"/>
+		<assets path='example_mods' rename='mods' embed='false' unless="mac"/>
 		<assets path='example_mods' rename='mods' embed='false' if="mac"/>
 		<assets path='list.txt' rename='modsList.txt' />
 	</section>
