@@ -76,7 +76,7 @@ class OptionsState extends MusicBeatState
 			{kind: 'header', label: 'ЭКРАН'},
 			{kind: 'bool', label: 'Счётчик FPS', field: 'showFPS', desc: 'Показывать частоту кадров в углу.',
 				after: function() { if (Main.fpsVar != null) Main.fpsVar.visible = ClientPrefs.data.showFPS; }},
-			{kind: 'fps', label: 'Частота кадров', field: 'framerate', desc: 'Ограничение FPS. «Без ограничений» — максимум, как Unlimited в osu!: меньше задержка ввода, выше нагрузка.'},
+			{kind: 'fps', label: 'Частота кадров', field: 'framerate', desc: 'Ограничение FPS. 240–360 — минимальная задержка без нагрузки. «Без ограничений» грузит процессор и может вызывать заикание звука.'},
 			{kind: 'bool', label: 'Вспышки', field: 'flashing', desc: 'Мигающие эффекты. Выключите, если они мешают.'},
 			{kind: 'bool', label: 'Приближение камеры', field: 'camZooms', desc: 'Камера пульсирует в такт.'},
 			{kind: 'bool', label: 'Скрыть интерфейс', field: 'hideHud', desc: 'Убрать полоску здоровья, счёт и прочее.'},

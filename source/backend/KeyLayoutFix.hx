@@ -60,9 +60,41 @@ class KeyLayoutFix
 		stage.addEventListener(KeyboardEvent.KEY_UP, fix, false, 10000);
 	}
 
+	// USB HID scancode -> QWERTY key code (Flixel/OpenFL numbering)
+	static function fromScanCode(sc:Int):Int
+	{
+		if (sc >= 4 && sc <= 29) return 65 + (sc - 4);          // A..Z
+		if (sc >= 30 && sc <= 38) return 49 + (sc - 30);        // 1..9
+		return switch (sc)
+		{
+			case 39: 48;   // 0
+			case 45: 189;  // -
+			case 46: 187;  // =
+			case 47: 219;  // [
+			case 48: 221;  // ]
+			case 49: 220;  // \
+			case 51: 186;  // ;
+			case 52: 222;  // '
+			case 53: 192;  // `
+			case 54: 188;  // ,
+			case 55: 190;  // .
+			case 56: 191;  // /
+			default: -1;
+		}
+	}
+
 	static function fix(e:KeyboardEvent)
 	{
 		var code:Int = e.keyCode;
+		// any code Flixel doesn't know (non-Latin layouts): ask SDL which physical key it was
+		if (code > 255 && code < 0x40000000)
+		{
+			var mapped:Int = -1;
+			#if (lime_cffi && !macro)
+			try { mapped = fromScanCode(lime.ui.ScanCode.fromKeyCode(code)); } catch (_:Dynamic) {}
+			#end
+			if (mapped > 0) { e.keyCode = mapped; return; }
+		}
 		if (code < 0x0400 || code > 0x04FF) return;
 		// uppercase Cyrillic (А-Я, Ё) -> lowercase
 		if (code >= 0x0410 && code <= 0x042F) code += 0x20;

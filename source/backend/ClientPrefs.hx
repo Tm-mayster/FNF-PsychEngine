@@ -183,9 +183,12 @@ class ClientPrefs {
 		#if (!html5 && !switch)
 		FlxG.autoPause = ClientPrefs.data.autoPause;
 
-		if(FlxG.save.data.framerate == null) {
+		// Field of Hopes: default to twice the monitor refresh rate (low input lag without
+		// starving the audio thread). Builds 0.3 defaulted to 1000, which could stutter audio.
+		if(FlxG.save.data.framerate == null || FlxG.save.data.fohFpsMigrated != true) {
 			final refreshRate:Int = FlxG.stage.application.window.displayMode.refreshRate;
-			data.framerate = 1000; // Field of Hopes: unlimited by default
+			data.framerate = Std.int(FlxMath.bound(refreshRate * 2, 120, 360));
+			FlxG.save.data.fohFpsMigrated = true;
 		}
 		#end
 

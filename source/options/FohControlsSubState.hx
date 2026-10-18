@@ -36,6 +36,7 @@ class FohControlsSubState extends MusicBeatSubstate
 	var overlay:FlxSprite;
 	var overlayText:FlxText;
 	var scrollTop:Int = 0;
+	var lastKey:FlxText;
 	static inline var VISIBLE:Int = 12;
 	static inline var TOP:Float = 130;
 	static inline var ROW:Float = 34;
@@ -80,9 +81,13 @@ class FohControlsSubState extends MusicBeatSubstate
 		add(cursor);
 
 		hint = new FlxText(40, FlxG.height - 92, FlxG.width - 80,
-			'ВВЕРХ/ВНИЗ — действие   ВЛЕВО/ВПРАВО — клавиша 1/2\nENTER — назначить   BACKSPACE — очистить   ESC — назад', 12);
+			'ВВЕРХ/ВНИЗ — действие   ВЛЕВО/ВПРАВО — клавиша 1/2\nENTER — назначить   DELETE — очистить   ESC — назад', 12);
 		hint.setFormat(font, 12, 0xFFCFC6F2, LEFT);
 		add(hint);
+
+		lastKey = new FlxText(40, FlxG.height - 130, FlxG.width - 80, 'Проверка: нажмите любую клавишу', 12);
+		lastKey.setFormat(font, 12, 0xFF7DF9B0, LEFT);
+		add(lastKey);
 
 		overlay = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF000000);
 		overlay.alpha = 0.75;
@@ -97,6 +102,15 @@ class FohControlsSubState extends MusicBeatSubstate
 	}
 
 	inline function isHeader(i:Int) return options[i].length == 1;
+
+	// always exactly two slots, NONE = empty (the engine's cleanup shrinks arrays, which shifted slots)
+	function getKeys(id:String):Array<FlxKey>
+	{
+		var keys:Array<FlxKey> = ClientPrefs.keyBinds.get(id);
+		if (keys == null) { keys = [NONE, NONE]; ClientPrefs.keyBinds.set(id, keys); }
+		while (keys.length < 2) keys.push(NONE);
+		return keys;
+	}
 
 	function keyName(k:Null<FlxKey>):String
 	{
@@ -119,9 +133,9 @@ class FohControlsSubState extends MusicBeatSubstate
 			rows[i].color = sel ? 0xFFFFCF5A : 0xFFCFC6F2;
 			var id = options[i][1];
 			if (id == '#reset') { keyA[i].text = keyB[i].text = ''; continue; }
-			var keys:Array<FlxKey> = ClientPrefs.keyBinds.get(id);
-			keyA[i].text = keyName(keys != null ? keys[0] : null);
-			keyB[i].text = keyName(keys != null ? keys[1] : null);
+			var keys:Array<FlxKey> = getKeys(id);
+			keyA[i].text = keyName(keys[0]);
+			keyB[i].text = keyName(keys[1]);
 			keyA[i].color = (sel && slot == 0) ? 0xFFFFCF5A : 0xFFFFFFFF;
 			keyB[i].color = (sel && slot == 1) ? 0xFFFFCF5A : 0xFFFFFFFF;
 			if (sel) { if (slot == 0) keyA[i].text = '[ ' + keyA[i].text + ' ]'; else keyB[i].text = '[ ' + keyB[i].text + ' ]'; }
@@ -142,6 +156,8 @@ class FohControlsSubState extends MusicBeatSubstate
 	{
 		super.update(elapsed);
 		cursor.x = 58 + Math.sin(FlxG.game.ticks / 160) * 4;
+		var probe:Int = FlxG.keys.firstJustPressed();
+		if (probe > -1) lastKey.text = 'Проверка: игра видит клавишу «' + keyName(probe) + '» (код ' + probe + ')';
 
 		if (binding)
 		{
@@ -151,15 +167,14 @@ class FohControlsSubState extends MusicBeatSubstate
 			if (pressed > -1)
 			{
 				var id = options[curSelected][1];
-				var keys:Array<FlxKey> = ClientPrefs.keyBinds.get(id);
+				var keys:Array<FlxKey> = getKeys(id);
 				if (pressed == FlxKey.ESCAPE) {}
-				else if (pressed == FlxKey.BACKSPACE) keys[slot] = NONE;
+				else if (pressed == FlxKey.DELETE) keys[slot] = NONE;
 				else
 				{
 					keys[slot] = pressed;
 					if (keys[1 - slot] == keys[slot]) keys[1 - slot] = NONE;
 				}
-				ClientPrefs.clearInvalidKeys(id);
 				ClientPrefs.saveSettings();
 				binding = false;
 				overlay.visible = overlayText.visible = false;
@@ -179,9 +194,9 @@ class FohControlsSubState extends MusicBeatSubstate
 			FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 			refresh();
 		}
-		if (FlxG.keys.justPressed.BACKSPACE && options[curSelected][1] != '#reset')
+		if ((FlxG.keys.justPressed.DELETE || FlxG.keys.justPressed.BACKSPACE) && options[curSelected][1] != '#reset')
 		{
-			var keys:Array<FlxKey> = ClientPrefs.keyBinds.get(options[curSelected][1]);
+			var keys:Array<FlxKey> = getKeys(options[curSelected][1]);
 			keys[slot] = NONE;
 			ClientPrefs.saveSettings();
 			refresh();
@@ -203,11 +218,11 @@ class FohControlsSubState extends MusicBeatSubstate
 				bindTimer = 0;
 				ClientPrefs.toggleVolumeKeys(false);
 				overlay.visible = overlayText.visible = true;
-				overlayText.text = 'Нажмите клавишу для «' + options[curSelected][0] + '»\n\nESC — отмена   BACKSPACE — очистить';
+				overlayText.text = 'Нажмите клавишу для «' + options[curSelected][0] + '»\n\nESC — отмена   DELETE — очистить';
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 			}
 		}
-		if (controls.BACK)
+		if (FlxG.keys.justPressed.ESCAPE)
 		{
 			ClientPrefs.saveSettings();
 			ClientPrefs.reloadVolumeKeys();
