@@ -150,9 +150,6 @@ class MainMenuState extends MusicBeatState
 		refresh();
 
 		#if ACHIEVEMENTS_ALLOWED
-		var leDate = Date.now();
-		if (leDate.getDay() == 5 && leDate.getHours() >= 18)
-			Achievements.unlock('friday_night_play');
 		#if MODS_ALLOWED
 		Achievements.reloadList();
 		#end

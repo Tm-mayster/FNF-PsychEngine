@@ -32,31 +32,27 @@ enum abstract AchievementOp(String)
 class Achievements {
 	public static function init()
 	{
-		createAchievement('friday_night_play',		{name: "Пятничный вечер", description: "Сыграйте в пятницу вечером.", hidden: true});
-		#if BASE_GAME_FILES
-		createAchievement('week1_nomiss',			{name: "She Calls Me Daddy Too", description: "Beat Week 1 on Hard with no Misses."});
-		createAchievement('week2_nomiss',			{name: "No More Tricks", description: "Beat Week 2 on Hard with no Misses."});
-		createAchievement('week3_nomiss',			{name: "Call Me The Hitman", description: "Beat Week 3 on Hard with no Misses."});
-		createAchievement('week4_nomiss',			{name: "Lady Killer", description: "Beat Week 4 on Hard with no Misses."});
-		createAchievement('week5_nomiss',			{name: "Missless Christmas", description: "Beat Week 5 on Hard with no Misses."});
-		createAchievement('week6_nomiss',			{name: "Highscore!!", description: "Beat Week 6 on Hard with no Misses."});
-		createAchievement('week7_nomiss',			{name: "God Effing Damn It!", description: "Beat Week 7 on Hard with no Misses."});
-		createAchievement('weekend1_nomiss',		{name: "Just a Friendly Sparring", description: "Beat Weekend 1 on Hard with no Misses."});
-		#end
-		createAchievement('ur_bad',					{name: "Ну и провал!", description: "Пройдите песню с точностью ниже 20%."});
-		createAchievement('ur_good',				{name: "Перфекционист", description: "Пройдите песню с точностью 100%."});
-		#if BASE_GAME_FILES
-		createAchievement('roadkill_enthusiast',	{name: "Roadkill Enthusiast", description: "Watch the Henchmen die 50 times.", maxScore: 50, maxDecimals: 0});
-		#end
-		createAchievement('oversinging', 			{name: "Распелся...", description: "Пойте 10 секунд без перерыва."});
-		createAchievement('hype',					{name: "Гиперактивный", description: "Пройдите песню, ни разу не замерев."});
-		createAchievement('two_keys',				{name: "Только мы вдвоём", description: "Пройдите песню, нажимая всего две клавиши."});
-		createAchievement('toastie',				{name: "Игрок на тостере", description: "Вы пробовали запустить игру на тостере?"});
-		#if BASE_GAME_FILES
-		createAchievement('debugger',				{name: "Отладчик", description: "Пройдите тестовую сцену из редактора чартов.", hidden: true});
-		#end
+		// Field of Hopes: a progression path — from the first song to Insane mastery
+		createAchievement('foh_first',      {name: "Первая песня", description: "Пройдите любую песню."});
+		createAchievement('foh_ember',      {name: "Разминка", description: "Пройдите Ember — первую песню мода."});
+		createAchievement('foh_easy90',     {name: "Искра", description: "Пройдите песню на Easy с точностью 90% и выше."});
+		createAchievement('foh_normal90',   {name: "Ровное пламя", description: "Пройдите песню на Normal с точностью 90% и выше."});
+		createAchievement('foh_hard90',     {name: "Жаркий огонь", description: "Пройдите песню на Hard с точностью 90% и выше."});
+		createAchievement('foh_expert90',   {name: "Пламя мастера", description: "Пройдите песню на Expert с точностью 90% и выше."});
+		createAchievement('foh_insane90',   {name: "Сверхновая", description: "Пройдите песню на Insane с точностью 90% и выше."});
+		createAchievement('foh_insane_fc',  {name: "Без единой ошибки", description: "Пройдите песню на Insane без промахов."});
+		createAchievement('foh_stars10',    {name: "Звёздный путь", description: "Пройдите чарт на 10 звёзд и выше с точностью 80%+."});
+		createAchievement('foh_stars14',    {name: "За гранью", description: "Пройдите чарт на 14 звёзд и выше с точностью 80%+."});
+		createAchievement('foh_week_sparks',{name: "Первые искры", description: "Пройдите неделю First Sparks в сюжете."});
+		createAchievement('foh_week_ink',   {name: "Чернильная ночь", description: "Пройдите неделю Ink Night в сюжете."});
+		createAchievement('foh_week_dr1',   {name: "Поле надежд", description: "Пройдите Deltarune: Chapter 1 в сюжете."});
+		createAchievement('foh_week_dr2',   {name: "Большая шишка", description: "Пройдите Deltarune: Chapter 2 в сюжете."});
+		createAchievement('foh_collector',  {name: "Коллекционер", description: "Пройдите 10 разных песен.", maxScore: 10, maxDecimals: 0});
+		createAchievement('ur_good',        {name: "Перфекционист", description: "Пройдите песню с точностью 100%."});
+		createAchievement('two_keys',       {name: "Только мы вдвоём", description: "Пройдите песню, нажимая всего две клавиши."});
+		createAchievement('ur_bad',         {name: "Ну и провал!", description: "Пройдите песню с точностью ниже 20%.", hidden: true});
 		#if (TITLE_SCREEN_EASTER_EGG || PSYCH_WATERMARKS)
-		createAchievement('pessy_easter_egg',		{name: "Подружка движка", description: "Хи-хи, ты меня нашёл~!", hidden: true});
+		createAchievement('pessy_easter_egg', {name: "Подружка движка", description: "Хи-хи, ты меня нашёл~!", hidden: true});
 		#end
 
 		//dont delete this thing below

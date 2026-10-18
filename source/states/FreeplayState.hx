@@ -34,6 +34,7 @@ class FreeplayState extends MusicBeatState
 	var starTop:Array<FlxSprite> = [];
 	var starValue:Float = 0;
 	var starNum:FlxText;
+	var clearBadge:FlxText;
 	static var statsCache:Map<String, Array<Float>> = [];
 	var scoreText:FlxText;
 	var diffText:FlxText;
@@ -159,7 +160,7 @@ class FreeplayState extends MusicBeatState
 
 		add(scoreText);
 
-		statsBG = new FlxSprite(FlxG.width - 470, 72).makeGraphic(470, 136, 0xFF0B0614);
+		statsBG = new FlxSprite(FlxG.width - 470, 72).makeGraphic(470, 166, 0xFF0B0614);
 		statsBG.alpha = 0.7;
 		add(statsBG);
 		statsText = new FlxText(FlxG.width - 456, 82, 442, '', 12);
@@ -183,6 +184,10 @@ class FreeplayState extends MusicBeatState
 		starNum = new FlxText(FlxG.width - 112, 174, 104, '', 16);
 		starNum.setFormat(MainMenuState.menuFont(), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
 		add(starNum);
+		clearBadge = new FlxText(FlxG.width - 458, 212, 440, '', 14);
+		clearBadge.setFormat(MainMenuState.menuFont(), 14, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+		clearBadge.borderSize = 2;
+		add(clearBadge);
 
 
 		missingTextBG = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
@@ -631,6 +636,19 @@ class FreeplayState extends MusicBeatState
 			+ '\n' + scroll;
 		statsText.color = FlxColor.WHITE;
 		setStars(st[3]);
+		var clears:Dynamic = FlxG.save.data.fohClears;
+		var rank:String = clears != null ? Reflect.field(clears, poop) : null;
+		clearBadge.text = switch (rank)
+		{
+			case 'SFC': '★ PERFECT FULL COMBO';
+			case 'GFC': '★ GREAT FULL COMBO';
+			case 'FC': '★ FULL COMBO';
+			case 'SDCB': 'Пройдено (меньше 10 промахов)';
+			case 'Clear': 'Пройдено';
+			default: 'Ещё не пройдено';
+		};
+		clearBadge.color = switch (rank) { case 'SFC': 0xFFFFE27A; case 'GFC': 0xFF7DF9FF; case 'FC': 0xFFC77DFF; case null: 0xFF6E6690; default: 0xFFCFC6F2; };
+		clearBadge.alpha = 1;
 	}
 
 	static function starColor(v:Float):FlxColor
@@ -664,6 +682,8 @@ class FreeplayState extends MusicBeatState
 
 	function animateStars(elapsed:Float)
 	{
+		if (clearBadge != null && clearBadge.text.indexOf('FULL COMBO') > -1)
+			clearBadge.alpha = 0.75 + 0.25 * Math.sin(FlxG.game.ticks / 180);
 		if (starValue < 10) return;
 		var tm:Float = FlxG.game.ticks / 1000;
 		for (i in 0...10)

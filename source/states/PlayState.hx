@@ -2389,8 +2389,84 @@ class PlayState extends MusicBeatState
 
 
 	public var transitioning = false;
+	var fcCelebrated:Bool = false;
+	public static var clearRanks:Array<String> = ['Clear', 'SDCB', 'FC', 'GFC', 'SFC'];
+
+	/** remembers the best clear (Clear < SDCB < FC < GFC < SFC) for this song + difficulty */
+	function saveClearRank()
+	{
+		if (chartingMode || cpuControlled || practiceMode || ratingFC == null || ratingFC == '') return;
+		var map:Dynamic = FlxG.save.data.fohClears;
+		if (map == null) map = {};
+		var key = Highscore.formatSong(SONG.song, storyDifficulty);
+		var old:String = Reflect.field(map, key);
+		if (old == null || clearRanks.indexOf(ratingFC) > clearRanks.indexOf(old))
+		{
+			Reflect.setField(map, key, ratingFC);
+			FlxG.save.data.fohClears = map;
+			FlxG.save.flush();
+		}
+	}
+
+	function showFullComboCelebration()
+	{
+		var perfect = ratingFC == 'SFC';
+		var good = ratingFC == 'GFC';
+		var title = perfect ? 'PERFECT FULL COMBO!' : good ? 'GREAT FULL COMBO!' : 'FULL COMBO!';
+		var col:FlxColor = perfect ? 0xFFFFE27A : good ? 0xFF7DF9FF : 0xFFC77DFF;
+
+		var shade = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF07041A);
+		shade.cameras = [camOther]; shade.alpha = 0; add(shade);
+		FlxTween.tween(shade, {alpha: 0.55}, 0.3);
+
+		var txt = new FlxText(0, 0, FlxG.width, title, 48);
+		txt.setFormat(states.MainMenuState.menuFont(), 48, col, CENTER, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+		txt.borderSize = 6;
+		txt.cameras = [camOther];
+		txt.screenCenter(Y); txt.y -= 30;
+		txt.scale.set(0.2, 0.2); txt.alpha = 0;
+		add(txt);
+		FlxTween.tween(txt, {alpha: 1}, 0.25);
+		FlxTween.tween(txt.scale, {x: 1, y: 1}, 0.6, {ease: FlxEase.elasticOut});
+
+		var sub = new FlxText(0, txt.y + 80, FlxG.width, Math.round(ratingPercent * 10000) / 100 + '%   ' + Difficulty.getString(null, false).toUpperCase(), 20);
+		sub.setFormat(states.MainMenuState.menuFont(), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+		sub.borderSize = 3; sub.cameras = [camOther]; sub.alpha = 0;
+		add(sub);
+		FlxTween.tween(sub, {alpha: 1}, 0.4, {startDelay: 0.4});
+
+		// burst of sparks
+		for (i in 0...36)
+		{
+			var sp = new FlxSprite(FlxG.width / 2, FlxG.height / 2 - 10).makeGraphic(8, 8, i % 3 == 0 ? FlxColor.WHITE : col);
+			sp.cameras = [camOther];
+			add(sp);
+			var a = i / 36 * Math.PI * 2;
+			var d = 260 + FlxG.random.float(0, 260);
+			FlxTween.tween(sp, {x: sp.x + Math.cos(a) * d, y: sp.y + Math.sin(a) * d * 0.6, alpha: 0}, 1.4 + FlxG.random.float(0, 0.6), {ease: FlxEase.quadOut});
+		}
+		// gentle shimmer of the title
+		new FlxTimer().start(0.08, function(t:FlxTimer) {
+			txt.color = FlxColor.interpolate(col, FlxColor.WHITE, 0.5 + 0.5 * Math.sin(t.elapsedLoops * 0.6));
+		}, 30);
+		if (ClientPrefs.data.flashing) camOther.flash(FlxColor.WHITE, 0.4);
+		FlxG.sound.play(Paths.sound('confirmMenu'), 0.9);
+	}
+
 	public function endSong()
 	{
+		if (!fcCelebrated)
+		{
+			fcCelebrated = true;
+			saveClearRank();
+			if (!chartingMode && !cpuControlled && !practiceMode && songMisses == 0 && (ratingFC == 'SFC' || ratingFC == 'GFC' || ratingFC == 'FC'))
+			{
+				canPause = false;
+				showFullComboCelebration();
+				new FlxTimer().start(3, function(_) endSong());
+				return;
+			}
+		}
 		applyAutoOffset();
 		//Should kill you if you tried to cheat
 		if(!startingSong)
@@ -2424,7 +2500,8 @@ class PlayState extends MusicBeatState
 
 		#if ACHIEVEMENTS_ALLOWED
 		var weekNoMiss:String = WeekData.getWeekFileName() + '_nomiss';
-		checkForAchievement([weekNoMiss, 'ur_bad', 'ur_good', 'hype', 'two_keys', 'toastie' #if BASE_GAME_FILES, 'debugger' #end]);
+		checkForAchievement(['ur_bad', 'ur_good', 'two_keys']);
+		checkFohAchievements();
 		#end
 
 		var ret:Dynamic = callOnScripts('onEndSong', null, true);
@@ -3539,6 +3616,66 @@ class PlayState extends MusicBeatState
 	}
 
 	#if ACHIEVEMENTS_ALLOWED
+	function chartStars():Float
+	{
+		var times:Array<Float> = [];
+		for (sec in SONG.notes)
+			for (n in sec.sectionNotes)
+				if (n[1] >= 0 && n[1] < 4) times.push(n[0]);
+		if (times.length < 2) return 0;
+		times.sort(function(a, b) return a < b ? -1 : (a > b ? 1 : 0));
+		var chords = 0;
+		for (i in 1...times.length) if (Math.abs(times[i] - times[i - 1]) < 2) chords++;
+		var dur = (times[times.length - 1] - times[0]) / 1000;
+		var avg = dur > 0 ? times.length / dur : 0;
+		var peak = 0.0; var j = 0;
+		for (i in 0...times.length)
+		{
+			while (times[i] - times[j] > 4000) j++;
+			peak = Math.max(peak, (i - j + 1) / 4);
+		}
+		return 0.4 + 0.45 * avg + 0.55 * peak + 2.5 * (chords / times.length);
+	}
+
+	function checkFohAchievements()
+	{
+		if (chartingMode || cpuControlled || practiceMode || playbackRate < 1) return;
+		var got = function(n:String) if (Achievements.exists(n) && !Achievements.isUnlocked(n)) Achievements.unlock(n);
+		var diff = Difficulty.getString(null, false).toLowerCase();
+		var acc = ratingPercent;
+		got('foh_first');
+		if (Paths.formatToSongPath(SONG.song) == 'ember') got('foh_ember');
+		if (acc >= 0.9) switch (diff)
+		{
+			case 'easy': got('foh_easy90');
+			case 'normal': got('foh_normal90');
+			case 'hard': got('foh_hard90');
+			case 'expert': got('foh_expert90');
+			case 'insane': got('foh_insane90');
+		}
+		if (diff == 'insane' && songMisses == 0) got('foh_insane_fc');
+		if (acc >= 0.8)
+		{
+			var st = chartStars();
+			if (st >= 10) got('foh_stars10');
+			if (st >= 14) got('foh_stars14');
+		}
+		if (isStoryMode && storyPlaylist.length <= 1 && !changedDifficulty)
+			switch (WeekData.getWeekFileName())
+			{
+				case 'sparks': got('foh_week_sparks');
+				case 'inknight': got('foh_week_ink');
+				case 'drch1': got('foh_week_dr1');
+				case 'drch2': got('foh_week_dr2');
+			}
+		// distinct songs cleared
+		var cleared:Array<String> = FlxG.save.data.fohCleared != null ? FlxG.save.data.fohCleared : [];
+		var id = Paths.formatToSongPath(SONG.song);
+		if (!cleared.contains(id)) { cleared.push(id); FlxG.save.data.fohCleared = cleared; FlxG.save.flush(); }
+		if (Achievements.exists('foh_collector') && !Achievements.isUnlocked('foh_collector'))
+			Achievements.setScore('foh_collector', Math.min(10, cleared.length));
+	}
+
 	private function checkForAchievement(achievesToCheck:Array<String> = null)
 	{
 		if(chartingMode) return;
