@@ -479,6 +479,7 @@ class PlayState extends MusicBeatState
 		// CHARACTER SCRIPTS
 		if(gf != null) startCharacterScripts(gf.curCharacter);
 		startCharacterScripts(dad.curCharacter);
+		addDifficultyAura();
 		startCharacterScripts(boyfriend.curCharacter);
 		#end
 
@@ -2877,6 +2878,55 @@ class PlayState extends MusicBeatState
 		}
 		if (ClientPrefs.data.flashing) camOther.flash(FlxColor.WHITE, 0.4);
 		FlxG.sound.play(Paths.sound('confirmMenu'), 0.9);
+	}
+	// ====================================================================================================
+
+	// ===================== Field of Hopes: powered-up opponent on Expert (red fire) / Insane (purple fire) =====================
+	var auraBack:FlxSprite;
+	var auraFront:FlxSprite;
+	var auraColor:FlxColor = 0;
+	function addDifficultyAura()
+	{
+		if (dad == null) return;
+		var diff = Difficulty.getString(null, false).toLowerCase();
+		if (diff == 'expert') auraColor = 0xFFFF3A1E;
+		else if (diff == 'insane') auraColor = 0xFFB044FF;
+		else return;
+
+		function make(alpha:Float, scale:Float):FlxSprite
+		{
+			var a = new FlxSprite();
+			a.frames = Paths.getSparrowAtlas('fohAura');
+			a.animation.addByPrefix('burn', 'aura', 14, true);
+			a.animation.play('burn', true, false, FlxG.random.int(0, 7));
+			a.antialiasing = false;
+			a.color = auraColor;
+			a.alpha = alpha;
+			a.setGraphicSize(Std.int(dad.width * 1.45 * scale), Std.int(dad.height * 1.15 * scale));
+			a.updateHitbox();
+			a.x = dad.x + (dad.width - a.width) / 2;
+			a.y = dad.y + dad.height - a.height + 8;
+			return a;
+		}
+		auraBack = make(0.9, 1);
+		insert(members.indexOf(dadGroup), auraBack);
+		// a faint additive layer in front makes the character look like it is burning
+		auraFront = make(0.35, 0.8);
+		auraFront.blend = openfl.display.BlendMode.ADD;
+		insert(members.indexOf(dadGroup) + 1, auraFront);
+		// embers
+		new FlxTimer().start(0.09, function(t:FlxTimer) {
+			if (dad == null || auraBack == null) return;
+			var e = new FlxSprite(dad.x + FlxG.random.float(0.1, 0.9) * dad.width, dad.y + dad.height * FlxG.random.float(0.35, 0.95));
+			e.makeGraphic(FlxG.random.bool(30) ? 12 : 8, FlxG.random.bool(30) ? 12 : 8, FlxColor.WHITE);
+			e.color = FlxG.random.bool(25) ? FlxColor.WHITE : auraColor;
+			e.blend = openfl.display.BlendMode.ADD;
+			insert(members.indexOf(dadGroup) + 1, e);
+			FlxTween.tween(e, {y: e.y - FlxG.random.float(160, 320), x: e.x + FlxG.random.float(-40, 40), alpha: 0}, FlxG.random.float(0.8, 1.4),
+				{ease: FlxEase.quadOut, onComplete: function(_) { remove(e, true); e.destroy(); }});
+		}, 0);
+		// slightly tint the opponent itself
+		dad.color = FlxColor.interpolate(FlxColor.WHITE, auraColor, 0.18);
 	}
 	// ====================================================================================================
 
