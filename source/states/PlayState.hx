@@ -1742,9 +1742,10 @@ class PlayState extends MusicBeatState
 			if (Conductor.songPosition >= Conductor.offset)
 			{
 				Conductor.songPosition = FlxMath.lerp(FlxG.sound.music.time + Conductor.offset, Conductor.songPosition, Math.exp(-elapsed * 5));
-				var timeDiff:Float = Math.abs((FlxG.sound.music.time + Conductor.offset) - Conductor.songPosition);
-				if (timeDiff > 1000 * playbackRate)
-					Conductor.songPosition = Conductor.songPosition + 1000 * FlxMath.signOf(timeDiff);
+				// Field of Hopes: if the clock really drifted away (lag spike), snap instead of jumping a whole second
+				var timeDiff:Float = (FlxG.sound.music.time + Conductor.offset) - Conductor.songPosition;
+				if (Math.abs(timeDiff) > 250 * playbackRate)
+					Conductor.songPosition = FlxG.sound.music.time + Conductor.offset;
 			}
 		}
 

@@ -49,7 +49,7 @@ class MainMenuState extends MusicBeatState
 			{id: 'story_mode', label: 'Сюжет', desc: 'Пройти недели по порядку: песни идут одна за другой, счёт суммируется.'},
 			{id: 'freeplay', label: 'Свободная игра', desc: 'Любая песня и любая сложность. Видно звёзды, NPS и ваш лучший результат.\n\nПрогресс игры: ' + (FlxG.save.data.fohProgress != null ? FlxG.save.data.fohProgress : 0) + '%\n100% = все песни пройдены на Hard или выше (точность любая).'},
 			{id: 'coop', label: 'Вдвоём (2 игрока)', desc: 'Двое на одной клавиатуре, без настроек.\n\nИгрок 2 (слева, за противника): Z X C V\nИгрок 1 (справа, за Люмена): стрелки\n\nПолоска здоровья — перетягивание каната, в конце показывается победитель. Выбор песни — как в свободной игре.'},
-			{id: 'scroll', label: '', desc: 'ВЛЕВО/ВПРАВО — изменить скорость.\nENTER — сменить режим:\n• osu!mania 1–40 (как в osu!);\n• C-mod как в Etterna;\n• множитель x (старый FNF).'},
+			{id: 'scroll', label: '', desc: 'ВЛЕВО/ВПРАВО — изменить скорость.\nСкорость одинаковая во всех песнях.\nENTER — сменить режим:\n• osu!mania 1–40 (как в osu!; больше = быстрее);\n• C-mod как в Etterna.'},
 			{id: 'calibrate', label: 'Калибровка задержки', desc: 'Играет песня — нажимайте в такт, и игра сама вычислит задержку вашего звука и клавиатуры.'},
 			#if MODS_ALLOWED {id: 'mods', label: 'Моды', desc: 'Включение, выключение и порядок модов.'}, #end
 			{id: 'options', label: 'Настройки', desc: 'Управление, графика, звук и игровые параметры.'},
@@ -207,7 +207,9 @@ class MainMenuState extends MusicBeatState
 
 	function toggleScrollType()
 	{
-		ScrollUtil.cycleType(1);
+		// only the constant-speed modes here (same speed in every song); the old FNF multiplier lives in the settings
+		ClientPrefs.data.gameplaySettings.set('scrolltype', ScrollUtil.type() == 'osu' ? 'cmod' : 'osu');
+		ClientPrefs.saveSettings();
 		FlxG.sound.play(Paths.sound('confirmMenu'), 0.6);
 		refresh();
 	}

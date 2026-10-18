@@ -94,6 +94,15 @@ class ScrollUtil
 	/** first run of this version: switch everyone to osu!mania scroll */
 	public static function migrate()
 	{
+		// v2: constant speed for everyone again (the same in every song and difficulty)
+		if (FlxG.save.data.fohScrollMigrated2 != true)
+		{
+			var gs2 = ClientPrefs.data.gameplaySettings;
+			gs2.set('scrolltype', 'osu');
+			gs2.set('osuspeed', 22);
+			FlxG.save.data.fohScrollMigrated2 = true;
+			FlxG.save.data.fohScrollMigrated = true;
+		}
 		if (FlxG.save.data.fohScrollMigrated != true)
 		{
 			var gs = ClientPrefs.data.gameplaySettings;
