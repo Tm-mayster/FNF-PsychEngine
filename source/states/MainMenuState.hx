@@ -43,6 +43,17 @@ class MainMenuState extends MusicBeatState
 	public static function menuFont():String
 		return Paths.font(MENU_FONT);
 
+	/** extra space between lines: the pixel font is very tight by default */
+	public static function leading(t:FlxText, px:Int = 6):FlxText
+	{
+		@:privateAccess
+		{
+			t._defaultFormat.leading = px;
+			t.updateDefaultFormat();
+		}
+		return t;
+	}
+
 	function buildEntries()
 	{
 		entries = [
@@ -51,7 +62,6 @@ class MainMenuState extends MusicBeatState
 			{id: 'coop', label: 'Вдвоём (2 игрока)', desc: 'Двое на одной клавиатуре, без настроек.\n\nИгрок 2 (слева, за противника): Z X C V\nИгрок 1 (справа, за Люмена): стрелки\n\nПолоска здоровья — перетягивание каната, в конце показывается победитель. Выбор песни — как в свободной игре.'},
 			{id: 'scroll', label: '', desc: 'ВЛЕВО/ВПРАВО — изменить скорость.\nСкорость одинаковая во всех песнях.\nENTER — сменить режим:\n• osu!mania 1–40 (как в osu!; больше = быстрее);\n• C-mod как в Etterna.'},
 			{id: 'calibrate', label: 'Калибровка задержки', desc: 'Играет песня — нажимайте в такт, и игра сама вычислит задержку вашего звука и клавиатуры.'},
-			#if MODS_ALLOWED {id: 'mods', label: 'Моды', desc: 'Включение, выключение и порядок модов.'}, #end
 			{id: 'options', label: 'Настройки', desc: 'Управление, графика, звук и игровые параметры.'},
 			#if ACHIEVEMENTS_ALLOWED {id: 'achievements', label: 'Достижения', desc: 'Награды за пройденные песни и особые условия.'}, #end
 			#if windows {id: 'update', label: 'Обновление', desc: 'Скачать новую версию игры прямо отсюда — загружаются только изменённые файлы.'}, #end
@@ -123,6 +133,7 @@ class MainMenuState extends MusicBeatState
 
 		descText = new FlxText(664, 172, 552, '', 14);
 		descText.setFormat(menuFont(), 14, 0xFFFFFFFF, LEFT);
+		leading(descText, 7);
 		descText.wordWrap = true;
 		add(descText);
 

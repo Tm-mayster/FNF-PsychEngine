@@ -32,6 +32,7 @@ class FohUpdateState extends MusicBeatState
 
 		info = new FlxText(80, 200, FlxG.width - 160, '', 18);
 		info.setFormat(font, 18, FlxColor.WHITE, CENTER);
+		MainMenuState.leading(info, 8);
 		add(info);
 
 		barBG = new FlxSprite(160, 420).makeGraphic(FlxG.width - 320, 28, 0xFF0B0614);

@@ -46,6 +46,7 @@ class FohCalibrationState extends MusicBeatState
 			'Играет «Ember». Нажимайте любую клавишу ровно в такт ударам музыки — слушайте звук, а не смотрите на фонарь.\n'
 			+ 'Первые ' + WARMUP + ' нажатия не считаются. Нужно хотя бы 16.', 14);
 		how.setFormat(font, 14, 0xFFCFC6F2, LEFT);
+		MainMenuState.leading(how, 7);
 		add(how);
 
 		glow = new FlxSprite().makeGraphic(160, 160, 0xFFFFCF5A);
@@ -71,6 +72,7 @@ class FohCalibrationState extends MusicBeatState
 
 		info = new FlxText(40, 470, FlxG.width - 80, '', 16);
 		info.setFormat(font, 16, FlxColor.WHITE, CENTER);
+		MainMenuState.leading(info, 7);
 		add(info);
 
 		result = new FlxText(40, FlxG.height - 92, FlxG.width - 80,

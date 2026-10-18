@@ -1,0 +1,57 @@
+{
+ "animations": [
+  {
+   "anim": "firstDeath",
+   "name": "lumen dead firstDeath",
+   "fps": 10,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "deathLoop",
+   "name": "lumen dead deathLoop",
+   "fps": 6,
+   "loop": true,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "deathConfirm",
+   "name": "lumen dead deathConfirm",
+   "fps": 10,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  }
+ ],
+ "no_antialiasing": true,
+ "image": "characters/lumen_dead",
+ "position": [
+  -24,
+  170
+ ],
+ "healthicon": "lumen",
+ "flip_x": true,
+ "healthbar_colors": [
+  255,
+  170,
+  60
+ ],
+ "camera_position": [
+  -60,
+  -40
+ ],
+ "sing_duration": 4,
+ "scale": 1,
+ "vocals_file": ""
+}

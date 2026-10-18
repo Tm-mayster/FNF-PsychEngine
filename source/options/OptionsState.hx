@@ -147,6 +147,7 @@ class OptionsState extends MusicBeatState
 
 		descText = new FlxText(840, 140, 380, '', 14);
 		descText.setFormat(font(), 14, FlxColor.WHITE, LEFT);
+		MainMenuState.leading(descText, 7);
 		descText.wordWrap = true;
 		add(descText);
 

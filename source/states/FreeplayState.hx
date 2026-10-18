@@ -209,6 +209,7 @@ class FreeplayState extends MusicBeatState
 
 		statsText = new FlxText(812, 210, 440, '', 12);
 		statsText.setFormat(MainMenuState.menuFont(), 12, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+		MainMenuState.leading(statsText, 8);
 		add(statsText);
 		for (i in 0...10)
 		{
@@ -237,6 +238,7 @@ class FreeplayState extends MusicBeatState
 		clearBadge = new FlxText(812, 330, 440, '', 14);
 		clearBadge.setFormat(MainMenuState.menuFont(), 14, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
 		clearBadge.borderSize = 2;
+		MainMenuState.leading(clearBadge, 8);
 		add(clearBadge);
 
 
@@ -276,6 +278,7 @@ class FreeplayState extends MusicBeatState
 		add(coopBG);
 		coopText = new FlxText(800, 498, 450, '', 12);
 		coopText.setFormat(MainMenuState.menuFont(), 12, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+		MainMenuState.leading(coopText, 5);
 		add(coopText);
 		updateCoopBadge();
 		
