@@ -30,6 +30,10 @@ class FreeplayState extends MusicBeatState
 	var scoreBG:FlxSprite;
 	var statsBG:FlxSprite;
 	var statsText:FlxText;
+	var starBase:Array<FlxSprite> = [];
+	var starTop:Array<FlxSprite> = [];
+	var starValue:Float = 0;
+	var starNum:FlxText;
 	static var statsCache:Map<String, Array<Float>> = [];
 	var scoreText:FlxText;
 	var diffText:FlxText;
@@ -155,12 +159,30 @@ class FreeplayState extends MusicBeatState
 
 		add(scoreText);
 
-		statsBG = new FlxSprite(FlxG.width - 470, 72).makeGraphic(470, 96, 0xFF0B0614);
+		statsBG = new FlxSprite(FlxG.width - 470, 72).makeGraphic(470, 136, 0xFF0B0614);
 		statsBG.alpha = 0.7;
 		add(statsBG);
 		statsText = new FlxText(FlxG.width - 456, 82, 442, '', 12);
 		statsText.setFormat(MainMenuState.menuFont(), 12, FlxColor.WHITE, LEFT);
 		add(statsText);
+		for (i in 0...10)
+		{
+			var b = new FlxSprite(FlxG.width - 458 + i * 34, 166).loadGraphic(Paths.image('fohStar'));
+			b.antialiasing = false;
+			starBase.push(b);
+			add(b);
+		}
+		for (i in 0...10)
+		{
+			var t = new FlxSprite(FlxG.width - 458 + i * 34, 166).loadGraphic(Paths.image('fohStar'));
+			t.antialiasing = false;
+			t.visible = false;
+			starTop.push(t);
+			add(t);
+		}
+		starNum = new FlxText(FlxG.width - 112, 174, 104, '', 16);
+		starNum.setFormat(MainMenuState.menuFont(), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+		add(starNum);
 
 
 		missingTextBG = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
@@ -227,6 +249,7 @@ class FreeplayState extends MusicBeatState
 	var stopMusicPlay:Bool = false;
 	override function update(elapsed:Float)
 	{
+		animateStars(elapsed);
 		if(WeekData.weeksList.length < 1)
 			return;
 
@@ -564,7 +587,8 @@ class FreeplayState extends MusicBeatState
 			var nps:Float = (i - j + 1) / 4;
 			if (nps > peak) peak = nps;
 		}
-		var level:Float = 1 + 0.45 * avg + 0.25 * peak + 3 * (chords / times.length);
+		// star rating: ~1-2 easy, ~3 normal, ~5-6 hard, ~8 expert, 10+ insane
+		var level:Float = 0.4 + 0.45 * avg + 0.55 * peak + 2.5 * (chords / times.length);
 		return [times.length, avg, peak, level];
 	}
 
@@ -595,13 +619,63 @@ class FreeplayState extends MusicBeatState
 		{
 			statsText.text = 'Чарт не найден\n' + scroll;
 			statsText.color = 0xFFCFC6F2;
+			setStars(0);
 			return;
 		}
-		statsText.text = 'Уровень: ' + r(st[3]) + '   Нот: ' + Std.int(st[0])
+		statsText.text = 'Звёзды: ' + r(st[3]) + '   Нот: ' + Std.int(st[0])
 			+ '\nNPS: ' + r(st[1]) + ' средн. / ' + r(st[2]) + ' пик'
 			+ '\n' + scroll;
-		var lv:Float = st[3];
-		statsText.color = lv < 3 ? 0xFF7DF9B0 : lv < 5 ? 0xFFFFE27A : lv < 7 ? 0xFFFFA24A : lv < 9 ? 0xFFFF5A6E : 0xFFC77DFF;
+		statsText.color = FlxColor.WHITE;
+		setStars(st[3]);
+	}
+
+	static function starColor(v:Float):FlxColor
+		return v < 2.5 ? 0xFF7DF9B0 : v < 4.5 ? 0xFFFFE27A : v < 6.5 ? 0xFFFFA24A : v < 8.5 ? 0xFFFF5A6E : 0xFFC77DFF;
+
+	function setStars(v:Float)
+	{
+		starValue = v;
+		var c = starColor(v);
+		var full = Std.int(Math.min(10, Math.floor(v)));
+		var frac = v - Math.floor(v);
+		for (i in 0...10)
+		{
+			var b = starBase[i];
+			b.scale.set(1, 1);
+			if (i < full) { b.color = c; b.alpha = 1; }
+			else if (i == full && v < 10) { b.color = c; b.alpha = 1; b.scale.set(0.45 + 0.55 * frac, 0.45 + 0.55 * frac); }
+			else { b.color = 0xFF3A3358; b.alpha = 0.6; }
+		}
+		// above 10: extra stars stack on top of the row and burn
+		var over = v - 10;
+		for (i in 0...10)
+		{
+			var t = starTop[i];
+			t.visible = over > 0 && i < Math.ceil(over);
+			t.alpha = (i < Math.floor(over)) ? 1 : 0.55;
+		}
+		starNum.text = (Math.round(v * 10) / 10) + '*';
+		starNum.color = c;
+	}
+
+	function animateStars(elapsed:Float)
+	{
+		if (starValue < 10) return;
+		var tm:Float = FlxG.game.ticks / 1000;
+		for (i in 0...10)
+		{
+			// base row shimmers
+			var b = starBase[i];
+			var k = 0.5 + 0.5 * Math.sin(tm * 5 + i * 0.6);
+			b.color = FlxColor.interpolate(0xFFC77DFF, 0xFFFF9BF0, k);
+			var t = starTop[i];
+			if (!t.visible) continue;
+			var f = 0.5 + 0.5 * Math.sin(tm * 9 + i * 1.3);
+			t.color = FlxColor.interpolate(0xFFFF4A1C, 0xFFFFE27A, f);
+			var sc = 0.7 + 0.15 * f;
+			t.scale.set(sc, sc);
+			t.offset.set(0, 6 + 3 * f);
+		}
 	}
 
 	function changeSelection(change:Int = 0, playSound:Bool = true)
