@@ -58,10 +58,9 @@ class OptionsState extends MusicBeatState
 			{kind: 'bool', label: 'Отключить сброс (R)', field: 'noReset', desc: 'Клавиша сброса не перезапускает песню.'},
 			{kind: 'num', label: 'Громкость щелчка', field: 'hitsoundVolume', min: 0, max: 1, step: 0.1, decimals: 1, desc: 'Звук при попадании по ноте. 0 — выключен.',
 				after: function() { FlxG.sound.play(Paths.sound('hitsound'), ClientPrefs.data.hitsoundVolume); }},
-			{kind: 'num', label: 'Окно «Sick!»', field: 'sickWindow', min: 15, max: 45, step: 1, decimals: 0, suffix: ' мс', desc: 'Насколько точно нужно попасть для лучшей оценки. Меньше — строже.'},
-			{kind: 'num', label: 'Окно «Good»', field: 'goodWindow', min: 15, max: 90, step: 1, decimals: 0, suffix: ' мс', desc: 'Окно для оценки «Good».'},
-			{kind: 'num', label: 'Окно «Bad»', field: 'badWindow', min: 15, max: 135, step: 1, decimals: 0, suffix: ' мс', desc: 'Окно для оценки «Bad».'},
-			{kind: 'num', label: 'Запас кадров', field: 'safeFrames', min: 2, max: 10, step: 0.1, decimals: 1, desc: 'Сколько кадров можно нажать раньше или позже ноты.'},
+			{kind: 'num', label: 'Строгость попаданий (OD)', field: 'hitOD', min: 0, max: 10, step: 0.5, decimals: 1,
+				desc: 'Как в osu!mania: чем больше OD, тем точнее надо нажимать.\nOD 0 — очень мягко, OD 3 — по умолчанию, OD 6 — как обычный FNF, OD 8+ — для профи.\nОкна считаются как в osu!: Sick = 64 − 3·OD мс, Good = 97 − 3·OD, Bad = 127 − 3·OD.',
+				after: function() { ClientPrefs.applyOD(); }},
 
 			{kind: 'header', label: 'ЗВУК И ЗАДЕРЖКА'},
 			{kind: 'open', label: 'Калибровка задержки', target: 'offset', desc: 'Играет песня — нажимайте в такт, и игра сама подберёт задержку.'},
@@ -210,7 +209,8 @@ class OptionsState extends MusicBeatState
 		}
 		cursor.y = rows[curSelected].y;
 		var it = items[curSelected];
-		descText.text = it.label.toUpperCase() + '\n\n' + (it.desc != null ? it.desc : '');
+		descText.text = it.label.toUpperCase() + '\n\n' + (it.desc != null ? it.desc : '')
+			+ (it.field == 'hitOD' ? '\n\nСейчас: ' + ClientPrefs.odWindowsText() : '');
 	}
 
 	function move(dir:Int)

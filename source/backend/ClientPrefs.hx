@@ -77,6 +77,8 @@ import states.TitleState;
 	public var goodWindow:Float = 90.0;
 	public var badWindow:Float = 135.0;
 	public var safeFrames:Float = 10.0;
+	/** Field of Hopes: osu!mania-style Overall Difficulty, sets all hit windows */
+	public var hitOD:Float = 3;
 	public var guitarHeroSustains:Bool = true;
 	public var discordRPC:Bool = true;
 	public var loadingScreen:Bool = true;
@@ -214,6 +216,13 @@ class ClientPrefs {
 				data.gameplaySettings.set(name, value);
 		}
 		ScrollUtil.migrate();
+		// Field of Hopes: hit windows come from OD (like osu!mania), OD 3 by default
+		if (FlxG.save.data.fohOdMigrated != true)
+		{
+			data.hitOD = 3;
+			FlxG.save.data.fohOdMigrated = true;
+		}
+		applyOD();
 		// Field of Hopes: compensate the remaining audio output delay once (~20 ms with the low-latency audio config)
 		if (FlxG.save.data.fohOffsetMigrated != true)
 		{
@@ -284,5 +293,21 @@ class ClientPrefs {
 		FlxG.sound.muteKeys = turnOn ? TitleState.muteKeys : emptyArray;
 		FlxG.sound.volumeDownKeys = turnOn ? TitleState.volumeDownKeys : emptyArray;
 		FlxG.sound.volumeUpKeys = turnOn ? TitleState.volumeUpKeys : emptyArray;
+	}
+
+	/** osu!mania windows: 300 = 64-3·OD, 200 = 97-3·OD, 100 = 127-3·OD, 50 (last chance) = 151-3·OD ms */
+	public static function applyOD()
+	{
+		var od:Float = Math.max(0, Math.min(10, data.hitOD));
+		data.sickWindow = 64 - 3 * od;
+		data.goodWindow = 97 - 3 * od;
+		data.badWindow = 127 - 3 * od;
+		data.safeFrames = (151 - 3 * od) / 1000 * 60;
+	}
+
+	public static function odWindowsText():String
+	{
+		inline function r(v:Float) return Std.string(Math.round(v));
+		return 'Sick ±' + r(data.sickWindow) + ' мс, Good ±' + r(data.goodWindow) + ' мс, Bad ±' + r(data.badWindow) + ' мс, дальше — промах после ±' + r(data.safeFrames / 60 * 1000) + ' мс';
 	}
 }
