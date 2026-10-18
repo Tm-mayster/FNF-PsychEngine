@@ -194,7 +194,7 @@ class NotesColorSubState extends MusicBeatSubstate
 		super.update(elapsed);
 
 		// Early controller checking
-		if(FlxG.gamepads.anyJustPressed(ANY)) controls.controllerMode = true;
+		if(ClientPrefs.data.gamepadEnabled && FlxG.gamepads.anyJustPressed(ANY)) controls.controllerMode = true;
 		else if(FlxG.mouse.justPressed || FlxG.mouse.deltaScreenX != 0 || FlxG.mouse.deltaScreenY != 0) controls.controllerMode = false;
 		//
 		

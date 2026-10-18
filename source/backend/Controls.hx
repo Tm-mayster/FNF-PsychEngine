@@ -112,6 +112,7 @@ class Controls
 	public var controllerMode:Bool = false;
 	private function _myGamepadJustPressed(keys:Array<FlxGamepadInputID>):Bool
 	{
+		if(!ClientPrefs.data.gamepadEnabled) { controllerMode = false; return false; }
 		if(keys != null)
 		{
 			for (key in keys)
@@ -127,6 +128,7 @@ class Controls
 	}
 	private function _myGamepadPressed(keys:Array<FlxGamepadInputID>):Bool
 	{
+		if(!ClientPrefs.data.gamepadEnabled) { controllerMode = false; return false; }
 		if(keys != null)
 		{
 			for (key in keys)
@@ -142,6 +144,7 @@ class Controls
 	}
 	private function _myGamepadJustReleased(keys:Array<FlxGamepadInputID>):Bool
 	{
+		if(!ClientPrefs.data.gamepadEnabled) { controllerMode = false; return false; }
 		if(keys != null)
 		{
 			for (key in keys)

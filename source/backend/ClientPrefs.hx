@@ -8,6 +8,7 @@ import states.TitleState;
 
 // Add a variable here and it will get automatically saved
 @:structInit class SaveVariables {
+	public var gamepadEnabled:Bool = false; // Field of Hopes: ignore gamepads unless turned on
 	public var downScroll:Bool = false;
 	public var middleScroll:Bool = false;
 	public var opponentStrums:Bool = true;
