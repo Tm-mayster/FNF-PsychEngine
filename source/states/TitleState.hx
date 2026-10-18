@@ -212,8 +212,8 @@ class TitleState extends MusicBeatState
 	}
 
 	// JSON data
-	var characterImage:String = 'gfDanceTitle';
-	var animationName:String = 'gfDance';
+	var characterImage:String = 'lumenTitle';
+	var animationName:String = 'lumen title';
 
 	var gfPosition:FlxPoint = FlxPoint.get(512, 40);
 	var logoPosition:FlxPoint = FlxPoint.get(-150, -100);
@@ -527,20 +527,19 @@ class TitleState extends MusicBeatState
 					FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
 					FlxG.sound.music.fadeIn(4, 0, 0.7);
 				case 2:
-					createCoolText(['Psych Engine by'], 40);
+					createCoolText(['TM Mayster'], 40);
 				case 4:
-					addMoreText('Shadow Mario', 40);
-					addMoreText('Riveren', 40);
+					addMoreText('presents', 40);
 				case 5:
 					deleteCoolText();
 				case 6:
-					createCoolText(['Not associated', 'with'], -40);
+					createCoolText(['Lumen'], -40);
+				case 7:
+					addMoreText('vs', -40);
 				case 8:
-					addMoreText('newgrounds', -40);
-					ngSpr.visible = true;
+					addMoreText('Sir Quill', -40);
 				case 9:
 					deleteCoolText();
-					ngSpr.visible = false;
 				case 10:
 					createCoolText([curWacky[0]]);
 				case 12:
@@ -548,11 +547,11 @@ class TitleState extends MusicBeatState
 				case 13:
 					deleteCoolText();
 				case 14:
-					addMoreText('Friday');
+					addMoreText('Field');
 				case 15:
-					addMoreText('Night');
+					addMoreText('of');
 				case 16:
-					addMoreText('Funkin'); // credTextShit.text += '\nFunkin';
+					addMoreText('Hopes');
 
 				case 17:
 					skipIntro();

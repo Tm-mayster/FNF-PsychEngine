@@ -1,9 +1,16 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <TextureAtlas imagePath="titleEnter.png">
-	<!-- Created with Adobe Animate version 21.0.2.37893 -->
-	<!-- http://www.adobe.com/products/animate.html -->
-	<SubTexture name="ENTER FREEZE0000" x="8" y="8" width="1477" height="79"/>
-	<SubTexture name="ENTER IDLE0000" x="8" y="95" width="1477" height="79"/>
-	<SubTexture name="ENTER PRESSED0000" x="8" y="8" width="1477" height="79"/>
-	<SubTexture name="ENTER PRESSED0001" x="8" y="182" width="1477" height="79"/>
+	<SubTexture name="ENTER IDLE0000" x="0" y="0" width="548" height="76"/>
+	<SubTexture name="ENTER IDLE0001" x="550" y="0" width="548" height="76"/>
+	<SubTexture name="ENTER IDLE0002" x="0" y="78" width="548" height="76"/>
+	<SubTexture name="ENTER IDLE0003" x="550" y="78" width="548" height="76"/>
+	<SubTexture name="ENTER IDLE0004" x="0" y="156" width="548" height="76"/>
+	<SubTexture name="ENTER IDLE0005" x="550" y="156" width="548" height="76"/>
+	<SubTexture name="ENTER IDLE0006" x="0" y="234" width="548" height="76"/>
+	<SubTexture name="ENTER IDLE0007" x="550" y="234" width="548" height="76"/>
+	<SubTexture name="ENTER PRESSED0000" x="0" y="312" width="548" height="76"/>
+	<SubTexture name="ENTER PRESSED0001" x="550" y="312" width="548" height="76"/>
+	<SubTexture name="ENTER PRESSED0002" x="0" y="390" width="548" height="76"/>
+	<SubTexture name="ENTER PRESSED0003" x="550" y="390" width="548" height="76"/>
+	<SubTexture name="ENTER FREEZE0000" x="0" y="468" width="548" height="76"/>
 </TextureAtlas>
