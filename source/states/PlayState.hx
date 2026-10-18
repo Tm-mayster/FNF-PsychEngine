@@ -2675,27 +2675,8 @@ class PlayState extends MusicBeatState
 
 	function applyAutoOffset()
 	{
-		// only learn from a clean, normal run: enough hits, good accuracy, consistent timing
-		if (!ClientPrefs.data.autoOffset || coopMode || cpuControlled || practiceMode || playbackRate != 1 || hitErrors.length < 60 || ratingPercent < 0.8)
-		{
-			hitErrors = [];
-			return;
-		}
-		var s = hitErrors.copy();
+		// Field of Hopes: the offset is only set in the calibration screen, never changed during songs
 		hitErrors = [];
-		s.sort(function(a, b) return a < b ? -1 : (a > b ? 1 : 0));
-		var med:Float = s[s.length >> 1];
-		var dev = [for (e in s) Math.abs(e - med)];
-		dev.sort(function(a, b) return a < b ? -1 : (a > b ? 1 : 0));
-		if (dev[dev.length >> 1] > 30) return;     // timing too scattered to trust
-		if (Math.abs(med) < 8) return;
-		// small, careful steps: at most 10 ms per song, never further than ±80 ms in total
-		var shift = Std.int(FlxMath.bound(Math.round(med * 0.5), -10, 10));
-		var old = ClientPrefs.data.noteOffset;
-		ClientPrefs.data.noteOffset = Std.int(FlxMath.bound(old + shift, -80, 80));
-		if (ClientPrefs.data.noteOffset == old) return;
-		ClientPrefs.saveSettings();
-		lastOffsetMessage = Lang.t('Вы нажимали ') + (med > 0 ? Lang.t('позже') : Lang.t('раньше')) + Lang.t(' на ') + Math.round(Math.abs(med)) + Lang.t(' мс.\nЗадержка подстроена: ') + old + ' → ' + ClientPrefs.data.noteOffset + Lang.t(' мс');
 	}
 
 	// ===================== Field of Hopes: local co-op (two players, one keyboard) =====================
