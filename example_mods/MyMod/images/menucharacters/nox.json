@@ -1,0 +1,12 @@
+{
+ "image": "menu_nox",
+ "position": [
+  -40,
+  -70
+ ],
+ "scale": 1,
+ "idle_anim": "nox idle",
+ "confirm_anim": "nox confirm",
+ "flipX": false,
+ "antialiasing": false
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="menu_nox.png">
+	<SubTexture name="nox idle0000" x="0" y="0" width="252" height="348"/>
+	<SubTexture name="nox idle0001" x="254" y="0" width="252" height="348"/>
+	<SubTexture name="nox confirm0000" x="508" y="0" width="252" height="348"/>
+	<SubTexture name="nox confirm0001" x="762" y="0" width="252" height="348"/>
+</TextureAtlas>

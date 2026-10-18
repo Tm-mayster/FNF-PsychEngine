@@ -765,7 +765,7 @@ class FreeplayState extends MusicBeatState
 			case 'Clear': 'Пройдено';
 			default: 'На этой сложности ещё не пройдено';
 		};
-		if (bestHere != null) clearBadge.text += '\nЛучшее: ' + Difficulty.list[Std.int(Math.min(bestHere, Difficulty.list.length - 1))].toUpperCase();
+		if (bestHere != null) clearBadge.text += '\nЛучшее: ' + PlayState.FOH_DIFFS[Std.int(Math.min(bestHere, PlayState.FOH_DIFFS.length - 1))].toUpperCase();
 		clearBadge.color = switch (rank) { case 'SFC': 0xFFFFE27A; case 'GFC': 0xFF7DF9FF; case 'FC': 0xFFC77DFF; case null: 0xFF6E6690; default: 0xFFCFC6F2; };
 		clearBadge.alpha = 1;
 	}

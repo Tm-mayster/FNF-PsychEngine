@@ -1,0 +1,79 @@
+{
+ "animations": [
+  {
+   "anim": "idle",
+   "name": "nox idle",
+   "fps": 8,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singLEFT",
+   "name": "nox singLEFT",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singDOWN",
+   "name": "nox singDOWN",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singUP",
+   "name": "nox singUP",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singRIGHT",
+   "name": "nox singRIGHT",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  }
+ ],
+ "no_antialiasing": true,
+ "image": "characters/nox",
+ "position": [
+  -84,
+  -66
+ ],
+ "healthicon": "nox",
+ "flip_x": false,
+ "healthbar_colors": [
+  199,
+  125,
+  255
+ ],
+ "camera_position": [
+  70,
+  0
+ ],
+ "sing_duration": 4,
+ "scale": 1,
+ "vocals_file": ""
+}

@@ -47,6 +47,7 @@ class Achievements {
 		createAchievement('foh_week_ink',   {name: "Чернильная ночь", description: "Пройдите неделю Ink Night в сюжете."});
 		createAchievement('foh_week_dr1',   {name: "Поле надежд", description: "Пройдите Deltarune: Chapter 1 в сюжете."});
 		createAchievement('foh_week_dr2',   {name: "Большая шишка", description: "Пройдите Deltarune: Chapter 2 в сюжете."});
+		createAchievement('foh_omega',      {name: "Светоборец", description: "Пройдите LIGHTBREAKER на сложности Omega."});
 		createAchievement('foh_collector',  {name: "Коллекционер", description: "Пройдите 10 разных песен.", maxScore: 10, maxDecimals: 0});
 		createAchievement('ur_good',        {name: "Перфекционист", description: "Пройдите песню с точностью 100%."});
 		createAchievement('two_keys',       {name: "Только мы вдвоём", description: "Пройдите песню, нажимая всего две клавиши."});

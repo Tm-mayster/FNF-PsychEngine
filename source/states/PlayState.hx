@@ -2419,6 +2419,7 @@ class PlayState extends MusicBeatState
 
 	public var transitioning = false;
 	var fcCelebrated:Bool = false;
+	public static var FOH_DIFFS:Array<String> = ['easy', 'normal', 'hard', 'expert', 'insane', 'omega'];
 	public static var clearRanks:Array<String> = ['Clear', 'SDCB', 'FC', 'GFC', 'SFC'];
 
 	/** remembers the best clear (Clear < SDCB < FC < GFC < SFC) for this song + difficulty */
@@ -2432,7 +2433,10 @@ class PlayState extends MusicBeatState
 		if (best == null) best = {};
 		var sid = Paths.formatToSongPath(SONG.song);
 		var prevBest:Null<Int> = Reflect.field(best, sid);
-		if (prevBest == null || storyDifficulty > prevBest) { Reflect.setField(best, sid, storyDifficulty); FlxG.save.data.fohBestDiff = best; FlxG.save.flush(); }
+		// stored on one common scale, so weeks with different difficulty lists compare fairly
+		var canon = FOH_DIFFS.indexOf(Difficulty.getString(null, false).toLowerCase());
+		if (canon < 0) canon = storyDifficulty;
+		if (prevBest == null || canon > prevBest) { Reflect.setField(best, sid, canon); FlxG.save.data.fohBestDiff = best; FlxG.save.flush(); }
 		var key = Highscore.formatSong(SONG.song, storyDifficulty);
 		var old:String = Reflect.field(map, key);
 		if (old == null || clearRanks.indexOf(ratingFC) > clearRanks.indexOf(old))
@@ -2900,6 +2904,7 @@ class PlayState extends MusicBeatState
 		var diff = Difficulty.getString(null, false).toLowerCase();
 		if (diff == 'expert') auraColor = 0xFFFF3A1E;
 		else if (diff == 'insane') auraColor = 0xFFB044FF;
+		else if (diff == 'omega') auraColor = 0xFF5AF0FF;
 		else return;
 
 		function make(alpha:Float, scale:Float):FlxSprite
@@ -2936,6 +2941,13 @@ class PlayState extends MusicBeatState
 		}, 0);
 		// slightly tint the opponent itself
 		dad.color = FlxColor.interpolate(FlxColor.WHITE, auraColor, 0.18);
+		if (diff == 'omega')
+		{
+			// Omega: the fire shifts between cyan and pink
+			for (a in [auraBack, auraFront])
+				FlxTween.color(a, 0.9, 0xFF5AF0FF, 0xFFFF5AD8, {type: PINGPONG, ease: FlxEase.sineInOut});
+			auraBack.scale.y *= 1.15;
+		}
 	}
 	// ====================================================================================================
 
@@ -3984,9 +3996,10 @@ class PlayState extends MusicBeatState
 			case 'normal': got('foh_normal90');
 			case 'hard': got('foh_hard90');
 			case 'expert': got('foh_expert90');
-			case 'insane': got('foh_insane90');
+			case 'insane' | 'omega': got('foh_insane90');
 		}
-		if (diff == 'insane' && songMisses == 0) got('foh_insane_fc');
+		if ((diff == 'insane' || diff == 'omega') && songMisses == 0) got('foh_insane_fc');
+		if (diff == 'omega') got('foh_omega');
 		if (acc >= 0.8)
 		{
 			var st = chartStars();
