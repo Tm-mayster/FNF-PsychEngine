@@ -18,7 +18,9 @@ import sys.thread.Thread;
  */
 class FohUpdater
 {
-	public static inline var BASE:String = 'https://raw.githubusercontent.com/Tm-mayster/FNF-PsychEngine/dist-windows/';
+	static inline var REPO:String = 'Tm-mayster/FNF-PsychEngine';
+	/** raw files are read from an exact commit, so the CDN cache can never mix two different builds */
+	public static var BASE:String = 'https://raw.githubusercontent.com/Tm-mayster/FNF-PsychEngine/dist-windows/';
 
 	/** idle, checking, none, available, error, scanning, ready, downloading, done */
 	public static var state:String = 'idle';
@@ -114,6 +116,13 @@ class FohUpdater
 		Thread.create(function() {
 			try
 			{
+				try
+				{
+					var api = Json.parse(fetch('https://api.github.com/repos/' + REPO + '/commits/dist-windows').toString());
+					var sha:String = api.sha;
+					if (sha != null && sha.length >= 40) BASE = 'https://raw.githubusercontent.com/' + REPO + '/' + sha + '/';
+				}
+				catch (e:Dynamic) {}
 				var b = fetch(BASE + 'update.json');
 				remote = Json.parse(b.toString());
 				remoteBuild = Std.int(remote.build);
@@ -193,7 +202,12 @@ class FohUpdater
 					var p:String = f.p;
 					current = p;
 					var data = fetch(BASE + encodePath(p));
-					if (Sha1.make(data).toHex() != f.h) throw 'файл повреждён при загрузке: ' + p;
+					if (Sha1.make(data).toHex() != f.h)
+					{
+						// one retry, bypassing any cache
+						data = fetch(BASE + encodePath(p) + '?nocache=' + Std.string(Date.now().getTime()));
+						if (Sha1.make(data).toHex() != f.h) throw 'файл не совпал с новой версией: ' + p + '\n(возможно, вышла ещё более новая сборка — нажмите R)';
+					}
 					var target = local(p);
 					var dir = Path.directory(target);
 					if (!FileSystem.exists(dir)) FileSystem.createDirectory(dir);
