@@ -264,7 +264,7 @@ class FreeplayState extends MusicBeatState
 		bottomBG.alpha = 0;
 		add(bottomBG);
 
-		var leText:String = Lang.t("ПРОБЕЛ — послушать   CTRL — модификаторы   Q/E — скорость   TAB — играть вдвоём   R — сброс");
+		var leText:String = Lang.t("ПРОБЕЛ — послушать   CTRL — модификаторы   Q/E — скорость   R — сброс");
 		bottomString = leText;
 		var size:Int = 10;
 		bottomText = new FlxText(bottomBG.x, bottomBG.y + 7, FlxG.width, leText, size);
@@ -273,7 +273,7 @@ class FreeplayState extends MusicBeatState
 		bottomText.scrollFactor.set();
 		add(bottomText);
 
-		coopBG = new FlxSprite(790, 492).makeGraphic(470, 62, 0xFF120A26);
+		coopBG = new FlxSprite(790, 492).makeGraphic(470, 78, 0xFF120A26);
 		coopBG.alpha = 0.42;
 		add(coopBG);
 		coopText = new FlxText(800, 498, 450, '', 12);
@@ -423,14 +423,6 @@ class FreeplayState extends MusicBeatState
 				_updateSongLastDifficulty();
 			}
 
-			if (FlxG.keys.justPressed.TAB || (FlxG.mouse.justPressed && FlxG.mouse.visible && FlxG.mouse.overlaps(coopBG)))
-			{
-				PlayState.coopMode = !PlayState.coopMode;
-				FlxG.sound.play(Paths.sound(PlayState.coopMode ? 'confirmMenu' : 'cancelMenu'), 0.6);
-				updateStats();
-				updateCoopBadge();
-				if (PlayState.coopMode) { coopBG.scale.set(1.08, 1.25); FlxTween.tween(coopBG.scale, {x: 1, y: 1}, 0.3, {ease: FlxEase.backOut}); }
-			}
 			if (PlayState.coopMode && coopText != null)
 				coopText.color = FlxColor.interpolate(0xFF7DF9FF, 0xFFFFE27A, 0.5 + 0.5 * Math.sin(FlxG.game.ticks / 250));
 
@@ -708,17 +700,13 @@ class FreeplayState extends MusicBeatState
 
 	function updateCoopBadge()
 	{
+		// the two-player mode is chosen in the main menu ("Вдвоём"); here it is only shown
 		if (coopText == null) return;
+		coopBG.visible = coopText.visible = PlayState.coopMode;
 		if (PlayState.coopMode)
 		{
-			coopText.text = Lang.t('★ ИГРАЕМ ВДВОЁМ ★\nИгрок 2: A S D F      Игрок 1: K L ; \'\nTAB — играть одному');
+			coopText.text = Lang.t('★ ИГРАЕМ ВДВОЁМ ★\nИгрок 2: A S D F\nИгрок 1: K L ; \'');
 			coopBG.color = 0xFF2A1F5A;
-		}
-		else
-		{
-			coopText.text = Lang.t('TAB — играть вдвоём на одной клавиатуре\n(A S D F против K L ; \')');
-			coopText.color = 0xFFCFC6F2;
-			coopBG.color = FlxColor.WHITE;
 		}
 	}
 

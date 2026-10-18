@@ -139,10 +139,9 @@ ENTER — сохранить   R — начать заново   ESC — вый�
 \nМакс. комбо:  => \nMax combo: 
 ИГРОК 2 (A S D F) => PLAYER 2 (A S D F)
 ИГРОК 1 (K L ; ') => PLAYER 1 (K L ; ')
-ПРОБЕЛ — послушать   CTRL — модификаторы   Q/E — скорость   TAB — играть вдвоём   R — сброс => SPACE — listen   CTRL — modifiers   Q/E — speed   TAB — play together   R — reset
+ПРОБЕЛ — послушать   CTRL — модификаторы   Q/E — скорость   R — сброс => SPACE — listen   CTRL — modifiers   Q/E — speed   R — reset
 Рекорд:  => Best: 
-★ ИГРАЕМ ВДВОЁМ ★\nИгрок 2: A S D F      Игрок 1: K L ; '\nTAB — играть одному => ★ PLAYING TOGETHER ★\nPlayer 2: A S D F      Player 1: K L ; '\nTAB — play alone
-TAB — играть вдвоём на одной клавиатуре\n(A S D F против K L ; ') => TAB — play together on one keyboard\n(A S D F vs. K L ; ')
+★ ИГРАЕМ ВДВОЁМ ★\nИгрок 2: A S D F\nИгрок 1: K L ; ' => ★ PLAYING TOGETHER ★\nPlayer 2: A S D F\nPlayer 1: K L ; '
 Скролл:  => Scroll: 
 Чарт не найден\n => Chart not found\n
 Звёзды:  => Stars: 

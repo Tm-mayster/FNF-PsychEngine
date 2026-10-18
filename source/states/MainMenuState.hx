@@ -20,7 +20,7 @@ typedef FohMenuEntry = {
 class MainMenuState extends MusicBeatState
 {
 	public static var psychEngineVersion:String = '1.0.4'; // This is also used for Discord RPC
-	public static var modVersion:String = '0.3';
+	public static var modVersion:String = '0.4';
 	public static var curSelected:Int = 0;
 
 	public static inline var MENU_FONT:String = 'PressStart2P.ttf';
