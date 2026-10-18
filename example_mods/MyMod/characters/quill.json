@@ -1,0 +1,79 @@
+{
+ "animations": [
+  {
+   "anim": "idle",
+   "name": "quill idle",
+   "fps": 8,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singLEFT",
+   "name": "quill singLEFT",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singDOWN",
+   "name": "quill singDOWN",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singUP",
+   "name": "quill singUP",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singRIGHT",
+   "name": "quill singRIGHT",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  }
+ ],
+ "no_antialiasing": true,
+ "image": "characters/quill",
+ "position": [
+  -60,
+  20
+ ],
+ "healthicon": "quill",
+ "flip_x": false,
+ "healthbar_colors": [
+  122,
+  92,
+  214
+ ],
+ "camera_position": [
+  80,
+  30
+ ],
+ "sing_duration": 4,
+ "scale": 6,
+ "vocals_file": ""
+}

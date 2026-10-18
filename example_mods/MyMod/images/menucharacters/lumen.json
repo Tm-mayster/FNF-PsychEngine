@@ -1,0 +1,12 @@
+{
+ "image": "menu_lumen",
+ "position": [
+  20,
+  60
+ ],
+ "scale": 4.5,
+ "idle_anim": "lumen idle",
+ "confirm_anim": "lumen confirm",
+ "flipX": false,
+ "antialiasing": false
+}

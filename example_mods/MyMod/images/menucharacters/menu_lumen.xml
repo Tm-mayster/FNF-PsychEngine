@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="menu_lumen.png">
+	<SubTexture name="lumen idle0000" x="0" y="0" width="44" height="58"/>
+	<SubTexture name="lumen idle0001" x="46" y="0" width="44" height="58"/>
+	<SubTexture name="lumen confirm0000" x="92" y="0" width="44" height="58"/>
+	<SubTexture name="lumen confirm0001" x="138" y="0" width="44" height="58"/>
+</TextureAtlas>

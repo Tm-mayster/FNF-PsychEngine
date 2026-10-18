@@ -1,0 +1,32 @@
+{
+ "songs": [
+  [
+   "my-song",
+   "lumen",
+   [
+    255,
+    170,
+    60
+   ]
+  ]
+ ],
+ "storyName": "Test Song",
+ "weekName": "Warm-up",
+ "freeplayColor": [
+  255,
+  170,
+  60
+ ],
+ "weekCharacters": [
+  "quill",
+  "lumen",
+  ""
+ ],
+ "weekBackground": "glade",
+ "weekBefore": "tutorial",
+ "startUnlocked": true,
+ "hiddenUntilUnlocked": false,
+ "hideStoryMode": false,
+ "hideFreeplay": false,
+ "difficulties": "Easy, Normal, Hard, Expert, Insane"
+}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="lumen.png">
+	<SubTexture name="lumen idle0000" x="0" y="0" width="44" height="58"/>
+	<SubTexture name="lumen idle0001" x="46" y="0" width="44" height="58"/>
+	<SubTexture name="lumen singLEFT0000" x="92" y="0" width="44" height="58"/>
+	<SubTexture name="lumen singLEFT0001" x="138" y="0" width="44" height="58"/>
+	<SubTexture name="lumen miss LEFT0000" x="184" y="0" width="44" height="58"/>
+	<SubTexture name="lumen miss LEFT0001" x="230" y="0" width="44" height="58"/>
+	<SubTexture name="lumen singDOWN0000" x="276" y="0" width="44" height="58"/>
+	<SubTexture name="lumen singDOWN0001" x="322" y="0" width="44" height="58"/>
+	<SubTexture name="lumen miss DOWN0000" x="0" y="60" width="44" height="58"/>
+	<SubTexture name="lumen miss DOWN0001" x="46" y="60" width="44" height="58"/>
+	<SubTexture name="lumen singUP0000" x="92" y="60" width="44" height="58"/>
+	<SubTexture name="lumen singUP0001" x="138" y="60" width="44" height="58"/>
+	<SubTexture name="lumen miss UP0000" x="184" y="60" width="44" height="58"/>
+	<SubTexture name="lumen miss UP0001" x="230" y="60" width="44" height="58"/>
+	<SubTexture name="lumen singRIGHT0000" x="276" y="60" width="44" height="58"/>
+	<SubTexture name="lumen singRIGHT0001" x="322" y="60" width="44" height="58"/>
+	<SubTexture name="lumen miss RIGHT0000" x="0" y="120" width="44" height="58"/>
+	<SubTexture name="lumen miss RIGHT0001" x="46" y="120" width="44" height="58"/>
+</TextureAtlas>

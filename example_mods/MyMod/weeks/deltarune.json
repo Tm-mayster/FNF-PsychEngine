@@ -1,0 +1,32 @@
+{
+ "songs": [
+  [
+   "field-of-hopes",
+   "quill",
+   [
+    122,
+    92,
+    214
+   ]
+  ]
+ ],
+ "storyName": "Field of Hopes",
+ "weekName": "Starlit Glade",
+ "freeplayColor": [
+  122,
+  92,
+  214
+ ],
+ "weekCharacters": [
+  "quill",
+  "lumen",
+  ""
+ ],
+ "weekBackground": "glade",
+ "weekBefore": "tutorial",
+ "startUnlocked": true,
+ "hiddenUntilUnlocked": false,
+ "hideStoryMode": false,
+ "hideFreeplay": false,
+ "difficulties": "Easy, Normal, Hard, Expert, Insane"
+}
