@@ -35,6 +35,7 @@ class FreeplayState extends MusicBeatState
 	var starValue:Float = 0;
 	var starNum:FlxText;
 	var clearBadge:FlxText;
+	var progressText:FlxText;
 	static var statsCache:Map<String, Array<Float>> = [];
 	var scoreText:FlxText;
 	var diffText:FlxText;
@@ -160,7 +161,7 @@ class FreeplayState extends MusicBeatState
 
 		add(scoreText);
 
-		statsBG = new FlxSprite(FlxG.width - 470, 72).makeGraphic(470, 166, 0xFF0B0614);
+		statsBG = new FlxSprite(FlxG.width - 470, 72).makeGraphic(470, 190, 0xFF0B0614);
 		statsBG.alpha = 0.7;
 		add(statsBG);
 		statsText = new FlxText(FlxG.width - 456, 82, 442, '', 12);
@@ -184,6 +185,12 @@ class FreeplayState extends MusicBeatState
 		starNum = new FlxText(FlxG.width - 112, 174, 104, '', 16);
 		starNum.setFormat(MainMenuState.menuFont(), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
 		add(starNum);
+		progressText = new FlxText(12, 8, 600, '', 16);
+		progressText.setFormat(MainMenuState.menuFont(), 16, 0xFFFFE27A, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+		progressText.borderSize = 3;
+		add(progressText);
+		updateProgress();
+
 		clearBadge = new FlxText(FlxG.width - 458, 212, 440, '', 14);
 		clearBadge.setFormat(MainMenuState.menuFont(), 14, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
 		clearBadge.borderSize = 2;
@@ -636,6 +643,8 @@ class FreeplayState extends MusicBeatState
 			+ '\n' + scroll;
 		statsText.color = FlxColor.WHITE;
 		setStars(st[3]);
+		var bestAll:Dynamic = FlxG.save.data.fohBestDiff;
+		var bestHere:Null<Int> = bestAll != null ? Reflect.field(bestAll, songLowercase) : null;
 		var clears:Dynamic = FlxG.save.data.fohClears;
 		var rank:String = clears != null ? Reflect.field(clears, poop) : null;
 		clearBadge.text = switch (rank)
@@ -645,8 +654,9 @@ class FreeplayState extends MusicBeatState
 			case 'FC': '★ FULL COMBO';
 			case 'SDCB': 'Пройдено (меньше 10 промахов)';
 			case 'Clear': 'Пройдено';
-			default: 'Ещё не пройдено';
+			default: 'На этой сложности ещё не пройдено';
 		};
+		if (bestHere != null) clearBadge.text += '\nЛучшее: ' + Difficulty.list[Std.int(Math.min(bestHere, Difficulty.list.length - 1))].toUpperCase();
 		clearBadge.color = switch (rank) { case 'SFC': 0xFFFFE27A; case 'GFC': 0xFF7DF9FF; case 'FC': 0xFFC77DFF; case null: 0xFF6E6690; default: 0xFFCFC6F2; };
 		clearBadge.alpha = 1;
 	}
@@ -678,6 +688,29 @@ class FreeplayState extends MusicBeatState
 		}
 		starNum.text = (Math.round(v * 10) / 10) + '*';
 		starNum.color = c;
+	}
+
+	/** 100% = every song cleared on Hard or above (any accuracy). Normal gives half credit. */
+	function updateProgress()
+	{
+		var best:Dynamic = FlxG.save.data.fohBestDiff;
+		var pts = 0.0;
+		var seen:Array<String> = [];
+		for (i in 0...songs.length)
+		{
+			var id = Paths.formatToSongPath(songs[i].songName);
+			if (seen.contains(id)) continue;
+			seen.push(id);
+			var b:Null<Int> = best != null ? Reflect.field(best, id) : null;
+			var item = grpSongs.members[i];
+			if (b == null) { item.color = FlxColor.WHITE; continue; }
+			if (b >= 2) { pts += 1; item.color = 0xFFFFE27A; }      // Hard+ : gold
+			else if (b >= 1) { pts += 0.5; item.color = 0xFF9CF7C4; } // Normal : green
+			else { pts += 0.25; item.color = 0xFFCFE8FF; }           // Easy : pale
+		}
+		var pct = seen.length > 0 ? Math.floor(pts / seen.length * 100) : 0;
+		FlxG.save.data.fohProgress = pct;
+		progressText.text = 'Прогресс игры: ' + pct + '%' + (pct >= 100 ? '  ★ ПРОЙДЕНО!' : '');
 	}
 
 	function animateStars(elapsed:Float)

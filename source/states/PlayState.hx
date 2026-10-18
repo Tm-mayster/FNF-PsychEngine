@@ -2398,6 +2398,12 @@ class PlayState extends MusicBeatState
 		if (chartingMode || cpuControlled || practiceMode || ratingFC == null || ratingFC == '') return;
 		var map:Dynamic = FlxG.save.data.fohClears;
 		if (map == null) map = {};
+		// best difficulty cleared per song (index in the week's difficulty list: Easy 0 ... Insane 4)
+		var best:Dynamic = FlxG.save.data.fohBestDiff;
+		if (best == null) best = {};
+		var sid = Paths.formatToSongPath(SONG.song);
+		var prevBest:Null<Int> = Reflect.field(best, sid);
+		if (prevBest == null || storyDifficulty > prevBest) { Reflect.setField(best, sid, storyDifficulty); FlxG.save.data.fohBestDiff = best; FlxG.save.flush(); }
 		var key = Highscore.formatSong(SONG.song, storyDifficulty);
 		var old:String = Reflect.field(map, key);
 		if (old == null || clearRanks.indexOf(ratingFC) > clearRanks.indexOf(old))
