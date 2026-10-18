@@ -103,13 +103,29 @@ class FohControlsSubState extends MusicBeatSubstate
 
 	inline function isHeader(i:Int) return options[i].length == 1;
 
-	// always exactly two slots, NONE = empty (the engine's cleanup shrinks arrays, which shifted slots)
+	// binds are stored compact (no NONE entries — Flixel would treat NONE as "always true")
 	function getKeys(id:String):Array<FlxKey>
 	{
 		var keys:Array<FlxKey> = ClientPrefs.keyBinds.get(id);
-		if (keys == null) { keys = [NONE, NONE]; ClientPrefs.keyBinds.set(id, keys); }
-		while (keys.length < 2) keys.push(NONE);
+		if (keys == null) { keys = []; ClientPrefs.keyBinds.set(id, keys); }
+		var i = keys.length;
+		while (i-- > 0) { var v:Int = keys[i]; if (v <= 0) keys.splice(i, 1); }
 		return keys;
+	}
+
+	function setSlot(id:String, k:FlxKey)
+	{
+		var keys = getKeys(id);
+		var other = keys.indexOf(k);
+		if (other > -1) keys.splice(other, 1);
+		if (slot < keys.length) keys[slot] = k;
+		else keys.push(k);
+	}
+
+	function clearSlot(id:String)
+	{
+		var keys = getKeys(id);
+		if (slot < keys.length) keys.splice(slot, 1);
 	}
 
 	function keyName(k:Null<FlxKey>):String
@@ -134,8 +150,8 @@ class FohControlsSubState extends MusicBeatSubstate
 			var id = options[i][1];
 			if (id == '#reset') { keyA[i].text = keyB[i].text = ''; continue; }
 			var keys:Array<FlxKey> = getKeys(id);
-			keyA[i].text = keyName(keys[0]);
-			keyB[i].text = keyName(keys[1]);
+			keyA[i].text = keyName(keys.length > 0 ? keys[0] : null);
+			keyB[i].text = keyName(keys.length > 1 ? keys[1] : null);
 			keyA[i].color = (sel && slot == 0) ? 0xFFFFCF5A : 0xFFFFFFFF;
 			keyB[i].color = (sel && slot == 1) ? 0xFFFFCF5A : 0xFFFFFFFF;
 			if (sel) { if (slot == 0) keyA[i].text = '[ ' + keyA[i].text + ' ]'; else keyB[i].text = '[ ' + keyB[i].text + ' ]'; }
@@ -167,14 +183,9 @@ class FohControlsSubState extends MusicBeatSubstate
 			if (pressed > -1)
 			{
 				var id = options[curSelected][1];
-				var keys:Array<FlxKey> = getKeys(id);
 				if (pressed == FlxKey.ESCAPE) {}
-				else if (pressed == FlxKey.DELETE) keys[slot] = NONE;
-				else
-				{
-					keys[slot] = pressed;
-					if (keys[1 - slot] == keys[slot]) keys[1 - slot] = NONE;
-				}
+				else if (pressed == FlxKey.DELETE) clearSlot(id);
+				else setSlot(id, pressed);
 				ClientPrefs.saveSettings();
 				binding = false;
 				overlay.visible = overlayText.visible = false;
@@ -196,8 +207,7 @@ class FohControlsSubState extends MusicBeatSubstate
 		}
 		if ((FlxG.keys.justPressed.DELETE || FlxG.keys.justPressed.BACKSPACE) && options[curSelected][1] != '#reset')
 		{
-			var keys:Array<FlxKey> = getKeys(options[curSelected][1]);
-			keys[slot] = NONE;
+			clearSlot(options[curSelected][1]);
 			ClientPrefs.saveSettings();
 			refresh();
 		}

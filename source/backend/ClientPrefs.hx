@@ -246,7 +246,7 @@ class ClientPrefs {
 		return /*PlayState.isStoryMode ? defaultValue : */ (data.gameplaySettings.exists(name) ? data.gameplaySettings.get(name) : defaultValue);
 	}
 
-	// Field of Hopes: drop broken entries (ANY would make an action fire on every key press)
+	// Field of Hopes: drop broken entries (ANY/NONE make an action fire by itself)
 	public static function sanitizeKeys(keys:Array<FlxKey>):Array<FlxKey>
 	{
 		var out:Array<FlxKey> = [];
@@ -256,7 +256,8 @@ class ClientPrefs {
 				var v:Int = k;
 				if (v > 0 && v != (FlxKey.ANY : Int) && !out.contains(k)) out.push(k);
 			}
-		while (out.length < 2) out.push(NONE);
+		// never keep NONE: Flixel treats "NONE" as "no key is in this state", which is true
+		// almost every frame and made actions (volume, back, reset) fire constantly
 		return out;
 	}
 
