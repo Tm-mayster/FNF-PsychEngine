@@ -1,0 +1,32 @@
+{
+ "songs": [
+  [
+   "the-last-dance",
+   "quill",
+   [
+    220,
+    60,
+    90
+   ]
+  ]
+ ],
+ "storyName": "Bonus",
+ "weekName": "Bonus",
+ "freeplayColor": [
+  220,
+  60,
+  90
+ ],
+ "weekCharacters": [
+  "quill",
+  "lumen",
+  ""
+ ],
+ "weekBackground": "glade",
+ "weekBefore": "",
+ "startUnlocked": true,
+ "hiddenUntilUnlocked": false,
+ "hideStoryMode": false,
+ "hideFreeplay": false,
+ "difficulties": "Easy, Normal, Hard, Expert, Insane"
+}
