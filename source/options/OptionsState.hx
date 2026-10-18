@@ -76,11 +76,7 @@ class OptionsState extends MusicBeatState
 			{kind: 'header', label: 'ЭКРАН'},
 			{kind: 'bool', label: 'Счётчик FPS', field: 'showFPS', desc: 'Показывать частоту кадров в углу.',
 				after: function() { if (Main.fpsVar != null) Main.fpsVar.visible = ClientPrefs.data.showFPS; }},
-			{kind: 'num', label: 'Частота кадров', field: 'framerate', min: 60, max: 240, step: 1, decimals: 0, desc: 'Ограничение FPS. Выше — плавнее, но больше нагрузка.',
-				after: function() {
-					if (ClientPrefs.data.framerate > FlxG.drawFramerate) { FlxG.updateFramerate = ClientPrefs.data.framerate; FlxG.drawFramerate = ClientPrefs.data.framerate; }
-					else { FlxG.drawFramerate = ClientPrefs.data.framerate; FlxG.updateFramerate = ClientPrefs.data.framerate; }
-				}},
+			{kind: 'fps', label: 'Частота кадров', field: 'framerate', desc: 'Ограничение FPS. «Без ограничений» — максимум, как Unlimited в osu!: меньше задержка ввода, выше нагрузка.'},
 			{kind: 'bool', label: 'Вспышки', field: 'flashing', desc: 'Мигающие эффекты. Выключите, если они мешают.'},
 			{kind: 'bool', label: 'Приближение камеры', field: 'camZooms', desc: 'Камера пульсирует в такт.'},
 			{kind: 'bool', label: 'Скрыть интерфейс', field: 'hideHud', desc: 'Убрать полоску здоровья, счёт и прочее.'},
@@ -184,6 +180,9 @@ class OptionsState extends MusicBeatState
 				return ClientPrefs.getGameplaySetting('scrolltype') == 'constant' ? 'ПОСТОЯННАЯ' : 'МНОЖИТЕЛЬ';
 			case 'open':
 				return 'ОТКРЫТЬ';
+			case 'fps':
+				var f:Int = ClientPrefs.data.framerate;
+				return '< ' + (f >= 1000 ? 'БЕЗ ОГРАНИЧ.' : Std.string(f)) + ' >';
 		}
 		return '';
 	}
@@ -243,6 +242,16 @@ class OptionsState extends MusicBeatState
 				var sp:Float = ClientPrefs.getGameplaySetting('scrollspeed');
 				sp = FlxMath.bound(Math.round((sp + dir * 0.05) * 100) / 100, 0.35, constant ? 6 : 3);
 				ClientPrefs.data.gameplaySettings.set('scrollspeed', sp);
+			case 'fps':
+				var steps = [60, 75, 120, 144, 165, 240, 360, 500, 1000];
+				var cur:Int = ClientPrefs.data.framerate;
+				var i = 0;
+				while (i < steps.length - 1 && steps[i] < cur) i++;
+				if (steps[i] == cur) i += dir;
+				else if (dir < 0) i -= 1;
+				i = Std.int(FlxMath.bound(i, 0, steps.length - 1));
+				ClientPrefs.data.framerate = steps[i];
+				applyFramerate();
 			case 'scrolltype':
 				var next = ClientPrefs.getGameplaySetting('scrolltype') == 'constant' ? 'multiplicative' : 'constant';
 				ClientPrefs.data.gameplaySettings.set('scrolltype', next);
@@ -253,6 +262,13 @@ class OptionsState extends MusicBeatState
 		if (it.after != null) it.after();
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.5);
 		refresh();
+	}
+
+	public static function applyFramerate()
+	{
+		var f:Int = ClientPrefs.data.framerate;
+		if (f > FlxG.drawFramerate) { FlxG.updateFramerate = f; FlxG.drawFramerate = f; }
+		else { FlxG.drawFramerate = f; FlxG.updateFramerate = f; }
 	}
 
 	function accept()

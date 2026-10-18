@@ -1,0 +1,59 @@
+{
+ "songs": [
+  [
+   "my-castle-town",
+   "quill",
+   [
+    200,
+    80,
+    160
+   ]
+  ],
+  [
+   "pandora-palace",
+   "quill",
+   [
+    200,
+    80,
+    160
+   ]
+  ],
+  [
+   "nows-your-chance",
+   "quill",
+   [
+    200,
+    80,
+    160
+   ]
+  ],
+  [
+   "big-shot",
+   "quill",
+   [
+    200,
+    80,
+    160
+   ]
+  ]
+ ],
+ "storyName": "Deltarune: Chapter 2",
+ "weekName": "Deltarune Ch.2",
+ "freeplayColor": [
+  200,
+  80,
+  160
+ ],
+ "weekCharacters": [
+  "quill",
+  "lumen",
+  ""
+ ],
+ "weekBackground": "glade",
+ "weekBefore": "",
+ "startUnlocked": true,
+ "hiddenUntilUnlocked": false,
+ "hideStoryMode": false,
+ "hideFreeplay": false,
+ "difficulties": "Easy, Normal, Hard, Expert, Insane"
+}

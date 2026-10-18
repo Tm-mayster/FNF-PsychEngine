@@ -1,6 +1,15 @@
 {
  "songs": [
   [
+   "empty-town",
+   "quill",
+   [
+    122,
+    92,
+    214
+   ]
+  ],
+  [
    "field-of-hopes",
    "quill",
    [
@@ -10,21 +19,39 @@
    ]
   ],
   [
-   "pandora-palace",
+   "vs-susie",
    "quill",
    [
-    200,
-    80,
-    160
+    122,
+    92,
+    214
+   ]
+  ],
+  [
+   "vs-lancer",
+   "quill",
+   [
+    122,
+    92,
+    214
+   ]
+  ],
+  [
+   "checker-dance",
+   "quill",
+   [
+    122,
+    92,
+    214
    ]
   ]
  ],
- "storyName": "Deltarune (Bonus)",
- "weekName": "Bonus",
+ "storyName": "Deltarune: Chapter 1",
+ "weekName": "Deltarune Ch.1",
  "freeplayColor": [
-  80,
-  60,
-  200
+  122,
+  92,
+  214
  ],
  "weekCharacters": [
   "quill",
