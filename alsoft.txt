@@ -1,4 +1,7 @@
 [general]
+## Field of Hopes: low-latency output (default is 1024 x 3 frames, ~65 ms)
+period_size=256
+periods=2
 sample-type=float32
 stereo-mode=speakers
 stereo-encoding=panpot

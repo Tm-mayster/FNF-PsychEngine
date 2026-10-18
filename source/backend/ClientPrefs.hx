@@ -213,6 +213,12 @@ class ClientPrefs {
 				data.gameplaySettings.set(name, value);
 		}
 		ScrollUtil.migrate();
+		// Field of Hopes: compensate the remaining audio output delay once (~20 ms with the low-latency audio config)
+		if (FlxG.save.data.fohOffsetMigrated != true)
+		{
+			if (data.noteOffset == 0) data.noteOffset = 20;
+			FlxG.save.data.fohOffsetMigrated = true;
+		}
 		
 		// flixel automatically saves your volume!
 		if(FlxG.save.data.volume != null)
