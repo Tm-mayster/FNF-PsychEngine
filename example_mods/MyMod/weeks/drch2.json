@@ -2,54 +2,54 @@
  "songs": [
   [
    "my-castle-town",
-   "quill",
+   "byte",
    [
-    200,
-    80,
-    160
+    56,
+    255,
+    176
    ]
   ],
   [
    "pandora-palace",
-   "quill",
+   "byte",
    [
-    200,
-    80,
-    160
+    56,
+    255,
+    176
    ]
   ],
   [
    "nows-your-chance",
-   "quill",
+   "byte",
    [
-    200,
-    80,
-    160
+    56,
+    255,
+    176
    ]
   ],
   [
    "big-shot",
-   "quill",
+   "byte",
    [
-    200,
-    80,
-    160
+    56,
+    255,
+    176
    ]
   ]
  ],
  "storyName": "Deltarune: Chapter 2",
  "weekName": "Deltarune Ch.2",
  "freeplayColor": [
-  200,
-  80,
-  160
+  56,
+  255,
+  176
  ],
  "weekCharacters": [
-  "quill",
+  "byte",
   "lumen",
   ""
  ],
- "weekBackground": "glade",
+ "weekBackground": "neoncity",
  "weekBefore": "",
  "startUnlocked": true,
  "hiddenUntilUnlocked": false,

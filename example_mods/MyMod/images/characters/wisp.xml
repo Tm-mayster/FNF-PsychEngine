@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="wisp.png">
+	<SubTexture name="wisp idle0000" x="0" y="0" width="312" height="444"/>
+	<SubTexture name="wisp idle0001" x="314" y="0" width="312" height="444"/>
+	<SubTexture name="wisp singLEFT0000" x="628" y="0" width="312" height="444"/>
+	<SubTexture name="wisp singLEFT0001" x="942" y="0" width="312" height="444"/>
+	<SubTexture name="wisp singDOWN0000" x="1256" y="0" width="312" height="444"/>
+	<SubTexture name="wisp singDOWN0001" x="1570" y="0" width="312" height="444"/>
+	<SubTexture name="wisp singUP0000" x="1884" y="0" width="312" height="444"/>
+	<SubTexture name="wisp singUP0001" x="2198" y="0" width="312" height="444"/>
+	<SubTexture name="wisp singRIGHT0000" x="0" y="446" width="312" height="444"/>
+	<SubTexture name="wisp singRIGHT0001" x="314" y="446" width="312" height="444"/>
+</TextureAtlas>

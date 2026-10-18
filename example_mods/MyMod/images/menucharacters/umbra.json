@@ -1,0 +1,12 @@
+{
+ "image": "menu_umbra",
+ "position": [
+  -20,
+  -110
+ ],
+ "scale": 1,
+ "idle_anim": "umbra idle",
+ "confirm_anim": "umbra confirm",
+ "flipX": false,
+ "antialiasing": false
+}

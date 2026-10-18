@@ -1,0 +1,12 @@
+{
+ "image": "menu_rook",
+ "position": [
+  -40,
+  -60
+ ],
+ "scale": 1,
+ "idle_anim": "rook idle",
+ "confirm_anim": "rook confirm",
+ "flipX": false,
+ "antialiasing": false
+}

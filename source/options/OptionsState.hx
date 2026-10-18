@@ -73,6 +73,8 @@ class OptionsState extends MusicBeatState
 			{kind: 'header', label: 'УПРАВЛЕНИЕ'},
 			{kind: 'open', label: 'Клавиши', target: 'controls', desc: 'Назначить клавиши. Работают и при русской раскладке: , . ; [ ] и буквы — по месту на клавиатуре.'},
 			{kind: 'bool', label: 'Геймпад', field: 'gamepadEnabled', desc: 'Принимать ввод с геймпада. Выключено по умолчанию: подключённый или виртуальный контроллер (Steam, драйверы) может сам «нажимать» кнопки и отключать клавиатуру в игре.'},
+			{kind: 'list', label: 'Вид нот', field: 'noteSkin', values: ['Default', 'Circles', 'Diamonds', 'Bars'],
+				names: ['Стрелки', 'Круги', 'Ромбы', 'Полосы'], desc: 'Форма нот: классические стрелки FNF, круги, ромбы или полосы как в osu!mania / Etterna. Цвета настраиваются ниже.'},
 			{kind: 'open', label: 'Цвета нот', target: 'colors', desc: 'Настроить цвета стрелок (экран редактора на английском).'},
 
 			{kind: 'header', label: 'ЭКРАН'},

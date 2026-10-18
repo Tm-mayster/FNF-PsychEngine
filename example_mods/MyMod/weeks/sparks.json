@@ -2,32 +2,32 @@
  "songs": [
   [
    "ember",
-   "lumen",
+   "wisp",
    [
-    255,
-    170,
-    60
+    125,
+    249,
+    255
    ]
   ],
   [
    "wick",
-   "lumen",
+   "wisp",
    [
-    255,
-    140,
-    70
+    125,
+    249,
+    255
    ]
   ]
  ],
  "storyName": "First Sparks",
  "weekName": "First Sparks",
  "freeplayColor": [
-  255,
-  170,
-  60
+  125,
+  249,
+  255
  ],
  "weekCharacters": [
-  "quill",
+  "wisp",
   "lumen",
   ""
  ],

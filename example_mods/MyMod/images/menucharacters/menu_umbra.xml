@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="menu_umbra.png">
+	<SubTexture name="umbra idle0000" x="0" y="0" width="240" height="330"/>
+	<SubTexture name="umbra idle0001" x="242" y="0" width="240" height="330"/>
+	<SubTexture name="umbra confirm0000" x="484" y="0" width="240" height="330"/>
+	<SubTexture name="umbra confirm0001" x="726" y="0" width="240" height="330"/>
+</TextureAtlas>

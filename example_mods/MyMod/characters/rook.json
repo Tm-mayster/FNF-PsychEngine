@@ -1,0 +1,79 @@
+{
+ "animations": [
+  {
+   "anim": "idle",
+   "name": "rook idle",
+   "fps": 8,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singLEFT",
+   "name": "rook singLEFT",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singDOWN",
+   "name": "rook singDOWN",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singUP",
+   "name": "rook singUP",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singRIGHT",
+   "name": "rook singRIGHT",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  }
+ ],
+ "no_antialiasing": true,
+ "image": "characters/rook",
+ "position": [
+  -84,
+  6
+ ],
+ "healthicon": "rook",
+ "flip_x": false,
+ "healthbar_colors": [
+  255,
+  95,
+  162
+ ],
+ "camera_position": [
+  80,
+  20
+ ],
+ "sing_duration": 4,
+ "scale": 1,
+ "vocals_file": ""
+}

@@ -13,9 +13,9 @@
    "starfall",
    "quill",
    [
-    90,
-    110,
-    230
+    122,
+    92,
+    214
    ]
   ]
  ],
@@ -31,7 +31,7 @@
   "lumen",
   ""
  ],
- "weekBackground": "glade",
+ "weekBackground": "inkwell",
  "weekBefore": "",
  "startUnlocked": true,
  "hiddenUntilUnlocked": false,

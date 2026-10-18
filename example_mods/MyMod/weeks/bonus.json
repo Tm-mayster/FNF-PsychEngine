@@ -2,27 +2,27 @@
  "songs": [
   [
    "the-last-dance",
-   "quill",
+   "umbra",
    [
-    220,
-    60,
-    90
+    199,
+    125,
+    255
    ]
   ]
  ],
  "storyName": "Bonus",
  "weekName": "Bonus",
  "freeplayColor": [
-  220,
-  60,
-  90
+  199,
+  125,
+  255
  ],
  "weekCharacters": [
-  "quill",
+  "umbra",
   "lumen",
   ""
  ],
- "weekBackground": "glade",
+ "weekBackground": "eclipse",
  "weekBefore": "",
  "startUnlocked": true,
  "hiddenUntilUnlocked": false,

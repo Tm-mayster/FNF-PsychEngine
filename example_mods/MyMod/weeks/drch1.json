@@ -2,63 +2,63 @@
  "songs": [
   [
    "empty-town",
-   "quill",
+   "rook",
    [
-    122,
-    92,
-    214
+    255,
+    95,
+    162
    ]
   ],
   [
    "field-of-hopes",
-   "quill",
+   "rook",
    [
-    122,
-    92,
-    214
+    255,
+    95,
+    162
    ]
   ],
   [
    "vs-susie",
-   "quill",
+   "rook",
    [
-    122,
-    92,
-    214
+    255,
+    95,
+    162
    ]
   ],
   [
    "vs-lancer",
-   "quill",
+   "rook",
    [
-    122,
-    92,
-    214
+    255,
+    95,
+    162
    ]
   ],
   [
    "checker-dance",
-   "quill",
+   "rook",
    [
-    122,
-    92,
-    214
+    255,
+    95,
+    162
    ]
   ]
  ],
  "storyName": "Deltarune: Chapter 1",
  "weekName": "Deltarune Ch.1",
  "freeplayColor": [
-  122,
-  92,
-  214
+  255,
+  95,
+  162
  ],
  "weekCharacters": [
-  "quill",
+  "rook",
   "lumen",
   ""
  ],
- "weekBackground": "glade",
+ "weekBackground": "crystalfield",
  "weekBefore": "",
  "startUnlocked": true,
  "hiddenUntilUnlocked": false,

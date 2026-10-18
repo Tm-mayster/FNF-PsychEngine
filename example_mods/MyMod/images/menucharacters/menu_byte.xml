@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="menu_byte.png">
+	<SubTexture name="byte idle0000" x="0" y="0" width="192" height="276"/>
+	<SubTexture name="byte idle0001" x="194" y="0" width="192" height="276"/>
+	<SubTexture name="byte confirm0000" x="388" y="0" width="192" height="276"/>
+	<SubTexture name="byte confirm0001" x="582" y="0" width="192" height="276"/>
+</TextureAtlas>

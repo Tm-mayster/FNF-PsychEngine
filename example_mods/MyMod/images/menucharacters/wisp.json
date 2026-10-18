@@ -1,0 +1,12 @@
+{
+ "image": "menu_wisp",
+ "position": [
+  -30,
+  -40
+ ],
+ "scale": 1,
+ "idle_anim": "wisp idle",
+ "confirm_anim": "wisp confirm",
+ "flipX": false,
+ "antialiasing": false
+}

@@ -1,0 +1,79 @@
+{
+ "animations": [
+  {
+   "anim": "idle",
+   "name": "umbra idle",
+   "fps": 8,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singLEFT",
+   "name": "umbra singLEFT",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singDOWN",
+   "name": "umbra singDOWN",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singUP",
+   "name": "umbra singUP",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singRIGHT",
+   "name": "umbra singRIGHT",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  }
+ ],
+ "no_antialiasing": true,
+ "image": "characters/umbra",
+ "position": [
+  24,
+  258
+ ],
+ "healthicon": "umbra",
+ "flip_x": false,
+ "healthbar_colors": [
+  199,
+  125,
+  255
+ ],
+ "camera_position": [
+  60,
+  -20
+ ],
+ "sing_duration": 4,
+ "scale": 1,
+ "vocals_file": ""
+}
