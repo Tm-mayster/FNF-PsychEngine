@@ -223,6 +223,12 @@ class ClientPrefs {
 			FlxG.save.data.fohHitPresetMigrated = true;
 		}
 		applyOD();
+		// Field of Hopes: earlier auto-offset could drift far away -> reset once to the safe default
+		if (FlxG.save.data.fohOffsetReset2 != true)
+		{
+			data.noteOffset = 20;
+			FlxG.save.data.fohOffsetReset2 = true;
+		}
 		// Field of Hopes: compensate the remaining audio output delay once (~20 ms with the low-latency audio config)
 		if (FlxG.save.data.fohOffsetMigrated != true)
 		{
