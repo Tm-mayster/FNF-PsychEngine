@@ -138,11 +138,11 @@ ENTER — сохранить   R — начать заново   ESC — вый�
 %\nПромахи:  => %\nMisses: 
 \nМакс. комбо:  => \nMax combo: 
 ИГРОК 2 (A S D F) => PLAYER 2 (A S D F)
-ИГРОК 1 (J K L ;) => PLAYER 1 (J K L ;)
+ИГРОК 1 (K L ; ') => PLAYER 1 (K L ; ')
 ПРОБЕЛ — послушать   CTRL — модификаторы   Q/E — скорость   TAB — играть вдвоём   R — сброс => SPACE — listen   CTRL — modifiers   Q/E — speed   TAB — play together   R — reset
 Рекорд:  => Best: 
-★ ИГРАЕМ ВДВОЁМ ★\nИгрок 2: A S D F      Игрок 1: J K L ;\nTAB — играть одному => ★ PLAYING TOGETHER ★\nPlayer 2: A S D F      Player 1: J K L ;\nTAB — play alone
-TAB — играть вдвоём на одной клавиатуре\n(A S D F против J K L ;) => TAB — play together on one keyboard\n(A S D F vs. J K L ;)
+★ ИГРАЕМ ВДВОЁМ ★\nИгрок 2: A S D F      Игрок 1: K L ; '\nTAB — играть одному => ★ PLAYING TOGETHER ★\nPlayer 2: A S D F      Player 1: K L ; '\nTAB — play alone
+TAB — играть вдвоём на одной клавиатуре\n(A S D F против K L ; ') => TAB — play together on one keyboard\n(A S D F vs. K L ; ')
 Скролл:  => Scroll: 
 Чарт не найден\n => Chart not found\n
 Звёзды:  => Stars: 
@@ -165,7 +165,7 @@ TAB — играть вдвоём на одной клавиатуре\n(A S D F
 Любая песня и любая сложность. Видно звёзды, NPS и ваш лучший результат.\n\nПрогресс игры:  => Any song, any difficulty. Shows stars, NPS and your best result.\n\nGame progress: 
 %\n100% = все песни пройдены на Hard или выше (точность любая). => %\n100% = every song cleared on Hard or higher (any accuracy).
 Вдвоём (2 игрока) => Together (2 players)
-Двое на одной клавиатуре, без настроек. Каждый играет 4 клавишами в ряд.\n\nИгрок 2 (слева, за противника): A S D F\nИгрок 1 (справа, за Люмена): J K L ;\n\nПолоска здоровья — перетягивание каната, в конце показывается победитель. Выбор песни — как в свободной игре. => Two players on one keyboard, no setup. Each plays 4 keys in a row.\n\nPlayer 2 (left, the opponent): A S D F\nPlayer 1 (right, Lumen): J K L ;\n\nThe health bar is a tug of war; the winner is shown at the end. Pick a song as in Freeplay.
+Двое на одной клавиатуре, без настроек. Каждый играет 4 клавишами в ряд.\n\nИгрок 2 (слева, за противника): A S D F\nИгрок 1 (справа, за Люмена): K L ; '\n\nПолоска здоровья — перетягивание каната, в конце показывается победитель. Выбор песни — как в свободной игре. => Two players on one keyboard, no setup. Each plays 4 keys in a row.\n\nPlayer 2 (left, the opponent): A S D F\nPlayer 1 (right, Lumen): K L ; '\n\nThe health bar is a tug of war; the winner is shown at the end. Pick a song as in Freeplay.
 ВЛЕВО/ВПРАВО — изменить скорость.\nСкорость одинаковая во всех песнях.\nENTER — сменить режим:\n• osu!mania 1–40 (как в osu!; больше = быстрее);\n• C-mod как в Etterna. => LEFT/RIGHT — change the speed.\nThe speed is the same in every song.\nENTER — switch mode:\n• osu!mania 1–40 (like osu!; higher = faster);\n• C-mod like Etterna.
 Играет песня — нажимайте в такт, и игра сама вычислит задержку вашего звука и клавиатуры. => A song plays — tap to the beat and the game measures the delay of your sound and keyboard.
 Настройки => Settings
