@@ -12,6 +12,7 @@ import substates.ResetScoreSubState;
 
 import flixel.math.FlxMath;
 import flixel.util.FlxDestroyUtil;
+import flixel.util.FlxGradient;
 
 import openfl.utils.Assets;
 
@@ -37,6 +38,11 @@ class FreeplayState extends MusicBeatState
 	var clearBadge:FlxText;
 	var progressText:FlxText;
 	var coopBG:FlxSprite;
+	var listTexts:Array<FlxText> = [];
+	var diffAura:FlxSprite;
+	var panelTop:FlxSprite;
+	var panelLeft:FlxSprite;
+	var diffColor:FlxColor = FlxColor.WHITE;
 	var coopText:FlxText;
 	static var statsCache:Map<String, Array<Float>> = [];
 	var scoreText:FlxText;
@@ -150,41 +156,76 @@ class FreeplayState extends MusicBeatState
 		}
 		WeekData.setDirectoryFromWeek();
 
-		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "", 32);
-		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
+		// Field of Hopes: own song list (pixel font, Cyrillic) instead of the Psych alphabet
+		var shadeL = FlxGradient.createGradientFlxSprite(780, FlxG.height, [0x99070418, 0x00070418], 1, 0);
+		insert(members.indexOf(grpSongs), shadeL);
+		for (i in 0...songs.length)
+		{
+			var t = new FlxText(0, 0, 0, prettyName(songs[i].songName), 24);
+			t.setFormat(MainMenuState.menuFont(), 24, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+			t.borderSize = 3;
+			t.visible = false;
+			insert(members.indexOf(grpSongs), t);
+			listTexts.push(t);
+			var icon = iconArray[i];
+			icon.sprTracker = null;
+			icon.scale.set(0.55, 0.55);
+			icon.updateHitbox();
+		}
 
-		scoreBG = new FlxSprite(scoreText.x - 6, 0).makeGraphic(1, 66, 0xFF000000);
-		scoreBG.alpha = 0.6;
+		// right info panel: translucent, thin coloured edges instead of black boxes
+		statsBG = new FlxSprite(790, 30).makeGraphic(470, 450, 0xFF120A26);
+		statsBG.alpha = 0.42;
+		add(statsBG);
+		panelTop = new FlxSprite(790, 30).makeGraphic(470, 3, FlxColor.WHITE);
+		add(panelTop);
+		panelLeft = new FlxSprite(790, 30).makeGraphic(3, 450, FlxColor.WHITE);
+		panelLeft.alpha = 0.6;
+		add(panelLeft);
+
+		diffAura = new FlxSprite(800, -6);
+		diffAura.frames = Paths.getSparrowAtlas('fohAura');
+		diffAura.animation.addByPrefix('burn', 'aura', 14, true);
+		diffAura.animation.play('burn');
+		diffAura.antialiasing = false;
+		diffAura.setGraphicSize(450, 110);
+		diffAura.updateHitbox();
+		diffAura.visible = false;
+		add(diffAura);
+
+		scoreText = new FlxText(810, 112, 430, "", 14);
+		scoreText.setFormat(MainMenuState.menuFont(), 14, 0xFFCFC6F2, CENTER, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+
+		scoreBG = new FlxSprite(0, 0).makeGraphic(1, 1, 0x00000000);
+		scoreBG.visible = false;
 		add(scoreBG);
 
-		diffText = new FlxText(scoreText.x, scoreText.y + 36, 0, "", 24);
-		diffText.font = scoreText.font;
+		diffText = new FlxText(790, 52, 470, "", 30);
+		diffText.setFormat(MainMenuState.menuFont(), 30, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+		diffText.borderSize = 4;
 		add(diffText);
 
 		add(scoreText);
 
-		statsBG = new FlxSprite(FlxG.width - 470, 72).makeGraphic(470, 190, 0xFF0B0614);
-		statsBG.alpha = 0.7;
-		add(statsBG);
-		statsText = new FlxText(FlxG.width - 456, 82, 442, '', 12);
-		statsText.setFormat(MainMenuState.menuFont(), 12, FlxColor.WHITE, LEFT);
+		statsText = new FlxText(812, 210, 440, '', 12);
+		statsText.setFormat(MainMenuState.menuFont(), 12, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
 		add(statsText);
 		for (i in 0...10)
 		{
-			var b = new FlxSprite(FlxG.width - 458 + i * 34, 166).loadGraphic(Paths.image('fohStar'));
+			var b = new FlxSprite(812 + i * 34, 150).loadGraphic(Paths.image('fohStar'));
 			b.antialiasing = false;
 			starBase.push(b);
 			add(b);
 		}
 		for (i in 0...10)
 		{
-			var t = new FlxSprite(FlxG.width - 458 + i * 34, 166).loadGraphic(Paths.image('fohStar'));
+			var t = new FlxSprite(812 + i * 34, 150).loadGraphic(Paths.image('fohStar'));
 			t.antialiasing = false;
 			t.visible = false;
 			starTop.push(t);
 			add(t);
 		}
-		starNum = new FlxText(FlxG.width - 112, 174, 104, '', 16);
+		starNum = new FlxText(FlxG.width - 112, 158, 104, '', 16);
 		starNum.setFormat(MainMenuState.menuFont(), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
 		add(starNum);
 		progressText = new FlxText(12, 8, 600, '', 16);
@@ -193,7 +234,7 @@ class FreeplayState extends MusicBeatState
 		add(progressText);
 		updateProgress();
 
-		clearBadge = new FlxText(FlxG.width - 458, 212, 440, '', 14);
+		clearBadge = new FlxText(812, 330, 440, '', 14);
 		clearBadge.setFormat(MainMenuState.menuFont(), 14, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
 		clearBadge.borderSize = 2;
 		add(clearBadge);
@@ -218,21 +259,22 @@ class FreeplayState extends MusicBeatState
 		curDifficulty = Math.round(Math.max(0, Difficulty.defaultList.indexOf(lastDifficultyName)));
 
 		bottomBG = new FlxSprite(0, FlxG.height - 26).makeGraphic(FlxG.width, 26, 0xFF000000);
-		bottomBG.alpha = 0.6;
+		bottomBG.alpha = 0;
 		add(bottomBG);
 
 		var leText:String = "ПРОБЕЛ — послушать   CTRL — модификаторы   Q/E — скорость   TAB — играть вдвоём   R — сброс";
 		bottomString = leText;
 		var size:Int = 10;
 		bottomText = new FlxText(bottomBG.x, bottomBG.y + 7, FlxG.width, leText, size);
-		bottomText.setFormat(MainMenuState.menuFont(), size, FlxColor.WHITE, CENTER);
+		bottomText.setFormat(MainMenuState.menuFont(), size, 0xFFCFC6F2, CENTER, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+		bottomText.borderSize = 2;
 		bottomText.scrollFactor.set();
 		add(bottomText);
 
-		coopBG = new FlxSprite(FlxG.width - 470, FlxG.height - 96).makeGraphic(470, 62, 0xFF0B0614);
-		coopBG.alpha = 0.8;
+		coopBG = new FlxSprite(790, 492).makeGraphic(470, 62, 0xFF120A26);
+		coopBG.alpha = 0.42;
 		add(coopBG);
-		coopText = new FlxText(FlxG.width - 460, FlxG.height - 90, 450, '', 12);
+		coopText = new FlxText(800, 498, 450, '', 12);
 		coopText.setFormat(MainMenuState.menuFont(), 12, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
 		add(coopText);
 		updateCoopBadge();
@@ -282,6 +324,20 @@ class FreeplayState extends MusicBeatState
 	override function update(elapsed:Float)
 	{
 		animateStars(elapsed);
+		if (diffAura != null && diffAura.visible)
+		{
+			var base = 110 / diffAura.frameHeight;
+			diffAura.scale.y = FlxMath.lerp(base, diffAura.scale.y, Math.exp(-elapsed * 6));
+			var tm = FlxG.game.ticks / 1000;
+			if (diffText.text.indexOf('OMEGA') > -1)
+			{
+				var c = FlxColor.interpolate(0xFF7DF9FF, 0xFFFF6FD8, 0.5 + 0.5 * Math.sin(tm * 3));
+				diffAura.color = c; diffText.color = c;
+			}
+			diffText.alpha = 0.88 + 0.12 * Math.sin(tm * 17) * Math.sin(tm * 5.3);
+			diffText.borderColor = FlxColor.interpolate(0xFF0B0614, diffAura.color, 0.35);
+		}
+		else if (diffText != null) { diffText.alpha = 1; diffText.borderColor = 0xFF0B0614; }
 		if(WeekData.weeksList.length < 1)
 			return;
 
@@ -308,7 +364,7 @@ class FreeplayState extends MusicBeatState
 
 		if (!player.playingMusic)
 		{
-			scoreText.text = Language.getPhrase('personal_best', 'PERSONAL BEST: {1} ({2}%)', [lerpScore, ratingSplit.join('.')]);
+			scoreText.text = 'Рекорд: ' + lerpScore + '   (' + ratingSplit.join('.') + '%)';
 			positionHighscore();
 			
 			if(songs.length > 1)
@@ -583,10 +639,26 @@ class FreeplayState extends MusicBeatState
 
 		lastDifficultyName = Difficulty.getString(curDifficulty, false);
 		var displayDiff:String = Difficulty.getString(curDifficulty);
+		var dname = displayDiff.toLowerCase() == 'omega' ? 'Ω OMEGA' : displayDiff.toUpperCase();
 		if (Difficulty.list.length > 1)
-			diffText.text = '< ' + displayDiff.toUpperCase() + ' >';
+			diffText.text = '<  ' + dname + '  >';
 		else
-			diffText.text = displayDiff.toUpperCase();
+			diffText.text = dname;
+		diffColor = diffStyle(displayDiff);
+		diffText.color = diffColor;
+		var hot = ['expert', 'insane', 'omega'].contains(displayDiff.toLowerCase());
+		if (diffAura != null)
+		{
+			diffAura.visible = hot;
+			diffAura.color = diffColor;
+			if (hot && change != 0) { diffAura.scale.y = diffAura.scale.y * 1.35; }
+		}
+		if (change != 0)
+		{
+			FlxTween.cancelTweensOf(diffText.scale);
+			diffText.scale.set(1.25, 1.25);
+			FlxTween.tween(diffText.scale, {x: 1, y: 1}, 0.25, {ease: FlxEase.backOut});
+		}
 
 		positionHighscore();
 		missingText.visible = false;
@@ -667,8 +739,7 @@ class FreeplayState extends MusicBeatState
 		}
 
 		var r = function(v:Float) return Math.round(v * 10) / 10;
-		var scroll:String = 'Скролл: ' + ScrollUtil.label() + '  Q/E'
-			+ '\nРежим: ' + (PlayState.coopMode ? '2 ИГРОКА' : '1 игрок') + '   TAB';
+		var scroll:String = 'Скролл: ' + ScrollUtil.label() + '   (Q / E)';
 		if (st[0] < 0)
 		{
 			statsText.text = 'Чарт не найден\n' + scroll;
@@ -740,7 +811,7 @@ class FreeplayState extends MusicBeatState
 			if (seen.contains(id)) continue;
 			seen.push(id);
 			var b:Null<Int> = best != null ? Reflect.field(best, id) : null;
-			var item = grpSongs.members[i];
+			var item:FlxSprite = (listTexts.length > i) ? cast listTexts[i] : cast grpSongs.members[i];
 			if (b == null) { item.color = FlxColor.WHITE; continue; }
 			if (b >= 2) { pts += 1; item.color = 0xFFFFE27A; }      // Hard+ : gold
 			else if (b >= 1) { pts += 0.5; item.color = 0xFF9CF7C4; } // Normal : green
@@ -788,6 +859,7 @@ class FreeplayState extends MusicBeatState
 			intendedColor = newColor;
 			FlxTween.cancelTweensOf(bg);
 			FlxTween.color(bg, 1, bg.color, intendedColor);
+			if (panelTop != null) { panelTop.color = FlxColor.interpolate(intendedColor, FlxColor.WHITE, 0.35); panelLeft.color = panelTop.color; }
 		}
 
 		for (num => item in grpSongs.members)
@@ -824,39 +896,59 @@ class FreeplayState extends MusicBeatState
 	inline private function _updateSongLastDifficulty()
 		songs[curSelected].lastDifficulty = Difficulty.getString(curDifficulty, false);
 
-	private function positionHighscore()
+	private function positionHighscore() {}
+
+	static var SONG_NAMES:Map<String, String> = [
+		'nows-your-chance' => "NOW'S YOUR CHANCE", 'big-shot' => 'BIG SHOT', 'vs-susie' => 'Vs. Susie', 'vs-lancer' => 'Vs. Lancer',
+		'the-last-dance' => 'THE LAST DANCE', 'field-of-hopes' => 'Field of Hopes', 'lightbreaker' => 'LIGHTBREAKER',
+		'my-castle-town' => 'My Castle Town', 'pandora-palace' => 'Pandora Palace', 'empty-town' => 'Empty Town', 'checker-dance' => 'Checker Dance'
+	];
+	static function prettyName(n:String):String
 	{
-		scoreText.x = FlxG.width - scoreText.width - 6;
-		scoreBG.scale.x = FlxG.width - scoreText.x + 6;
-		scoreBG.x = FlxG.width - (scoreBG.scale.x / 2);
-		diffText.x = Std.int(scoreBG.x + (scoreBG.width / 2));
-		diffText.x -= diffText.width / 2;
+		var id = Paths.formatToSongPath(n);
+		if (SONG_NAMES.exists(id)) return SONG_NAMES.get(id);
+		return [for (w in id.split('-')) w.length > 0 ? w.charAt(0).toUpperCase() + w.substr(1) : w].join(' ');
 	}
 
-	var _drawDistance:Int = 4;
-	var _lastVisibles:Array<Int> = [];
+	static function diffStyle(d:String):FlxColor
+	{
+		return switch (d.toLowerCase())
+		{
+			case 'easy': 0xFF7DF9B0;
+			case 'normal': 0xFFFFE27A;
+			case 'hard': 0xFFFFA24A;
+			case 'expert': 0xFFFF5A4A;
+			case 'insane': 0xFFC77DFF;
+			case 'omega': 0xFF7DF9FF;
+			default: FlxColor.WHITE;
+		}
+	}
+
 	public function updateTexts(elapsed:Float = 0.0)
 	{
 		lerpSelected = FlxMath.lerp(curSelected, lerpSelected, Math.exp(-elapsed * 9.6));
-		for (i in _lastVisibles)
+		for (i in 0...songs.length)
 		{
 			grpSongs.members[i].visible = grpSongs.members[i].active = false;
-			iconArray[i].visible = iconArray[i].active = false;
-		}
-		_lastVisibles = [];
-
-		var min:Int = Math.round(Math.max(0, Math.min(songs.length, lerpSelected - _drawDistance)));
-		var max:Int = Math.round(Math.max(0, Math.min(songs.length, lerpSelected + _drawDistance)));
-		for (i in min...max)
-		{
-			var item:Alphabet = grpSongs.members[i];
-			item.visible = item.active = true;
-			item.x = ((item.targetY - lerpSelected) * item.distancePerItem.x) + item.startPosition.x;
-			item.y = ((item.targetY - lerpSelected) * 1.3 * item.distancePerItem.y) + item.startPosition.y;
-
+			var t = listTexts[i];
 			var icon:HealthIcon = iconArray[i];
-			icon.visible = icon.active = true;
-			_lastVisibles.push(i);
+			var d:Float = i - lerpSelected;
+			var ad = Math.abs(d);
+			var vis = ad < 5.6;
+			t.visible = vis;
+			icon.visible = icon.active = vis;
+			if (!vis) continue;
+			var sel = i == curSelected;
+			var sc = sel ? 1.12 : Math.max(0.62, 0.86 - ad * 0.06);
+			t.scale.set(sc, sc);
+			t.origin.set(0, t.frameHeight / 2);
+			t.x = 150 + ad * ad * 9;
+			t.y = 334 + d * 74 - t.frameHeight / 2;
+			t.alpha = sel ? 1 : Math.max(0.12, 0.7 - ad * 0.13);
+			t.borderColor = sel ? FlxColor.interpolate(0xFF0B0614, intendedColor, 0.45) : 0xFF0B0614;
+			icon.x = t.x - 98;
+			icon.y = t.y + t.frameHeight / 2 - icon.height / 2;
+			icon.alpha = t.alpha;
 		}
 	}
 
