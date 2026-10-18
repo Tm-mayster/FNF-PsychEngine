@@ -251,7 +251,8 @@ class FohUpdater
 	{
 		try
 		{
-			Sys.command('cmd', ['/c', 'start', '""', '/D', gameDir(), Sys.programPath()]);
+			// non-blocking: the shell starts the new exe and returns immediately
+			new sys.io.Process('cmd /c start "" "' + Sys.programPath() + '"');
 		}
 		catch (e:Dynamic) {}
 		Sys.exit(0);
