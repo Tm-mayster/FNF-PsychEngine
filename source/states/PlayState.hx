@@ -5,6 +5,7 @@ import backend.StageData;
 import backend.WeekData;
 import backend.Song;
 import backend.Rating;
+import backend.InputFormatter;
 
 import flixel.FlxBasic;
 import flixel.FlxObject;
@@ -304,6 +305,16 @@ class PlayState extends MusicBeatState
 		instakillOnMiss = ClientPrefs.getGameplaySetting('instakill');
 		practiceMode = ClientPrefs.getGameplaySetting('practice');
 		cpuControlled = ClientPrefs.getGameplaySetting('botplay');
+		if (isStoryMode) coopMode = false;
+		Note.coopP2 = coopMode;
+		if (coopMode)
+		{
+			cpuControlled = false;
+			coopSavedMiddle = ClientPrefs.data.middleScroll;
+			coopSavedOppStrums = ClientPrefs.data.opponentStrums;
+			ClientPrefs.data.middleScroll = false;
+			ClientPrefs.data.opponentStrums = true;
+		}
 		guitarHeroSustains = ClientPrefs.data.guitarHeroSustains;
 
 		// var gameCam:FlxCamera = FlxG.camera;
@@ -970,6 +981,7 @@ class PlayState extends MusicBeatState
 			canPause = true;
 			generateStaticArrows(0);
 			generateStaticArrows(1);
+			showKeyHints();
 			for (i in 0...playerStrums.length) {
 				setOnScripts('defaultPlayerStrumX' + i, playerStrums.members[i].x);
 				setOnScripts('defaultPlayerStrumY' + i, playerStrums.members[i].y);
@@ -1146,6 +1158,15 @@ class PlayState extends MusicBeatState
 
 	public dynamic function updateScoreText()
 	{
+		if (coopMode)
+		{
+			if (combo > p1MaxCombo) p1MaxCombo = combo;
+			var a1 = totalPlayed > 0 ? CoolUtil.floorDecimal(ratingPercent * 100, 2) : 0;
+			var a2 = p2Played > 0 ? CoolUtil.floorDecimal(p2HitSum / p2Played * 100, 2) : 0;
+			scoreTxt.text = 'P2: ' + p2Score + ' | ' + a2 + '% | Miss ' + p2Misses
+				+ '        P1: ' + songScore + ' | ' + a1 + '% | Miss ' + songMisses;
+			return;
+		}
 		var str:String = Language.getPhrase('rating_$ratingName', ratingName);
 		if(totalPlayed != 0)
 		{
@@ -1827,6 +1848,8 @@ class PlayState extends MusicBeatState
 							{
 								if (daNote.mustPress && !cpuControlled && !daNote.ignoreNote && !endingSong && (daNote.tooLate || !daNote.wasGoodHit))
 									noteMiss(daNote);
+								else if (coopMode && !daNote.mustPress && !daNote.ignoreNote && !endingSong && !daNote.wasGoodHit)
+									p2Miss(daNote);
 
 								daNote.active = daNote.visible = false;
 								invalidateNote(daNote);
@@ -1975,6 +1998,11 @@ class PlayState extends MusicBeatState
 	public var isDead:Bool = false; //Don't mess with this on Lua!!!
 	public var gameOverTimer:FlxTimer;
 	function doDeathCheck(?skipHealthCheck:Bool = false) {
+		if (coopMode)
+		{
+			if (health < 0.05) health = 0.05;
+			return false;
+		}
 		if (((skipHealthCheck && instakillOnMiss) || health <= 0) && !practiceMode && !isDead && gameOverTimer == null)
 		{
 			var ret:Dynamic = callOnScripts('onGameOver', null, true);
@@ -2461,6 +2489,14 @@ class PlayState extends MusicBeatState
 
 	public function endSong()
 	{
+		if (coopMode && !fcCelebrated)
+		{
+			fcCelebrated = true;
+			canPause = false;
+			showCoopResults();
+			new FlxTimer().start(5, function(_) { endSong(); });
+			return true;
+		}
 		if (!fcCelebrated)
 		{
 			fcCelebrated = true;
@@ -2469,8 +2505,8 @@ class PlayState extends MusicBeatState
 			{
 				canPause = false;
 				showFullComboCelebration();
-				new FlxTimer().start(3, function(_) endSong());
-				return;
+				new FlxTimer().start(3, function(_) { endSong(); });
+				return true;
 			}
 		}
 		applyAutoOffset();
@@ -2506,8 +2542,11 @@ class PlayState extends MusicBeatState
 
 		#if ACHIEVEMENTS_ALLOWED
 		var weekNoMiss:String = WeekData.getWeekFileName() + '_nomiss';
-		checkForAchievement(['ur_bad', 'ur_good', 'two_keys']);
-		checkFohAchievements();
+		if (!coopMode)
+		{
+			checkForAchievement(['ur_bad', 'ur_good', 'two_keys']);
+			checkFohAchievements();
+		}
 		#end
 
 		var ret:Dynamic = callOnScripts('onEndSong', null, true);
@@ -2516,7 +2555,7 @@ class PlayState extends MusicBeatState
 			#if !switch
 			var percent:Float = ratingPercent;
 			if(Math.isNaN(percent)) percent = 0;
-			Highscore.saveScore(Song.loadedSongName, songScore, storyDifficulty, percent);
+			if (!coopMode) Highscore.saveScore(Song.loadedSongName, songScore, storyDifficulty, percent);
 			#end
 			playbackRate = 1;
 
@@ -2630,7 +2669,7 @@ class PlayState extends MusicBeatState
 
 	function applyAutoOffset()
 	{
-		if (!ClientPrefs.data.autoOffset || cpuControlled || playbackRate != 1 || hitErrors.length < 40) return;
+		if (!ClientPrefs.data.autoOffset || coopMode || cpuControlled || playbackRate != 1 || hitErrors.length < 40) return;
 		var s = hitErrors.copy();
 		s.sort(function(a, b) return a < b ? -1 : (a > b ? 1 : 0));
 		var med:Float = s[s.length >> 1];
@@ -2643,6 +2682,203 @@ class PlayState extends MusicBeatState
 		ClientPrefs.saveSettings();
 		lastOffsetMessage = 'Вы нажимали ' + (med > 0 ? 'позже' : 'раньше') + ' на ' + Math.round(Math.abs(med)) + ' мс.\nЗадержка подстроена: ' + old + ' → ' + ClientPrefs.data.noteOffset + ' мс';
 	}
+
+	// ===================== Field of Hopes: local co-op (two players, one keyboard) =====================
+	public static var coopMode:Bool = false;
+	/** right player (Lumen): arrow keys */
+	public static var COOP_P1:Array<FlxKey> = [FlxKey.LEFT, FlxKey.DOWN, FlxKey.UP, FlxKey.RIGHT];
+	/** left player (opponent): Z X C V */
+	public static var COOP_P2:Array<FlxKey> = [FlxKey.Z, FlxKey.X, FlxKey.C, FlxKey.V];
+	var coopSavedMiddle:Bool = false;
+	var coopSavedOppStrums:Bool = true;
+	public var p2Score:Int = 0;
+	public var p2Misses:Int = 0;
+	public var p2Played:Int = 0;
+	public var p2HitSum:Float = 0;
+	public var p2Combo:Int = 0;
+	public var p2MaxCombo:Int = 0;
+	public var p1MaxCombo:Int = 0;
+
+	function p2KeyPressed(key:Int)
+	{
+		if (paused || inCutscene || key < 0 || key > 3 || !generatedMusic || endingSong || !startedCountdown) return;
+		var lastTime:Float = Conductor.songPosition;
+		if (Conductor.songPosition >= 0) Conductor.songPosition = FlxG.sound.music.time + Conductor.offset;
+
+		var hits:Array<Note> = notes.members.filter(function(n:Note):Bool {
+			return n != null && n.alive && !n.mustPress && !n.ignoreNote && n.canBeHit && !n.tooLate && !n.wasGoodHit
+				&& !n.isSustainNote && n.noteData == key;
+		});
+		hits.sort(sortHitNotes);
+		if (hits.length > 0) p2NoteHit(hits[0]);
+		Conductor.songPosition = lastTime;
+
+		var spr:StrumNote = opponentStrums.members[key];
+		if (spr != null && spr.animation.curAnim.name != 'confirm')
+		{
+			spr.playAnim('pressed');
+			spr.resetAnim = 0;
+		}
+	}
+
+	function p2KeyReleased(key:Int)
+	{
+		if (key < 0 || key > 3) return;
+		var spr:StrumNote = opponentStrums.members[key];
+		if (spr != null)
+		{
+			spr.playAnim('static');
+			spr.resetAnim = 0;
+		}
+	}
+
+	function p2HoldCheck()
+	{
+		if (!startedCountdown || inCutscene || !generatedMusic) return;
+		for (n in notes)
+		{
+			if (n == null || n.mustPress || !n.isSustainNote || n.ignoreNote || n.wasGoodHit || n.tooLate || !n.canBeHit) continue;
+			if (n.prevNote != null && !n.prevNote.wasGoodHit) continue;
+			if (FlxG.keys.checkStatus(COOP_P2[n.noteData], PRESSED)) p2NoteHit(n);
+		}
+	}
+
+	function p2NoteHit(note:Note)
+	{
+		note.wasGoodHit = true;
+		if (!note.isSustainNote)
+		{
+			var diff:Float = Math.abs(note.strumTime - Conductor.songPosition + ClientPrefs.data.ratingOffset);
+			var r:Rating = Conductor.judgeNote(ratingsData, diff / playbackRate);
+			p2Played++;
+			p2HitSum += r.ratingMod;
+			p2Score += r.score;
+			p2Combo++;
+			if (p2Combo > p2MaxCombo) p2MaxCombo = p2Combo;
+		}
+		// tug of war: player 2 pulls the health bar to their side
+		health -= note.hitHealth * healthGain;
+		if (health < 0.05) health = 0.05;
+		if (opponentVocals.length > 0) opponentVocals.volume = 1;
+		opponentNoteHit(note); // animations, strum glow (removes the head note)
+		var spr:StrumNote = opponentStrums.members[note.noteData];
+		if (spr != null) { spr.playAnim('confirm', true); spr.resetAnim = 0; }
+		updateScore(false, false);
+	}
+
+	function p2Miss(note:Note)
+	{
+		if (note.isSustainNote) { health += note.missHealth * 0.25 * healthLoss; return; }
+		p2Misses++;
+		p2Played++;
+		p2Combo = 0;
+		p2Score -= 10;
+		health += note.missHealth * healthLoss;
+		if (health > 2) health = 2;
+		if (opponentVocals.length > 0) opponentVocals.volume = 0;
+		var anim = singAnimations[Std.int(Math.abs(Math.min(singAnimations.length - 1, note.noteData)))] + 'miss';
+		if (dad != null && dad.hasAnimation(anim)) dad.playAnim(anim, true);
+		updateScore(true, false);
+	}
+
+	/** shows which keys play which lane, during the countdown */
+	function showKeyHints()
+	{
+		var font = states.MainMenuState.menuFont();
+		var hints:Array<FlxText> = [];
+		var down = ClientPrefs.data.downScroll;
+		function addHint(strum:StrumNote, label:String, col:FlxColor)
+		{
+			var t = new FlxText(strum.x - 20, down ? strum.y - 34 : strum.y + strum.height + 6, strum.width + 40, label, 14);
+			t.setFormat(font, 14, col, CENTER, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+			t.borderSize = 3;
+			t.cameras = [camHUD];
+			add(t);
+			hints.push(t);
+		}
+		function header(group:FlxTypedGroup<StrumNote>, label:String, col:FlxColor)
+		{
+			if (group.length < 4) return;
+			var x0 = group.members[0].x, x1 = group.members[3].x + group.members[3].width;
+			var t = new FlxText(x0, down ? group.members[0].y - 64 : group.members[0].y + group.members[0].height + 34, x1 - x0, label, 16);
+			t.setFormat(font, 16, col, CENTER, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+			t.borderSize = 3;
+			t.cameras = [camHUD];
+			add(t);
+			hints.push(t);
+		}
+		for (i in 0...playerStrums.length)
+		{
+			var label:String;
+			if (coopMode) label = InputFormatter.getKeyName(COOP_P1[i]);
+			else
+			{
+				var names:Array<String> = [];
+				var binds:Array<FlxKey> = Controls.instance.keyboardBinds[keysArray[i]];
+				if (binds != null) for (b in binds) if (b != NONE && names.length < 2) names.push(InputFormatter.getKeyName(b));
+				label = names.join('\n');
+			}
+			addHint(playerStrums.members[i], label, 0xFFFFE27A);
+		}
+		if (coopMode)
+		{
+			for (i in 0...opponentStrums.length) addHint(opponentStrums.members[i], InputFormatter.getKeyName(COOP_P2[i]), 0xFF7DF9FF);
+			header(opponentStrums, 'ИГРОК 2', 0xFF7DF9FF);
+			header(playerStrums, 'ИГРОК 1', 0xFFFFE27A);
+		}
+		var hold:Float = Conductor.crochet / 1000 * 5 / playbackRate + 2.5;
+		for (t in hints)
+		{
+			t.alpha = 0;
+			FlxTween.tween(t, {alpha: 1}, 0.4, {startDelay: 0.3});
+			FlxTween.tween(t, {alpha: 0}, 0.8, {startDelay: hold, onComplete: function(_) { remove(t); t.destroy(); }});
+		}
+	}
+
+	function showCoopResults()
+	{
+		var font = states.MainMenuState.menuFont();
+		var a1 = totalPlayed > 0 ? CoolUtil.floorDecimal(ratingPercent * 100, 2) : 0;
+		var a2 = p2Played > 0 ? CoolUtil.floorDecimal(p2HitSum / p2Played * 100, 2) : 0;
+		var winner = songScore == p2Score ? 'НИЧЬЯ!' : (songScore > p2Score ? 'ПОБЕДИЛ ИГРОК 1!' : 'ПОБЕДИЛ ИГРОК 2!');
+		var col:FlxColor = songScore == p2Score ? FlxColor.WHITE : (songScore > p2Score ? 0xFFFFE27A : 0xFF7DF9FF);
+
+		var shade = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF07041A);
+		shade.cameras = [camOther]; shade.alpha = 0; add(shade);
+		FlxTween.tween(shade, {alpha: 0.7}, 0.3);
+
+		var title = new FlxText(0, 150, FlxG.width, winner, 44);
+		title.setFormat(font, 44, col, CENTER, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+		title.borderSize = 6; title.cameras = [camOther];
+		title.scale.set(0.2, 0.2); title.alpha = 0;
+		add(title);
+		FlxTween.tween(title, {alpha: 1}, 0.25);
+		FlxTween.tween(title.scale, {x: 1, y: 1}, 0.6, {ease: FlxEase.elasticOut});
+
+		function card(x:Float, head:String, score:Int, acc:Float, miss:Int, combo:Int, c:FlxColor, win:Bool)
+		{
+			var t = new FlxText(x, 270, 520, head + (win ? '  ★' : '') + '\n\nСчёт: ' + score + '\nТочность: ' + acc + '%\nПромахи: ' + miss + '\nМакс. комбо: ' + combo, 18);
+			t.setFormat(font, 18, c, CENTER, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+			t.borderSize = 3; t.cameras = [camOther]; t.alpha = 0;
+			add(t);
+			FlxTween.tween(t, {alpha: 1}, 0.4, {startDelay: 0.4});
+		}
+		card(80, 'ИГРОК 2 (Z X C V)', p2Score, a2, p2Misses, p2MaxCombo, 0xFF7DF9FF, p2Score > songScore);
+		card(FlxG.width - 600, 'ИГРОК 1 (стрелки)', songScore, a1, songMisses, p1MaxCombo, 0xFFFFE27A, songScore > p2Score);
+
+		for (i in 0...30)
+		{
+			var sp = new FlxSprite(FlxG.width / 2, 180).makeGraphic(8, 8, i % 3 == 0 ? FlxColor.WHITE : col);
+			sp.cameras = [camOther];
+			add(sp);
+			var a = i / 30 * Math.PI * 2;
+			var d = 240 + FlxG.random.float(0, 240);
+			FlxTween.tween(sp, {x: sp.x + Math.cos(a) * d, y: sp.y + Math.sin(a) * d * 0.6, alpha: 0}, 1.4 + FlxG.random.float(0, 0.6), {ease: FlxEase.quadOut});
+		}
+		if (ClientPrefs.data.flashing) camOther.flash(FlxColor.WHITE, 0.4);
+		FlxG.sound.play(Paths.sound('confirmMenu'), 0.9);
+	}
+	// ====================================================================================================
 
 	private function popUpScore(note:Note = null):Void
 	{
@@ -2792,6 +3028,15 @@ class PlayState extends MusicBeatState
 	{
 
 		var eventKey:FlxKey = event.keyCode;
+		if (coopMode)
+		{
+			if (!FlxG.keys.checkStatus(eventKey, JUST_PRESSED)) return;
+			var k1:Int = COOP_P1.indexOf(eventKey);
+			var k2:Int = COOP_P2.indexOf(eventKey);
+			if (k1 > -1) keyPressed(k1);
+			if (k2 > -1) p2KeyPressed(k2);
+			return;
+		}
 		var key:Int = getKeyFromEvent(keysArray, eventKey);
 
 		if (!controls.controllerMode)
@@ -2879,6 +3124,14 @@ class PlayState extends MusicBeatState
 	private function onKeyRelease(event:KeyboardEvent):Void
 	{
 		var eventKey:FlxKey = event.keyCode;
+		if (coopMode)
+		{
+			var k1:Int = COOP_P1.indexOf(eventKey);
+			var k2:Int = COOP_P2.indexOf(eventKey);
+			if (k1 > -1) keyReleased(k1);
+			if (k2 > -1) p2KeyReleased(k2);
+			return;
+		}
 		var key:Int = getKeyFromEvent(keysArray, eventKey);
 		if(!controls.controllerMode && key > -1) keyReleased(key);
 	}
@@ -2921,12 +3174,21 @@ class PlayState extends MusicBeatState
 		var holdArray:Array<Bool> = [];
 		var pressArray:Array<Bool> = [];
 		var releaseArray:Array<Bool> = [];
-		for (key in keysArray)
+		for (i in 0...keysArray.length)
 		{
+			if (coopMode)
+			{
+				holdArray.push(FlxG.keys.checkStatus(COOP_P1[i], PRESSED));
+				pressArray.push(false);
+				releaseArray.push(false);
+				continue;
+			}
+			var key = keysArray[i];
 			holdArray.push(controls.pressed(key));
 			pressArray.push(controls.justPressed(key));
 			releaseArray.push(controls.justReleased(key));
 		}
+		if (coopMode) p2HoldCheck();
 
 		// TO DO: Find a better way to handle controller inputs, this should work for now
 		if(controls.controllerMode && pressArray.contains(true))
@@ -3244,6 +3506,12 @@ class PlayState extends MusicBeatState
 	}
 
 	override function destroy() {
+		if (coopMode)
+		{
+			ClientPrefs.data.middleScroll = coopSavedMiddle;
+			ClientPrefs.data.opponentStrums = coopSavedOppStrums;
+		}
+		Note.coopP2 = false;
 		if (psychlua.CustomSubstate.instance != null)
 		{
 			closeSubState();

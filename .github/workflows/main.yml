@@ -46,7 +46,7 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          haxelib run lime build Project.xml linux --app-version="4.0.0-${{ github.run_id}}" -D officialBuild 2>&1 | tee build.log || { grep -E "\.hx:[0-9]+|[Ee]rror" build.log | head -25 | sed "s/^/::error::/"; exit 1; }
+          haxelib run lime build Project.xml linux --app-version="4.0.0-${{ github.run_id}}" -D officialBuild 2>&1 | tee build.log || { grep -A2 -E "ERROR" build.log | head -40 | sed "s/^/::error::/"; exit 1; }
       - name: Publish Artifact
         uses: actions/upload-artifact@v4.3.4
         with:
@@ -78,7 +78,7 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          haxelib run lime build windows --app-version="4.0.0-${{ github.run_id}}"  -D officialBuild 2>&1 | tee build.log || { grep -E "\.hx:[0-9]+|[Ee]rror" build.log | head -25 | sed "s/^/::error::/"; exit 1; }
+          haxelib run lime build windows --app-version="4.0.0-${{ github.run_id}}"  -D officialBuild 2>&1 | tee build.log || { grep -A2 -E "ERROR" build.log | head -40 | sed "s/^/::error::/"; exit 1; }
       - name: Publish Artifact
         uses: actions/upload-artifact@v4.3.4
         with:

@@ -55,6 +55,8 @@ class Note extends FlxSprite
 	public var noteData:Int = 0;
 
 	public var mustPress:Bool = false;
+	/** Field of Hopes co-op: opponent notes are played by player 2 */
+	public static var coopP2:Bool = false;
 	public var canBeHit:Bool = false;
 	public var tooLate:Bool = false;
 
@@ -471,7 +473,7 @@ class Note extends FlxSprite
 	{
 		super.update(elapsed);
 
-		if (mustPress)
+		if (mustPress || (coopP2 && !ignoreNote && !inEditor))
 		{
 			canBeHit = (strumTime > Conductor.songPosition - (Conductor.safeZoneOffset * lateHitMult) &&
 						strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * earlyHitMult));

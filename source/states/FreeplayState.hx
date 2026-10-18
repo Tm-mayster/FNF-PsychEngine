@@ -354,6 +354,13 @@ class FreeplayState extends MusicBeatState
 				_updateSongLastDifficulty();
 			}
 
+			if (FlxG.keys.justPressed.TAB)
+			{
+				PlayState.coopMode = !PlayState.coopMode;
+				FlxG.sound.play(Paths.sound('scrollMenu'), 0.6);
+				updateStats();
+			}
+
 			if (FlxG.keys.justPressed.Q || FlxG.keys.justPressed.E)
 			{
 				ScrollUtil.change(FlxG.keys.justPressed.E ? 1 : -1);
@@ -630,7 +637,8 @@ class FreeplayState extends MusicBeatState
 		}
 
 		var r = function(v:Float) return Math.round(v * 10) / 10;
-		var scroll:String = 'Скролл: ' + ScrollUtil.label() + '  Q/E';
+		var scroll:String = 'Скролл: ' + ScrollUtil.label() + '  Q/E'
+			+ '\nРежим: ' + (PlayState.coopMode ? '2 ИГРОКА' : '1 игрок') + '   TAB';
 		if (st[0] < 0)
 		{
 			statsText.text = 'Чарт не найден\n' + scroll;

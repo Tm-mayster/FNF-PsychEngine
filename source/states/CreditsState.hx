@@ -4,6 +4,9 @@ import objects.AttachedSprite;
 
 class CreditsState extends MusicBeatState
 {
+	/** donation link of the mod author */
+	public static inline var MOD_DONATE_URL:String = 'https://github.com/Tm-mayster';
+
 	var curSelected:Int = -1;
 
 	private var grpOptions:FlxTypedGroup<Alphabet>;
@@ -41,7 +44,13 @@ class CreditsState extends MusicBeatState
 		var defaultList:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
 			[""],
 			["Engine"],
-			["Psych Engine", "", "Psych Engine by Shadow Mario, Riveren & contributors;\nFriday Night Funkin' by the Funkin' Crew. Press ENTER to open.", "https://github.com/ShadowMario/FNF-PsychEngine", "444444"]
+			["Psych Engine", "", "Psych Engine by Shadow Mario, Riveren & contributors;\nFriday Night Funkin' by the Funkin' Crew. Press ENTER to open.", "https://github.com/ShadowMario/FNF-PsychEngine", "444444"],
+			[""],
+			["Support"],
+			["Donate TM Mayster", "", "Поддержать автора мода Field of Hopes (TM Mayster). ENTER — открыть ссылку.", MOD_DONATE_URL, "FFAA3C"],
+			["Donate Funkin Crew", "", "Поддержать создателей Friday Night Funkin' (официальная страница игры на itch.io с донатом). ENTER — открыть.", "https://ninja-muffin24.itch.io/funkin", "C77DFF"],
+			["Support Psych Engine", "", "Поддержать разработчиков Psych Engine (Shadow Mario, Riveren и др.): страница проекта — поставьте звезду и следите за обновлениями. ENTER — открыть.", "https://github.com/ShadowMario/FNF-PsychEngine", "444444"],
+			["Buy DELTARUNE", "", "Поддержать Toby Fox — купить DELTARUNE, музыку которой мы используем. ENTER — открыть.", "https://deltarune.com", "7A5CC4"]
 		];
 		
 		for(i in defaultList)
