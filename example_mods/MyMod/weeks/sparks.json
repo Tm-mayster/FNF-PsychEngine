@@ -1,0 +1,41 @@
+{
+ "songs": [
+  [
+   "ember",
+   "lumen",
+   [
+    255,
+    170,
+    60
+   ]
+  ],
+  [
+   "wick",
+   "lumen",
+   [
+    255,
+    140,
+    70
+   ]
+  ]
+ ],
+ "storyName": "First Sparks",
+ "weekName": "First Sparks",
+ "freeplayColor": [
+  255,
+  170,
+  60
+ ],
+ "weekCharacters": [
+  "quill",
+  "lumen",
+  ""
+ ],
+ "weekBackground": "glade",
+ "weekBefore": "",
+ "startUnlocked": true,
+ "hiddenUntilUnlocked": false,
+ "hideStoryMode": false,
+ "hideFreeplay": false,
+ "difficulties": "Easy, Normal, Hard, Expert, Insane"
+}

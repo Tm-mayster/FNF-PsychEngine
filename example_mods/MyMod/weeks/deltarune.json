@@ -8,14 +8,23 @@
     92,
     214
    ]
+  ],
+  [
+   "pandora-palace",
+   "quill",
+   [
+    200,
+    80,
+    160
+   ]
   ]
  ],
- "storyName": "Field of Hopes",
- "weekName": "Starlit Glade",
+ "storyName": "Deltarune (Bonus)",
+ "weekName": "Bonus",
  "freeplayColor": [
-  122,
-  92,
-  214
+  80,
+  60,
+  200
  ],
  "weekCharacters": [
   "quill",
@@ -23,7 +32,7 @@
   ""
  ],
  "weekBackground": "glade",
- "weekBefore": "tutorial",
+ "weekBefore": "",
  "startUnlocked": true,
  "hiddenUntilUnlocked": false,
  "hideStoryMode": false,

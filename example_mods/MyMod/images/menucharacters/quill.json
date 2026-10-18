@@ -1,10 +1,10 @@
 {
  "image": "menu_quill",
  "position": [
-  60,
-  30
+  -40,
+  -60
  ],
- "scale": 3.2,
+ "scale": 1,
  "idle_anim": "quill idle",
  "confirm_anim": "quill confirm",
  "flipX": false,

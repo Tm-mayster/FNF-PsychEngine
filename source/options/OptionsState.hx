@@ -3,102 +3,313 @@ package options;
 import states.MainMenuState;
 import backend.StageData;
 
+/**
+ * Field of Hopes — settings screen.
+ * One scrollable list grouped by category, in Russian, styled like the main menu.
+ * LEFT/RIGHT change a value, ENTER toggles or opens, ESC goes back.
+ */
+typedef FohSetting = {
+	var kind:String;      // 'header' | 'bool' | 'num' | 'list' | 'open' | 'scroll' | 'scrolltype'
+	var label:String;
+	@:optional var desc:String;
+	@:optional var field:String;      // ClientPrefs.data field
+	@:optional var min:Float;
+	@:optional var max:Float;
+	@:optional var step:Float;
+	@:optional var decimals:Int;
+	@:optional var suffix:String;
+	@:optional var values:Array<String>;
+	@:optional var names:Array<String>;
+	@:optional var target:String;     // for 'open'
+	@:optional var after:Void->Void;
+}
+
 class OptionsState extends MusicBeatState
 {
-	var options:Array<String> = [
-		'Note Colors',
-		'Controls',
-		'Adjust Delay and Combo',
-		'Graphics',
-		'Visuals',
-		'Gameplay'
-		#if TRANSLATIONS_ALLOWED , 'Language' #end
-	];
-	private var grpOptions:FlxTypedGroup<Alphabet>;
-	private static var curSelected:Int = 0;
 	public static var menuBG:FlxSprite;
 	public static var onPlayState:Bool = false;
+	static var curSelected:Int = 1;
 
-	function openSelectedSubstate(label:String) {
-		switch(label)
-		{
-			case 'Note Colors':
-				openSubState(new options.NotesColorSubState());
-			case 'Controls':
-				openSubState(new options.ControlsSubState());
-			case 'Graphics':
-				openSubState(new options.GraphicsSettingsSubState());
-			case 'Visuals':
-				openSubState(new options.VisualsSettingsSubState());
-			case 'Gameplay':
-				openSubState(new options.GameplaySettingsSubState());
-			case 'Adjust Delay and Combo':
-				MusicBeatState.switchState(new options.NoteOffsetState());
-			case 'Language':
-				openSubState(new options.LanguageSubState());
-		}
+	var items:Array<FohSetting> = [];
+	var rows:Array<FlxText> = [];
+	var vals:Array<FlxText> = [];
+	var listGroup:FlxSpriteGroup;
+	var descText:FlxText;
+	var cursor:FlxText;
+	var holdTime:Float = 0;
+	var listTop:Float = 140;
+	var rowH:Float = 40;
+	var visibleRows:Int = 11;
+	var scrollTop:Int = 0;
+
+	function font():String
+		return MainMenuState.menuFont();
+
+	function build()
+	{
+		items = [
+			{kind: 'header', label: 'ИГРА'},
+			{kind: 'scroll', label: 'Скорость скролла', desc: 'Как быстро летят ноты. В режиме «множитель» умножается на скорость песни.'},
+			{kind: 'scrolltype', label: 'Режим скролла', desc: 'Множитель: у каждой песни своя скорость.\nПостоянная: одинаковая во всех песнях.'},
+			{kind: 'bool', label: 'Ноты сверху вниз', field: 'downScroll', desc: 'Стрелки внизу экрана, ноты падают сверху.'},
+			{kind: 'bool', label: 'Стрелки по центру', field: 'middleScroll', desc: 'Ваши стрелки посередине экрана.'},
+			{kind: 'bool', label: 'Стрелки противника', field: 'opponentStrums', desc: 'Показывать ноты противника.'},
+			{kind: 'bool', label: 'Свободные нажатия', field: 'ghostTapping', desc: 'Нажатие без ноты не считается промахом.'},
+			{kind: 'bool', label: 'Отключить сброс (R)', field: 'noReset', desc: 'Клавиша сброса не перезапускает песню.'},
+			{kind: 'num', label: 'Громкость щелчка', field: 'hitsoundVolume', min: 0, max: 1, step: 0.1, decimals: 1, desc: 'Звук при попадании по ноте. 0 — выключен.',
+				after: function() { FlxG.sound.play(Paths.sound('hitsound'), ClientPrefs.data.hitsoundVolume); }},
+			{kind: 'num', label: 'Окно «Sick!»', field: 'sickWindow', min: 15, max: 45, step: 1, decimals: 0, suffix: ' мс', desc: 'Насколько точно нужно попасть для лучшей оценки. Меньше — строже.'},
+			{kind: 'num', label: 'Окно «Good»', field: 'goodWindow', min: 15, max: 90, step: 1, decimals: 0, suffix: ' мс', desc: 'Окно для оценки «Good».'},
+			{kind: 'num', label: 'Окно «Bad»', field: 'badWindow', min: 15, max: 135, step: 1, decimals: 0, suffix: ' мс', desc: 'Окно для оценки «Bad».'},
+			{kind: 'num', label: 'Запас кадров', field: 'safeFrames', min: 2, max: 10, step: 0.1, decimals: 1, desc: 'Сколько кадров можно нажать раньше или позже ноты.'},
+
+			{kind: 'header', label: 'ЗВУК И ЗАДЕРЖКА'},
+			{kind: 'open', label: 'Калибровка задержки', target: 'offset', desc: 'Подогнать задержку звука и ввода в такт музыке.'},
+			{kind: 'num', label: 'Задержка нот', field: 'noteOffset', min: -500, max: 500, step: 1, decimals: 0, suffix: ' мс', desc: 'Сдвиг всех нот. Плюс — ноты позже, минус — раньше.'},
+			{kind: 'bool', label: 'Пауза при сворачивании', field: 'autoPause', desc: 'Игра останавливается, когда окно не активно.',
+				after: function() { FlxG.autoPause = ClientPrefs.data.autoPause; }},
+
+			{kind: 'header', label: 'УПРАВЛЕНИЕ'},
+			{kind: 'open', label: 'Клавиши', target: 'controls', desc: 'Назначить клавиши. Работают и при русской раскладке: , . ; [ ] и буквы — по месту на клавиатуре.'},
+			{kind: 'open', label: 'Цвета нот', target: 'colors', desc: 'Настроить цвета стрелок.'},
+
+			{kind: 'header', label: 'ЭКРАН'},
+			{kind: 'bool', label: 'Счётчик FPS', field: 'showFPS', desc: 'Показывать частоту кадров в углу.',
+				after: function() { if (Main.fpsVar != null) Main.fpsVar.visible = ClientPrefs.data.showFPS; }},
+			{kind: 'num', label: 'Частота кадров', field: 'framerate', min: 60, max: 240, step: 1, decimals: 0, desc: 'Ограничение FPS. Выше — плавнее, но больше нагрузка.',
+				after: function() {
+					if (ClientPrefs.data.framerate > FlxG.drawFramerate) { FlxG.updateFramerate = ClientPrefs.data.framerate; FlxG.drawFramerate = ClientPrefs.data.framerate; }
+					else { FlxG.drawFramerate = ClientPrefs.data.framerate; FlxG.updateFramerate = ClientPrefs.data.framerate; }
+				}},
+			{kind: 'bool', label: 'Вспышки', field: 'flashing', desc: 'Мигающие эффекты. Выключите, если они мешают.'},
+			{kind: 'bool', label: 'Приближение камеры', field: 'camZooms', desc: 'Камера пульсирует в такт.'},
+			{kind: 'bool', label: 'Скрыть интерфейс', field: 'hideHud', desc: 'Убрать полоску здоровья, счёт и прочее.'},
+			{kind: 'list', label: 'Таймер песни', field: 'timeBarType', values: ['Time Left', 'Time Elapsed', 'Song Name', 'Disabled'],
+				names: ['Осталось', 'Прошло', 'Название', 'Выключен'], desc: 'Что показывать на полоске времени.'},
+			{kind: 'num', label: 'Прозрачность здоровья', field: 'healthBarAlpha', min: 0, max: 1, step: 0.1, decimals: 1, desc: 'Видимость полоски здоровья.'},
+			{kind: 'num', label: 'Брызги нот', field: 'splashAlpha', min: 0, max: 1, step: 0.1, decimals: 1, desc: 'Яркость эффекта при точном попадании. 0 — выключены.'},
+			{kind: 'bool', label: 'Счёт пульсирует', field: 'scoreZoom', desc: 'Текст счёта увеличивается при попадании.'},
+			{kind: 'bool', label: 'Комбо стопкой', field: 'comboStacking', desc: 'Оценки складываются друг на друга.'},
+			{kind: 'bool', label: 'Низкое качество', field: 'lowQuality', desc: 'Меньше деталей фона, быстрее на слабых ПК.'},
+			{kind: 'bool', label: 'Шейдеры', field: 'shaders', desc: 'Визуальные эффекты. Выключите на слабых ПК.'},
+			{kind: 'bool', label: 'Сглаживание', field: 'antialiasing', desc: 'Сглаживание обычной графики (пиксель-арт мода не размывается).'},
+		];
 	}
-
-	var selectorLeft:Alphabet;
-	var selectorRight:Alphabet;
 
 	override function create()
 	{
 		#if DISCORD_ALLOWED
 		DiscordClient.changePresence("Options Menu", null);
 		#end
+		build();
 
-		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		bg.antialiasing = ClientPrefs.data.antialiasing;
-		bg.color = 0xFFea71fd;
+		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuBG'));
+		bg.antialiasing = false;
+		bg.setGraphicSize(FlxG.width + 8);
 		bg.updateHitbox();
-
 		bg.screenCenter();
 		add(bg);
+		menuBG = bg;
 
-		grpOptions = new FlxTypedGroup<Alphabet>();
-		add(grpOptions);
+		var shade = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF07041A);
+		shade.alpha = 0.45;
+		add(shade);
 
-		for (num => option in options)
+		var listBG = new FlxSprite(40, 120).makeGraphic(760, 470, 0xFF0B0614);
+		listBG.alpha = 0.78;
+		add(listBG);
+		var descBG = new FlxSprite(820, 120).makeGraphic(420, 470, 0xFF0B0614);
+		descBG.alpha = 0.78;
+		add(descBG);
+
+		var title = new FlxText(40, 36, 0, 'НАСТРОЙКИ', 32);
+		title.setFormat(font(), 32, FlxColor.WHITE, LEFT, FlxTextBorderStyle.SHADOW, 0xFF7A5CC4);
+		title.borderSize = 4;
+		add(title);
+
+		listGroup = new FlxSpriteGroup();
+		add(listGroup);
+		for (i in 0...items.length)
 		{
-			var optionText:Alphabet = new Alphabet(0, 0, Language.getPhrase('options_$option', option), true);
-			optionText.screenCenter();
-			optionText.y += (92 * (num - (options.length / 2))) + 45;
-			grpOptions.add(optionText);
+			var it = items[i];
+			var t = new FlxText(90, 0, 420, it.label, it.kind == 'header' ? 14 : 14);
+			t.setFormat(font(), 14, it.kind == 'header' ? 0xFFFFCF5A : 0xFFCFC6F2, LEFT);
+			rows.push(t);
+			listGroup.add(t);
+			var v = new FlxText(520, 0, 260, '', 14);
+			v.setFormat(font(), 14, 0xFFFFFFFF, RIGHT);
+			vals.push(v);
+			listGroup.add(v);
 		}
 
-		selectorLeft = new Alphabet(0, 0, '>', true);
-		add(selectorLeft);
-		selectorRight = new Alphabet(0, 0, '<', true);
-		add(selectorRight);
+		cursor = new FlxText(58, 0, 0, '>', 14);
+		cursor.setFormat(font(), 14, 0xFFFFCF5A, LEFT);
+		add(cursor);
 
-		changeSelection();
+		descText = new FlxText(840, 140, 380, '', 14);
+		descText.setFormat(font(), 14, FlxColor.WHITE, LEFT);
+		descText.wordWrap = true;
+		add(descText);
+
+		var hint = new FlxText(40, FlxG.height - 92, FlxG.width - 80,
+			'ВВЕРХ/ВНИЗ — выбор   ВЛЕВО/ВПРАВО — изменить\nENTER — переключить/открыть   ESC — назад', 12);
+		hint.setFormat(font(), 12, 0xFFCFC6F2, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+		add(hint);
+
+		if (curSelected >= items.length || items[curSelected].kind == 'header') curSelected = 1;
+		refresh();
 		ClientPrefs.saveSettings();
-
 		super.create();
+	}
+
+	function valueText(it:FohSetting):String
+	{
+		switch (it.kind)
+		{
+			case 'bool':
+				return Reflect.getProperty(ClientPrefs.data, it.field) == true ? 'ВКЛ' : 'ВЫКЛ';
+			case 'num':
+				var v:Float = Reflect.getProperty(ClientPrefs.data, it.field);
+				var p = Math.pow(10, it.decimals);
+				var s = Std.string(Math.round(v * p) / p);
+				return '< ' + s + (it.suffix != null ? it.suffix : '') + ' >';
+			case 'list':
+				var cur:String = Reflect.getProperty(ClientPrefs.data, it.field);
+				var idx = it.values.indexOf(cur);
+				return '< ' + (idx >= 0 ? it.names[idx] : cur) + ' >';
+			case 'scroll':
+				var sp:Float = Math.round(ClientPrefs.getGameplaySetting('scrollspeed') * 100) / 100;
+				return ClientPrefs.getGameplaySetting('scrolltype') == 'constant' ? '< ' + sp + ' >' : '< x' + sp + ' >';
+			case 'scrolltype':
+				return ClientPrefs.getGameplaySetting('scrolltype') == 'constant' ? 'ПОСТОЯННАЯ' : 'МНОЖИТЕЛЬ';
+			case 'open':
+				return 'ОТКРЫТЬ';
+		}
+		return '';
+	}
+
+	function refresh()
+	{
+		// keep the selected row inside the visible window
+		if (curSelected < scrollTop + 1) scrollTop = Std.int(Math.max(0, curSelected - 1));
+		if (curSelected >= scrollTop + visibleRows) scrollTop = curSelected - visibleRows + 1;
+		for (i in 0...items.length)
+		{
+			var y = listTop + (i - scrollTop) * rowH;
+			var vis = i >= scrollTop && i < scrollTop + visibleRows;
+			rows[i].y = y; vals[i].y = y;
+			rows[i].visible = vals[i].visible = vis;
+			vals[i].text = valueText(items[i]);
+			if (items[i].kind != 'header')
+			{
+				rows[i].color = (i == curSelected) ? 0xFFFFCF5A : 0xFFCFC6F2;
+				vals[i].color = (i == curSelected) ? 0xFFFFFFFF : 0xFFA99FD0;
+			}
+		}
+		cursor.y = rows[curSelected].y;
+		var it = items[curSelected];
+		descText.text = it.label.toUpperCase() + '\n\n' + (it.desc != null ? it.desc : '');
+	}
+
+	function move(dir:Int)
+	{
+		var i = curSelected;
+		do { i = FlxMath.wrap(i + dir, 0, items.length - 1); } while (items[i].kind == 'header');
+		curSelected = i;
+		FlxG.sound.play(Paths.sound('scrollMenu'), 0.5);
+		refresh();
+	}
+
+	function change(dir:Int)
+	{
+		var it = items[curSelected];
+		switch (it.kind)
+		{
+			case 'num':
+				var v:Float = Reflect.getProperty(ClientPrefs.data, it.field);
+				v = FlxMath.bound(v + dir * it.step, it.min, it.max);
+				var p = Math.pow(10, it.decimals);
+				v = Math.round(v * p) / p;
+				if (it.field == 'noteOffset' || it.field == 'framerate') Reflect.setProperty(ClientPrefs.data, it.field, Std.int(v));
+				else Reflect.setProperty(ClientPrefs.data, it.field, v);
+			case 'list':
+				var cur:String = Reflect.getProperty(ClientPrefs.data, it.field);
+				var idx = FlxMath.wrap(it.values.indexOf(cur) + dir, 0, it.values.length - 1);
+				Reflect.setProperty(ClientPrefs.data, it.field, it.values[idx]);
+			case 'bool':
+				Reflect.setProperty(ClientPrefs.data, it.field, !(Reflect.getProperty(ClientPrefs.data, it.field) == true));
+			case 'scroll':
+				var constant = ClientPrefs.getGameplaySetting('scrolltype') == 'constant';
+				var sp:Float = ClientPrefs.getGameplaySetting('scrollspeed');
+				sp = FlxMath.bound(Math.round((sp + dir * 0.05) * 100) / 100, 0.35, constant ? 6 : 3);
+				ClientPrefs.data.gameplaySettings.set('scrollspeed', sp);
+			case 'scrolltype':
+				var next = ClientPrefs.getGameplaySetting('scrolltype') == 'constant' ? 'multiplicative' : 'constant';
+				ClientPrefs.data.gameplaySettings.set('scrolltype', next);
+				ClientPrefs.data.gameplaySettings.set('scrollspeed', next == 'constant' ? 2.6 : 1.0);
+			default:
+				return;
+		}
+		if (it.after != null) it.after();
+		FlxG.sound.play(Paths.sound('scrollMenu'), 0.5);
+		refresh();
+	}
+
+	function accept()
+	{
+		var it = items[curSelected];
+		switch (it.kind)
+		{
+			case 'bool', 'scrolltype':
+				change(1);
+			case 'open':
+				FlxG.sound.play(Paths.sound('confirmMenu'), 0.6);
+				switch (it.target)
+				{
+					case 'controls': openSubState(new options.ControlsSubState());
+					case 'colors': openSubState(new options.NotesColorSubState());
+					case 'offset':
+						ClientPrefs.saveSettings();
+						MusicBeatState.switchState(new options.NoteOffsetState());
+				}
+		}
 	}
 
 	override function closeSubState()
 	{
 		super.closeSubState();
 		ClientPrefs.saveSettings();
-		#if DISCORD_ALLOWED
-		DiscordClient.changePresence("Options Menu", null);
-		#end
+		refresh();
 	}
 
-	override function update(elapsed:Float) {
+	override function update(elapsed:Float)
+	{
 		super.update(elapsed);
+		if (subState != null) return;
 
-		if (controls.UI_UP_P)
-			changeSelection(-1);
-		if (controls.UI_DOWN_P)
-			changeSelection(1);
+		if (controls.UI_UP_P) move(-1);
+		if (controls.UI_DOWN_P) move(1);
+		if (FlxG.mouse.wheel != 0) move(-FlxG.mouse.wheel);
+
+		var it = items[curSelected];
+		var holdable = it.kind == 'num' || it.kind == 'scroll';
+		if (controls.UI_LEFT_P) { change(-1); holdTime = 0; }
+		if (controls.UI_RIGHT_P) { change(1); holdTime = 0; }
+		if (holdable && (controls.UI_LEFT || controls.UI_RIGHT))
+		{
+			var before = Math.floor((holdTime - 0.4) * 14);
+			holdTime += elapsed;
+			var after = Math.floor((holdTime - 0.4) * 14);
+			if (holdTime > 0.4 && after > before) change(controls.UI_LEFT ? -1 : 1);
+		}
+
+		if (controls.ACCEPT) accept();
 
 		if (controls.BACK)
 		{
+			ClientPrefs.saveSettings();
 			FlxG.sound.play(Paths.sound('cancelMenu'));
-			if(onPlayState)
+			if (onPlayState)
 			{
 				StageData.loadDirectory(PlayState.SONG);
 				LoadingState.loadAndSwitchState(new PlayState());
@@ -106,27 +317,7 @@ class OptionsState extends MusicBeatState
 			}
 			else MusicBeatState.switchState(new MainMenuState());
 		}
-		else if (controls.ACCEPT) openSelectedSubstate(options[curSelected]);
-	}
-	
-	function changeSelection(change:Int = 0)
-	{
-		curSelected = FlxMath.wrap(curSelected + change, 0, options.length - 1);
-
-		for (num => item in grpOptions.members)
-		{
-			item.targetY = num - curSelected;
-			item.alpha = 0.6;
-			if (item.targetY == 0)
-			{
-				item.alpha = 1;
-				selectorLeft.x = item.x - 63;
-				selectorLeft.y = item.y;
-				selectorRight.x = item.x + item.width + 15;
-				selectorRight.y = item.y;
-			}
-		}
-		FlxG.sound.play(Paths.sound('scrollMenu'));
+		cursor.x = 58 + Math.sin(FlxG.game.ticks / 160) * 4;
 	}
 
 	override function destroy()

@@ -142,7 +142,7 @@ class MainMenuState extends MusicBeatState
 			mascot.animation.addByPrefix('idle', 'lumen idle', 4, true);
 			mascot.animation.play('idle');
 			mascot.antialiasing = false;
-			mascot.scale.set(4, 4);
+			mascot.scale.set(0.7, 0.7);
 			mascot.updateHitbox();
 			mascot.y = FlxG.height - mascot.height - 30;
 			add(mascot);
