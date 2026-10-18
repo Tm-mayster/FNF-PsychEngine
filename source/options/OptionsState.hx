@@ -136,7 +136,7 @@ class OptionsState extends MusicBeatState
 			t.setFormat(font(), 14, it.kind == 'header' ? 0xFFFFCF5A : 0xFFCFC6F2, LEFT);
 			rows.push(t);
 			listGroup.add(t);
-			var v = new FlxText(520, 0, 260, '', 14);
+			var v = new FlxText(440, 0, 340, '', 14);
 			v.setFormat(font(), 14, 0xFFFFFFFF, RIGHT);
 			vals.push(v);
 			listGroup.add(v);
