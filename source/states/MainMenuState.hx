@@ -48,6 +48,7 @@ class MainMenuState extends MusicBeatState
 		entries = [
 			{id: 'story_mode', label: 'Сюжет', desc: 'Пройти недели по порядку: песни идут одна за другой, счёт суммируется.'},
 			{id: 'freeplay', label: 'Свободная игра', desc: 'Любая песня и любая сложность. Видно звёзды, NPS и ваш лучший результат.\n\nПрогресс игры: ' + (FlxG.save.data.fohProgress != null ? FlxG.save.data.fohProgress : 0) + '%\n100% = все песни пройдены на Hard или выше (точность любая).'},
+			{id: 'coop', label: 'Вдвоём (2 игрока)', desc: 'Двое на одной клавиатуре, без настроек.\n\nИгрок 2 (слева, за противника): Z X C V\nИгрок 1 (справа, за Люмена): стрелки\n\nПолоска здоровья — перетягивание каната, в конце показывается победитель. Выбор песни — как в свободной игре.'},
 			{id: 'scroll', label: '', desc: 'ВЛЕВО/ВПРАВО — изменить скорость.\nENTER — сменить режим:\n• osu!mania 1–40 (как в osu!);\n• C-mod как в Etterna;\n• множитель x (старый FNF).'},
 			{id: 'calibrate', label: 'Калибровка задержки', desc: 'Играет песня — нажимайте в такт, и игра сама вычислит задержку вашего звука и клавиатуры.'},
 			#if MODS_ALLOWED {id: 'mods', label: 'Моды', desc: 'Включение, выключение и порядок модов.'}, #end
@@ -109,7 +110,7 @@ class MainMenuState extends MusicBeatState
 
 		for (i in 0...entries.length)
 		{
-			var t:FlxText = new FlxText(90, 168 + i * 46, 0, '', 18);
+			var t:FlxText = new FlxText(90, 160 + i * 42, 0, '', 18);
 			t.setFormat(menuFont(), 18, 0xFFCFC6F2, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
 			t.borderSize = 2;
 			labels.push(t);
@@ -320,6 +321,10 @@ class MainMenuState extends MusicBeatState
 				case 'story_mode':
 					MusicBeatState.switchState(new StoryMenuState());
 				case 'freeplay':
+					PlayState.coopMode = false;
+					MusicBeatState.switchState(new FreeplayState());
+				case 'coop':
+					PlayState.coopMode = true;
 					MusicBeatState.switchState(new FreeplayState());
 				case 'calibrate':
 					FohCalibrationState.returnToOptions = false;

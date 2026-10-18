@@ -36,6 +36,8 @@ class FreeplayState extends MusicBeatState
 	var starNum:FlxText;
 	var clearBadge:FlxText;
 	var progressText:FlxText;
+	var coopBG:FlxSprite;
+	var coopText:FlxText;
 	static var statsCache:Map<String, Array<Float>> = [];
 	var scoreText:FlxText;
 	var diffText:FlxText;
@@ -219,13 +221,21 @@ class FreeplayState extends MusicBeatState
 		bottomBG.alpha = 0.6;
 		add(bottomBG);
 
-		var leText:String = Language.getPhrase("freeplay_tip", "SPACE: Listen / CTRL: Gameplay Changers / Q,E: Scroll Speed / RESET: Reset Score");
+		var leText:String = "ПРОБЕЛ — послушать   CTRL — модификаторы   Q/E — скорость   TAB — играть вдвоём   R — сброс";
 		bottomString = leText;
-		var size:Int = 16;
-		bottomText = new FlxText(bottomBG.x, bottomBG.y + 4, FlxG.width, leText, size);
-		bottomText.setFormat(Paths.font("vcr.ttf"), size, FlxColor.WHITE, CENTER);
+		var size:Int = 10;
+		bottomText = new FlxText(bottomBG.x, bottomBG.y + 7, FlxG.width, leText, size);
+		bottomText.setFormat(MainMenuState.menuFont(), size, FlxColor.WHITE, CENTER);
 		bottomText.scrollFactor.set();
 		add(bottomText);
+
+		coopBG = new FlxSprite(FlxG.width - 470, FlxG.height - 96).makeGraphic(470, 62, 0xFF0B0614);
+		coopBG.alpha = 0.8;
+		add(coopBG);
+		coopText = new FlxText(FlxG.width - 460, FlxG.height - 90, 450, '', 12);
+		coopText.setFormat(MainMenuState.menuFont(), 12, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+		add(coopText);
+		updateCoopBadge();
 		
 		player = new MusicPlayer(this);
 		add(player);
@@ -354,12 +364,16 @@ class FreeplayState extends MusicBeatState
 				_updateSongLastDifficulty();
 			}
 
-			if (FlxG.keys.justPressed.TAB)
+			if (FlxG.keys.justPressed.TAB || (FlxG.mouse.justPressed && FlxG.mouse.visible && FlxG.mouse.overlaps(coopBG)))
 			{
 				PlayState.coopMode = !PlayState.coopMode;
-				FlxG.sound.play(Paths.sound('scrollMenu'), 0.6);
+				FlxG.sound.play(Paths.sound(PlayState.coopMode ? 'confirmMenu' : 'cancelMenu'), 0.6);
 				updateStats();
+				updateCoopBadge();
+				if (PlayState.coopMode) { coopBG.scale.set(1.08, 1.25); FlxTween.tween(coopBG.scale, {x: 1, y: 1}, 0.3, {ease: FlxEase.backOut}); }
 			}
+			if (PlayState.coopMode && coopText != null)
+				coopText.color = FlxColor.interpolate(0xFF7DF9FF, 0xFFFFE27A, 0.5 + 0.5 * Math.sin(FlxG.game.ticks / 250));
 
 			if (FlxG.keys.justPressed.Q || FlxG.keys.justPressed.E)
 			{
@@ -615,6 +629,22 @@ class FreeplayState extends MusicBeatState
 		// star rating: ~1-2 easy, ~3 normal, ~5-6 hard, ~8 expert, 10+ insane
 		var level:Float = 0.4 + 0.45 * avg + 0.55 * peak + 2.5 * (chords / times.length);
 		return [times.length, avg, peak, level];
+	}
+
+	function updateCoopBadge()
+	{
+		if (coopText == null) return;
+		if (PlayState.coopMode)
+		{
+			coopText.text = '★ ИГРАЕМ ВДВОЁМ ★\nИгрок 2: Z X C V      Игрок 1: стрелки\nTAB — играть одному';
+			coopBG.color = 0xFF2A1F5A;
+		}
+		else
+		{
+			coopText.text = 'TAB — играть вдвоём на одной клавиатуре\n(Z X C V против стрелок)';
+			coopText.color = 0xFFCFC6F2;
+			coopBG.color = FlxColor.WHITE;
+		}
 	}
 
 	function updateStats()
