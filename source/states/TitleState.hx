@@ -80,10 +80,16 @@ class TitleState extends MusicBeatState
 
 		if(!initialized)
 		{
-			if(FlxG.save.data != null && FlxG.save.data.fullscreen)
+			// Field of Hopes: fullscreen by default on first launch, then remember the player's choice (F11)
+			if(FlxG.save.data != null)
 			{
-				FlxG.fullscreen = FlxG.save.data.fullscreen;
-				//trace('LOADED FULLSCREEN SETTING!!');
+				if (FlxG.save.data.fohFullscreenDefault != true)
+				{
+					FlxG.save.data.fohFullscreenDefault = true;
+					FlxG.save.data.fullscreen = true;
+					FlxG.save.flush();
+				}
+				FlxG.fullscreen = FlxG.save.data.fullscreen == true;
 			}
 			persistentUpdate = true;
 			persistentDraw = true;
