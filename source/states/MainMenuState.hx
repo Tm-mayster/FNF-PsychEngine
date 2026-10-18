@@ -109,7 +109,7 @@ class MainMenuState extends MusicBeatState
 
 		for (i in 0...entries.length)
 		{
-			var t:FlxText = new FlxText(90, 180 + i * 52, 0, '', 18);
+			var t:FlxText = new FlxText(90, 168 + i * 46, 0, '', 18);
 			t.setFormat(menuFont(), 18, 0xFFCFC6F2, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
 			t.borderSize = 2;
 			labels.push(t);
