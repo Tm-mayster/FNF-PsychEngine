@@ -94,10 +94,11 @@ class ClientPrefs {
 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
 	public static var keyBinds:Map<String, Array<FlxKey>> = [
 		//Key Bind, Name for ControlsSubState
-		'note_up'		=> [W, UP],
-		'note_left'		=> [A, LEFT],
-		'note_down'		=> [S, DOWN],
-		'note_right'	=> [D, RIGHT],
+		// Field of Hopes: osu!mania / Etterna style 4K on one row (D F J K), arrows stay as a second bind
+		'note_left'		=> [D, LEFT],
+		'note_down'		=> [F, DOWN],
+		'note_up'		=> [J, UP],
+		'note_right'	=> [K, RIGHT],
 		
 		'ui_up'			=> [W, UP],
 		'ui_left'		=> [A, LEFT],
@@ -264,6 +265,17 @@ class ClientPrefs {
 				var loadedControls:Map<String, Array<FlxGamepadInputID>> = save.data.gamepad;
 				for (control => keys in loadedControls)
 					if(gamepadBinds.exists(control)) gamepadBinds.set(control, keys);
+			}
+			// one-time switch of everyone to the D F J K row
+			if (save.data.foh4k != true)
+			{
+				keyBinds.set('note_left', [D, LEFT]);
+				keyBinds.set('note_down', [F, DOWN]);
+				keyBinds.set('note_up', [J, UP]);
+				keyBinds.set('note_right', [K, RIGHT]);
+				save.data.foh4k = true;
+				save.data.keyboard = keyBinds;
+				save.flush();
 			}
 			reloadVolumeKeys();
 		}
