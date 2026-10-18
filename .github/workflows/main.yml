@@ -54,6 +54,8 @@ jobs:
           path: 'export/release/linux/bin'
   buildWindows:
     runs-on: windows-latest
+    permissions:
+      contents: write
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -79,6 +81,27 @@ jobs:
         run: |
           set -o pipefail
           haxelib run lime build windows --app-version="4.0.0-${{ github.run_id}}"  -D officialBuild 2>&1 | tee build.log || { grep -A2 -E "ERROR" build.log | head -40 | sed "s/^/::error::/"; exit 1; }
+      - name: Make in-game update manifest
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib, json, os
+          root = 'export/release/windows/bin'
+          files = []
+          for d, _, fs in os.walk(root):
+              for f in fs:
+                  full = os.path.join(d, f)
+                  rel = os.path.relpath(full, root).replace(os.sep, '/')
+                  if rel == 'update.json' or rel.startswith('.git/'): continue
+                  data = open(full, 'rb').read()
+                  files.append({'p': rel, 'h': hashlib.sha1(data).hexdigest(), 's': len(data)})
+          files.sort(key=lambda x: x['p'])
+          json.dump({'build': int(os.environ['RUN_NUMBER']), 'files': files}, open(os.path.join(root, 'update.json'), 'w'))
+          print(len(files), 'files')
+          PY
+        env:
+          RUN_NUMBER: ${{ github.run_number }}
       - name: Publish Artifact
         uses: actions/upload-artifact@v4.3.4
         with:
@@ -92,7 +115,22 @@ jobs:
           path: |
             export/release/windows/bin/*.exe
             export/release/windows/bin/manifest
+            export/release/windows/bin/update.json
           compression-level: 9
+      - name: Publish in-game update files (dist-windows branch)
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          cd export/release/windows/bin
+          git init -q
+          git config core.autocrlf false
+          git config user.name "build-bot"
+          git config user.email "build-bot@users.noreply.github.com"
+          git checkout -q -b dist-windows
+          git add -A
+          git commit -qm "Windows build ${{ github.run_number }}"
+          git push -q -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" dist-windows
+          rm -rf .git
   buildMac:
     runs-on: macos-15
 

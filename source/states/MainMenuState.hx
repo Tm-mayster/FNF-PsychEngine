@@ -38,6 +38,7 @@ class MainMenuState extends MusicBeatState
 	var holdTime:Float = 0;
 
 	static var showOutdatedWarning:Bool = true;
+	var updateMarked:Bool = false;
 
 	public static function menuFont():String
 		return Paths.font(MENU_FONT);
@@ -52,6 +53,7 @@ class MainMenuState extends MusicBeatState
 			#if MODS_ALLOWED {id: 'mods', label: 'Моды', desc: 'Включение, выключение и порядок модов.'}, #end
 			{id: 'options', label: 'Настройки', desc: 'Управление, графика, звук и игровые параметры.'},
 			#if ACHIEVEMENTS_ALLOWED {id: 'achievements', label: 'Достижения', desc: 'Награды за пройденные песни и особые условия.'}, #end
+			#if windows {id: 'update', label: 'Обновление', desc: 'Скачать новую версию игры прямо отсюда — загружаются только изменённые файлы.'}, #end
 			{id: 'credits', label: 'Титры', desc: 'Авторы мода, движка и музыки.'}
 		];
 	}
@@ -153,6 +155,10 @@ class MainMenuState extends MusicBeatState
 		#if MODS_ALLOWED
 		Achievements.reloadList();
 		#end
+		#end
+
+		#if windows
+		if (!backend.FohUpdater.checkedThisSession) backend.FohUpdater.check();
 		#end
 
 		#if CHECK_FOR_UPDATES
@@ -273,6 +279,18 @@ class MainMenuState extends MusicBeatState
 			#end
 		}
 
+		#if windows
+		if (!updateMarked && backend.FohUpdater.state == 'available')
+		{
+			updateMarked = true;
+			for (e in entries) if (e.id == 'update')
+			{
+				e.label = 'Обновление ★';
+				e.desc = 'Вышла новая версия игры (сборка ' + backend.FohUpdater.remoteBuild + '). ENTER — скачать прямо из игры, только изменённые файлы.';
+			}
+			refresh();
+		}
+		#end
 		cursor.x = 56 + Math.sin(FlxG.game.ticks / 160) * 4;
 		super.update(elapsed);
 	}
@@ -316,6 +334,8 @@ class MainMenuState extends MusicBeatState
 				#end
 				case 'credits':
 					MusicBeatState.switchState(new CreditsState());
+				case 'update':
+					MusicBeatState.switchState(new FohUpdateState());
 				case 'options':
 					MusicBeatState.switchState(new OptionsState());
 					OptionsState.onPlayState = false;

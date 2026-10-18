@@ -96,7 +96,7 @@
 		<haxelib name="funkin.vis" if="BASE_GAME_FILES"/>
 	</section>
 
-	<define name="CHECK_FOR_UPDATES" if="desktop officialBuild"/>
+	<!-- Field of Hopes: own updater (FohUpdater), Psych update check disabled -->
 
 	<section if="MODS_ALLOWED">
 		<assets path='example_mods' rename='mods' embed='false' unless="mac"/>
