@@ -65,6 +65,7 @@ class OptionsState extends MusicBeatState
 
 			{kind: 'header', label: 'ЗВУК И ЗАДЕРЖКА'},
 			{kind: 'open', label: 'Калибровка задержки', target: 'offset', desc: 'Играет песня — нажимайте в такт, и игра сама подберёт задержку.'},
+			{kind: 'bool', label: 'Автоподстройка задержки', field: 'autoOffset', desc: 'После каждой песни игра смотрит, раньше или позже вы нажимаете, и сама подправляет задержку. Калибровка не нужна.'},
 			{kind: 'num', label: 'Задержка нот', field: 'noteOffset', min: -500, max: 500, step: 1, decimals: 0, suffix: ' мс', desc: 'Сдвиг всех нот. Плюс — ноты позже, минус — раньше.'},
 			{kind: 'bool', label: 'Пауза при сворачивании', field: 'autoPause', desc: 'Игра останавливается, когда окно не активно.',
 				after: function() { FlxG.autoPause = ClientPrefs.data.autoPause; }},

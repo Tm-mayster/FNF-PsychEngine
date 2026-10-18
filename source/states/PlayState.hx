@@ -268,6 +268,7 @@ class PlayState extends MusicBeatState
 	public static var nextReloadAll:Bool = false;
 	override public function create()
 	{
+		hitErrors = [];
 		//trace('Playback Rate: ' + playbackRate);
 		_lastLoadedModDirectory = Mods.currentModDirectory;
 		Paths.clearStoredMemory();
@@ -2390,6 +2391,7 @@ class PlayState extends MusicBeatState
 	public var transitioning = false;
 	public function endSong()
 	{
+		applyAutoOffset();
 		//Should kill you if you tried to cheat
 		if(!startingSong)
 		{
@@ -2539,8 +2541,29 @@ class PlayState extends MusicBeatState
 			Paths.image(uiFolder + 'num' + i + uiPostfix);
 	}
 
+	// Field of Hopes: signed hit errors of this play (positive = pressed late), for auto offset
+	public static var hitErrors:Array<Float> = [];
+	public static var lastOffsetMessage:String = null;
+
+	function applyAutoOffset()
+	{
+		if (!ClientPrefs.data.autoOffset || cpuControlled || playbackRate != 1 || hitErrors.length < 40) return;
+		var s = hitErrors.copy();
+		s.sort(function(a, b) return a < b ? -1 : (a > b ? 1 : 0));
+		var med:Float = s[s.length >> 1];
+		hitErrors = [];
+		if (Math.abs(med) < 6) return;
+		// move most of the way toward your timing; repeated plays converge
+		var shift = Math.round(med * 0.8);
+		var old = ClientPrefs.data.noteOffset;
+		ClientPrefs.data.noteOffset = Std.int(FlxMath.bound(old + shift, -300, 300));
+		ClientPrefs.saveSettings();
+		lastOffsetMessage = 'Вы нажимали ' + (med > 0 ? 'позже' : 'раньше') + ' на ' + Math.round(Math.abs(med)) + ' мс.\nЗадержка подстроена: ' + old + ' → ' + ClientPrefs.data.noteOffset + ' мс';
+	}
+
 	private function popUpScore(note:Note = null):Void
 	{
+		if (note != null && !cpuControlled && note.mustPress) hitErrors.push(Conductor.songPosition - note.strumTime);
 		var noteDiff:Float = Math.abs(note.strumTime - Conductor.songPosition + ClientPrefs.data.ratingOffset);
 		vocals.volume = 1;
 

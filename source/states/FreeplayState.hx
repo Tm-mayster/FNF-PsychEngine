@@ -217,6 +217,16 @@ class FreeplayState extends MusicBeatState
 		
 		player = new MusicPlayer(this);
 		add(player);
+
+		if (PlayState.lastOffsetMessage != null)
+		{
+			var note = new FlxText(40, FlxG.height - 110, FlxG.width - 80, PlayState.lastOffsetMessage, 14);
+			note.setFormat(MainMenuState.menuFont(), 14, 0xFF7DF9B0, CENTER, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+			note.borderSize = 2;
+			add(note);
+			PlayState.lastOffsetMessage = null;
+			FlxTween.tween(note, {alpha: 0}, 1.5, {startDelay: 6});
+		}
 		
 		changeSelection();
 		updateTexts();
