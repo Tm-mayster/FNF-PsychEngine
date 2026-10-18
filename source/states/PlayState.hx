@@ -2751,6 +2751,7 @@ class PlayState extends MusicBeatState
 			p2Score += r.score;
 			p2Combo++;
 			if (p2Combo > p2MaxCombo) p2MaxCombo = p2Combo;
+			p2RatingPopup(r, p2Combo);
 		}
 		// tug of war: player 2 pulls the health bar to their side
 		health -= note.hitHealth * healthGain;
@@ -2775,6 +2776,58 @@ class PlayState extends MusicBeatState
 		var anim = singAnimations[Std.int(Math.abs(Math.min(singAnimations.length - 1, note.noteData)))] + 'miss';
 		if (dad != null && dad.hasAnimation(anim)) dad.playAnim(anim, true);
 		updateScore(true, false);
+	}
+
+	function strumCenter(group:FlxTypedGroup<StrumNote>):Float
+	{
+		if (group == null || group.length < 4) return FlxG.width * 0.5;
+		return (group.members[0].x + group.members[3].x + group.members[3].width) / 2;
+	}
+
+	var p2ComboGroup:FlxSpriteGroup;
+	/** player 2's Sick/Good/Bad + combo, under the left arrows */
+	function p2RatingPopup(r:Rating, comboVal:Int)
+	{
+		if (ClientPrefs.data.hideHud) return;
+		if (p2ComboGroup == null)
+		{
+			p2ComboGroup = new FlxSpriteGroup();
+			p2ComboGroup.cameras = [camHUD];
+			insert(members.indexOf(comboGroup) + 1, p2ComboGroup);
+		}
+		if (!ClientPrefs.data.comboStacking)
+			for (spr in p2ComboGroup.members.copy()) if (spr != null) { p2ComboGroup.remove(spr, true); spr.destroy(); }
+		var uiFolder:String = stageUI != "normal" ? uiPrefix + "UI/" : "";
+		var placement = strumCenter(opponentStrums) - 60;
+		var rating = new FlxSprite().loadGraphic(Paths.image(uiFolder + r.image + uiPostfix));
+		rating.setGraphicSize(Std.int(rating.width * (isPixelStage ? daPixelZoom * 0.85 : 0.7)));
+		rating.updateHitbox();
+		rating.screenCenter();
+		rating.x = placement - 40 + ClientPrefs.data.comboOffset[0];
+		rating.y -= 60 + ClientPrefs.data.comboOffset[1];
+		rating.acceleration.y = 550 * playbackRate * playbackRate;
+		rating.velocity.y -= FlxG.random.int(140, 175) * playbackRate;
+		rating.antialiasing = ClientPrefs.data.antialiasing && !isPixelStage;
+		p2ComboGroup.add(rating);
+		FlxTween.tween(rating, {alpha: 0}, 0.2 / playbackRate, {startDelay: Conductor.crochet * 0.001 / playbackRate,
+			onComplete: function(_) { p2ComboGroup.remove(rating, true); rating.destroy(); }});
+		var digits = Std.string(comboVal).lpad('0', 3);
+		for (i in 0...digits.length)
+		{
+			var n = new FlxSprite().loadGraphic(Paths.image(uiFolder + 'num' + Std.parseInt(digits.charAt(i)) + uiPostfix));
+			n.setGraphicSize(Std.int(n.width * (isPixelStage ? daPixelZoom : 0.5)));
+			n.updateHitbox();
+			n.screenCenter();
+			n.x = placement + 43 * i - 90 + ClientPrefs.data.comboOffset[2];
+			n.y += 80 - ClientPrefs.data.comboOffset[3];
+			n.acceleration.y = FlxG.random.int(200, 300) * playbackRate * playbackRate;
+			n.velocity.y -= FlxG.random.int(140, 160) * playbackRate;
+			n.velocity.x = FlxG.random.float(-5, 5) * playbackRate;
+			n.antialiasing = rating.antialiasing;
+			p2ComboGroup.add(n);
+			FlxTween.tween(n, {alpha: 0}, 0.2 / playbackRate, {startDelay: Conductor.crochet * 0.002 / playbackRate,
+				onComplete: function(_) { p2ComboGroup.remove(n, true); n.destroy(); }});
+		}
 	}
 
 	/** shows which keys play which lane, during the countdown */
@@ -2950,7 +3003,8 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		var placement:Float = FlxG.width * 0.35;
+		// Field of Hopes: in co-op each player's ratings pop up under their own arrows
+		var placement:Float = coopMode ? strumCenter(playerStrums) - 60 : FlxG.width * 0.35;
 		var rating:FlxSprite = new FlxSprite();
 		var score:Int = 350;
 
