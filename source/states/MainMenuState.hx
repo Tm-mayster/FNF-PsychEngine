@@ -60,7 +60,7 @@ class MainMenuState extends MusicBeatState
 			{id: 'story_mode', label: Lang.t('Сюжет'), desc: Lang.t('Пройти недели по порядку: песни идут одна за другой, счёт суммируется.')},
 			{id: 'freeplay', label: Lang.t('Свободная игра'), desc: Lang.t('Любая песня и любая сложность. Видно звёзды, NPS и ваш лучший результат.\n\nПрогресс игры: ') + (FlxG.save.data.fohProgress != null ? FlxG.save.data.fohProgress : 0) + Lang.t('%\n100% = все песни пройдены на Hard или выше (точность любая).')},
 			{id: 'coop', label: Lang.t('Вдвоём (2 игрока)'), desc: Lang.t('Двое на одной клавиатуре, без настроек. Каждый играет 4 клавишами в ряд.\n\nИгрок 2 (слева, за противника): A S D F\nИгрок 1 (справа, за Люмена): K L ; \'\n\nПолоска здоровья — перетягивание каната, в конце показывается победитель. Выбор песни — как в свободной игре.')},
-			{id: 'scroll', label: '', desc: Lang.t('ВЛЕВО/ВПРАВО — изменить скорость.\nСкорость одинаковая во всех песнях.\nENTER — сменить режим:\n• osu!mania 1–40 (как в osu!; больше = быстрее);\n• C-mod как в Etterna.')},
+			{id: 'scroll', label: '', desc: Lang.t('ВЛЕВО/ВПРАВО — быстрее или медленнее.\nENTER — сменить режим:\n• x1 — у каждой песни своя скорость, как задумал автор (x1.2 = на 20% быстрее);\n• osu!mania 1–40 — одна скорость во всех песнях;\n• C-mod как в Etterna.')},
 			{id: 'calibrate', label: Lang.t('Калибровка задержки'), desc: Lang.t('Играет песня — нажимайте в такт, и игра сама вычислит задержку вашего звука и клавиатуры.')},
 			{id: 'options', label: Lang.t('Настройки'), desc: Lang.t('Управление, графика, звук и игровые параметры.')},
 			#if ACHIEVEMENTS_ALLOWED {id: 'achievements', label: Lang.t('Достижения'), desc: Lang.t('Награды за пройденные песни и особые условия.')}, #end
@@ -219,9 +219,7 @@ class MainMenuState extends MusicBeatState
 
 	function toggleScrollType()
 	{
-		// only the constant-speed modes here (same speed in every song); the old FNF multiplier lives in the settings
-		ClientPrefs.data.gameplaySettings.set('scrolltype', ScrollUtil.type() == 'osu' ? 'cmod' : 'osu');
-		ClientPrefs.saveSettings();
+		ScrollUtil.cycleType(1);
 		FlxG.sound.play(Paths.sound('confirmMenu'), 0.6);
 		refresh();
 	}

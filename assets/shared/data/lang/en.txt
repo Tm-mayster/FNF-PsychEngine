@@ -29,9 +29,7 @@
 »\n\nESC — отмена   DELETE — очистить => »\n\nESC — cancel   DELETE — clear
 ИГРА => GAME
 Режим скролла => Scroll mode
-osu!mania: скорость 1–40, как в osu! (время ноты на экране = 11485 / скорость мс).\nC-mod (Etterna): постоянная скорость C100–C2000.\nМножитель x: старый режим FNF, умножает скорость песни. => osu!mania: speed 1–40, like in osu! (time on screen = 11485 / speed ms).\nC-mod (Etterna): constant speed C100–C2000.\nMultiplier x: old FNF mode, multiplies the song's own speed.
 Скорость скролла => Scroll speed
-ВЛЕВО/ВПРАВО — изменить. В osu!mania шаг 1, в C-mod шаг 10, в множителе 0.05. Скорость одинакова во всех песнях (кроме режима x). => LEFT/RIGHT — change. Step 1 in osu!mania, 10 in C-mod, 0.05 for the multiplier. Same speed in every song (except the x mode).
 Ноты сверху вниз => Downscroll
 Стрелки внизу экрана, ноты падают сверху. => Your arrows at the bottom, notes fall from the top.
 Стрелки по центру => Middlescroll
@@ -165,7 +163,6 @@ ENTER — сохранить   R — начать заново   ESC — вый�
 %\n100% = все песни пройдены на Hard или выше (точность любая). => %\n100% = every song cleared on Hard or higher (any accuracy).
 Вдвоём (2 игрока) => Together (2 players)
 Двое на одной клавиатуре, без настроек. Каждый играет 4 клавишами в ряд.\n\nИгрок 2 (слева, за противника): A S D F\nИгрок 1 (справа, за Люмена): K L ; '\n\nПолоска здоровья — перетягивание каната, в конце показывается победитель. Выбор песни — как в свободной игре. => Two players on one keyboard, no setup. Each plays 4 keys in a row.\n\nPlayer 2 (left, the opponent): A S D F\nPlayer 1 (right, Lumen): K L ; '\n\nThe health bar is a tug of war; the winner is shown at the end. Pick a song as in Freeplay.
-ВЛЕВО/ВПРАВО — изменить скорость.\nСкорость одинаковая во всех песнях.\nENTER — сменить режим:\n• osu!mania 1–40 (как в osu!; больше = быстрее);\n• C-mod как в Etterna. => LEFT/RIGHT — change the speed.\nThe speed is the same in every song.\nENTER — switch mode:\n• osu!mania 1–40 (like osu!; higher = faster);\n• C-mod like Etterna.
 Играет песня — нажимайте в такт, и игра сама вычислит задержку вашего звука и клавиатуры. => A song plays — tap to the beat and the game measures the delay of your sound and keyboard.
 Настройки => Settings
 Управление, графика, звук и игровые параметры. => Controls, graphics, sound and gameplay options.
@@ -246,3 +243,8 @@ R — повторить     ESC — назад => R — retry     ESC — back
 Автор мода: идея, геймплей, недели и подбор музыки. Персонажи Лумен, Сэр Перо, Огонёк, Ладья, Байт и Умбра, пять сцен и песни Ember, Wick, Inkblot, Starfall => Mod author: idea, gameplay, weeks and music selection. Characters Lumen, Sir Quill, Wisp, Rook, Byte and Umbra, five stages and the songs Ember, Wick, Inkblot, Starfall
 Музыка DELTARUNE (главы 1-2) => DELTARUNE music (chapters 1-2)
 Музыка: THE LAST DANCE => Music: THE LAST DANCE
+
+ВЛЕВО/ВПРАВО — быстрее или медленнее.\nENTER — сменить режим:\n• x1 — у каждой песни своя скорость, как задумал автор (x1.2 = на 20% быстрее);\n• osu!mania 1–40 — одна скорость во всех песнях;\n• C-mod как в Etterna. => LEFT/RIGHT — faster or slower.\nENTER — switch mode:\n• x1 — every song has its own speed, as the author set it (x1.2 = 20% faster);\n• osu!mania 1–40 — one speed for every song;\n• C-mod like Etterna.
+Своя у каждой песни: скорость, которую задал автор песни (x1), её можно умножить, например x0.8 медленнее, x1.2 быстрее.\nosu!mania 1–40: одна скорость во всех песнях, как в osu!.\nC-mod (Etterna): постоянная скорость C100–C2000. => Per song: the speed the song's author set (x1); you can multiply it, e.g. x0.8 slower, x1.2 faster.\nosu!mania 1–40: one speed for every song, like osu!.\nC-mod (Etterna): constant speed C100–C2000.
+ВЛЕВО/ВПРАВО — изменить. В режиме песни шаг x0.05, в osu!mania шаг 1, в C-mod шаг 10. => LEFT/RIGHT — change. Step x0.05 in per-song mode, 1 in osu!mania, 10 in C-mod.
+Своя у каждой песни => Per song

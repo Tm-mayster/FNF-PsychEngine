@@ -16,7 +16,7 @@ class ScrollUtil
 	{
 		var t:String = ClientPrefs.getGameplaySetting('scrolltype');
 		if (t == 'constant') t = 'cmod';
-		if (t != 'osu' && t != 'cmod' && t != 'multiplicative') t = 'osu';
+		if (t != 'osu' && t != 'cmod' && t != 'multiplicative') t = 'multiplicative';
 		return t;
 	}
 
@@ -51,7 +51,7 @@ class ScrollUtil
 
 	public static function typeName():String
 	{
-		return switch (type()) { case 'osu': 'osu!mania'; case 'cmod': 'C-mod (Etterna)'; default: 'Множитель x'; }
+		return switch (type()) { case 'osu': 'osu!mania'; case 'cmod': 'C-mod (Etterna)'; default: Lang.t('Своя у каждой песни'); }
 	}
 
 	public static function valueText():String
@@ -84,7 +84,7 @@ class ScrollUtil
 
 	public static function cycleType(dir:Int = 1)
 	{
-		var order = ['osu', 'cmod', 'multiplicative'];
+		var order = ['multiplicative', 'osu', 'cmod'];
 		var i = order.indexOf(type());
 		i = FlxMath.wrap(i + dir, 0, order.length - 1);
 		ClientPrefs.data.gameplaySettings.set('scrolltype', order[i]);
@@ -94,12 +94,15 @@ class ScrollUtil
 	/** first run of this version: switch everyone to osu!mania scroll */
 	public static function migrate()
 	{
-		// v2: constant speed for everyone again (the same in every song and difficulty)
-		if (FlxG.save.data.fohScrollMigrated2 != true)
+		// v3: every song has its own speed by default (like Mid-Fight Masses); x1 = as the author set it
+		if (FlxG.save.data.fohScrollMigrated3 != true)
 		{
-			var gs2 = ClientPrefs.data.gameplaySettings;
-			gs2.set('scrolltype', 'osu');
-			gs2.set('osuspeed', 22);
+			var gs3 = ClientPrefs.data.gameplaySettings;
+			gs3.set('scrolltype', 'multiplicative');
+			gs3.set('scrollspeed', 1.0);
+			if (!gs3.exists('osuspeed')) gs3.set('osuspeed', 22);
+			if (!gs3.exists('cmodspeed')) gs3.set('cmodspeed', 700);
+			FlxG.save.data.fohScrollMigrated3 = true;
 			FlxG.save.data.fohScrollMigrated2 = true;
 			FlxG.save.data.fohScrollMigrated = true;
 		}

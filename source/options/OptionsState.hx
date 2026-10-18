@@ -50,8 +50,8 @@ class OptionsState extends MusicBeatState
 		items = [
 			{kind: 'lang', label: 'Язык / Language', desc: Lang.t('Язык игры. Новые языки добавляются файлом lang/<код>.txt в папке мода — без программирования.')},
 			{kind: 'header', label: Lang.t('ИГРА')},
-			{kind: 'scrolltype', label: Lang.t('Режим скролла'), desc: Lang.t('osu!mania: скорость 1–40, как в osu! (время ноты на экране = 11485 / скорость мс).\nC-mod (Etterna): постоянная скорость C100–C2000.\nМножитель x: старый режим FNF, умножает скорость песни.')},
-			{kind: 'scroll', label: Lang.t('Скорость скролла'), desc: Lang.t('ВЛЕВО/ВПРАВО — изменить. В osu!mania шаг 1, в C-mod шаг 10, в множителе 0.05. Скорость одинакова во всех песнях (кроме режима x).')},
+			{kind: 'scrolltype', label: Lang.t('Режим скролла'), desc: Lang.t('Своя у каждой песни: скорость, которую задал автор песни (x1), её можно умножить, например x0.8 медленнее, x1.2 быстрее.\nosu!mania 1–40: одна скорость во всех песнях, как в osu!.\nC-mod (Etterna): постоянная скорость C100–C2000.')},
+			{kind: 'scroll', label: Lang.t('Скорость скролла'), desc: Lang.t('ВЛЕВО/ВПРАВО — изменить. В режиме песни шаг x0.05, в osu!mania шаг 1, в C-mod шаг 10.')},
 			{kind: 'bool', label: Lang.t('Ноты сверху вниз'), field: 'downScroll', desc: Lang.t('Стрелки внизу экрана, ноты падают сверху.')},
 			{kind: 'bool', label: Lang.t('Стрелки по центру'), field: 'middleScroll', desc: Lang.t('Ваши стрелки посередине экрана.')},
 			{kind: 'bool', label: Lang.t('Стрелки противника'), field: 'opponentStrums', desc: Lang.t('Показывать ноты противника.')},
