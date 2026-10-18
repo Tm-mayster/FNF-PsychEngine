@@ -711,12 +711,12 @@ class FreeplayState extends MusicBeatState
 		if (coopText == null) return;
 		if (PlayState.coopMode)
 		{
-			coopText.text = Lang.t('★ ИГРАЕМ ВДВОЁМ ★\nИгрок 2: Z X C V      Игрок 1: стрелки\nTAB — играть одному');
+			coopText.text = Lang.t('★ ИГРАЕМ ВДВОЁМ ★\nИгрок 2: A S D F      Игрок 1: J K L ;\nTAB — играть одному');
 			coopBG.color = 0xFF2A1F5A;
 		}
 		else
 		{
-			coopText.text = Lang.t('TAB — играть вдвоём на одной клавиатуре\n(Z X C V против стрелок)');
+			coopText.text = Lang.t('TAB — играть вдвоём на одной клавиатуре\n(A S D F против J K L ;)');
 			coopText.color = 0xFFCFC6F2;
 			coopBG.color = FlxColor.WHITE;
 		}

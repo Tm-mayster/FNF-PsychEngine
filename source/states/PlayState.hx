@@ -2700,10 +2700,10 @@ class PlayState extends MusicBeatState
 
 	// ===================== Field of Hopes: local co-op (two players, one keyboard) =====================
 	public static var coopMode:Bool = false;
-	/** right player (Lumen): arrow keys */
-	public static var COOP_P1:Array<FlxKey> = [FlxKey.LEFT, FlxKey.DOWN, FlxKey.UP, FlxKey.RIGHT];
-	/** left player (opponent): Z X C V */
-	public static var COOP_P2:Array<FlxKey> = [FlxKey.Z, FlxKey.X, FlxKey.C, FlxKey.V];
+	/** right player (Lumen): J K L ; */
+	public static var COOP_P1:Array<FlxKey> = [FlxKey.J, FlxKey.K, FlxKey.L, FlxKey.SEMICOLON];
+	/** left player (opponent): A S D F */
+	public static var COOP_P2:Array<FlxKey> = [FlxKey.A, FlxKey.S, FlxKey.D, FlxKey.F];
 	var coopSavedMiddle:Bool = false;
 	var coopSavedOppStrums:Bool = true;
 	public var p2Score:Int = 0;
@@ -2878,8 +2878,8 @@ class PlayState extends MusicBeatState
 			add(t);
 			FlxTween.tween(t, {alpha: 1}, 0.4, {startDelay: 0.4});
 		}
-		card(80, Lang.t('ИГРОК 2 (Z X C V)'), p2Score, a2, p2Misses, p2MaxCombo, 0xFF7DF9FF, p2Score > songScore);
-		card(FlxG.width - 600, Lang.t('ИГРОК 1 (стрелки)'), songScore, a1, songMisses, p1MaxCombo, 0xFFFFE27A, songScore > p2Score);
+		card(80, Lang.t('ИГРОК 2 (A S D F)'), p2Score, a2, p2Misses, p2MaxCombo, 0xFF7DF9FF, p2Score > songScore);
+		card(FlxG.width - 600, Lang.t('ИГРОК 1 (J K L ;)'), songScore, a1, songMisses, p1MaxCombo, 0xFFFFE27A, songScore > p2Score);
 
 		for (i in 0...30)
 		{
