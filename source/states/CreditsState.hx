@@ -49,7 +49,7 @@ class CreditsState extends MusicBeatState
 			["Support"],
 			["Donate TM Mayster", "", "Поддержать автора мода Field of Hopes (TM Mayster). ENTER — открыть ссылку.", MOD_DONATE_URL, "FFAA3C"],
 			["Donate Funkin Crew", "", "Поддержать создателей Friday Night Funkin' (официальная страница игры на itch.io с донатом). ENTER — открыть.", "https://ninja-muffin24.itch.io/funkin", "C77DFF"],
-			["Support Psych Engine", "", "Поддержать разработчиков Psych Engine (Shadow Mario, Riveren и др.): страница проекта — поставьте звезду и следите за обновлениями. ENTER — открыть.", "https://github.com/ShadowMario/FNF-PsychEngine", "444444"],
+			["Donate Psych Engine", "", "Поддержать разработчиков Psych Engine — Ko-fi Shadow Mario (главный программист движка). ENTER — открыть.", "https://ko-fi.com/shadowmario", "444444"],
 			["Buy DELTARUNE", "", "Поддержать Toby Fox — купить DELTARUNE, музыку которой мы используем. ENTER — открыть.", "https://deltarune.com", "7A5CC4"]
 		];
 		
