@@ -131,8 +131,8 @@ class AchievementsMenuState extends MusicBeatState
 	{
 		return {
 			name: achievement,
-			displayName: unlocked ? Language.getPhrase('achievement_$achievement', data.name) : '???',
-			description: Language.getPhrase('description_$achievement', data.description),
+			displayName: unlocked ? Lang.t(Language.getPhrase('achievement_$achievement', data.name)) : '???',
+			description: Lang.t(Language.getPhrase('description_$achievement', data.description)),
 			curProgress: data.maxScore > 0 ? Achievements.getScore(achievement) : 0,
 			maxProgress: data.maxScore > 0 ? data.maxScore : 0,
 			decProgress: data.maxScore > 0 ? data.maxDecimals : 0,

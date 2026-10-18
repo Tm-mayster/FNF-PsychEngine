@@ -2695,7 +2695,7 @@ class PlayState extends MusicBeatState
 		ClientPrefs.data.noteOffset = Std.int(FlxMath.bound(old + shift, -80, 80));
 		if (ClientPrefs.data.noteOffset == old) return;
 		ClientPrefs.saveSettings();
-		lastOffsetMessage = 'Вы нажимали ' + (med > 0 ? 'позже' : 'раньше') + ' на ' + Math.round(Math.abs(med)) + ' мс.\nЗадержка подстроена: ' + old + ' → ' + ClientPrefs.data.noteOffset + ' мс';
+		lastOffsetMessage = Lang.t('Вы нажимали ') + (med > 0 ? Lang.t('позже') : Lang.t('раньше')) + Lang.t(' на ') + Math.round(Math.abs(med)) + Lang.t(' мс.\nЗадержка подстроена: ') + old + ' → ' + ClientPrefs.data.noteOffset + Lang.t(' мс');
 	}
 
 	// ===================== Field of Hopes: local co-op (two players, one keyboard) =====================
@@ -2838,8 +2838,8 @@ class PlayState extends MusicBeatState
 		if (coopMode)
 		{
 			for (i in 0...opponentStrums.length) addHint(opponentStrums.members[i], InputFormatter.getKeyName(COOP_P2[i]), 0xFF7DF9FF);
-			header(opponentStrums, 'ИГРОК 2', 0xFF7DF9FF);
-			header(playerStrums, 'ИГРОК 1', 0xFFFFE27A);
+			header(opponentStrums, Lang.t('ИГРОК 2'), 0xFF7DF9FF);
+			header(playerStrums, Lang.t('ИГРОК 1'), 0xFFFFE27A);
 		}
 		var hold:Float = Conductor.crochet / 1000 * 5 / playbackRate + 2.5;
 		for (t in hints)
@@ -2855,7 +2855,7 @@ class PlayState extends MusicBeatState
 		var font = states.MainMenuState.menuFont();
 		var a1 = totalPlayed > 0 ? CoolUtil.floorDecimal(ratingPercent * 100, 2) : 0;
 		var a2 = p2Played > 0 ? CoolUtil.floorDecimal(p2HitSum / p2Played * 100, 2) : 0;
-		var winner = songScore == p2Score ? 'НИЧЬЯ!' : (songScore > p2Score ? 'ПОБЕДИЛ ИГРОК 1!' : 'ПОБЕДИЛ ИГРОК 2!');
+		var winner = songScore == p2Score ? Lang.t('НИЧЬЯ!') : (songScore > p2Score ? Lang.t('ПОБЕДИЛ ИГРОК 1!') : Lang.t('ПОБЕДИЛ ИГРОК 2!'));
 		var col:FlxColor = songScore == p2Score ? FlxColor.WHITE : (songScore > p2Score ? 0xFFFFE27A : 0xFF7DF9FF);
 
 		var shade = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF07041A);
@@ -2872,14 +2872,14 @@ class PlayState extends MusicBeatState
 
 		function card(x:Float, head:String, score:Int, acc:Float, miss:Int, combo:Int, c:FlxColor, win:Bool)
 		{
-			var t = new FlxText(x, 270, 520, head + (win ? '  ★' : '') + '\n\nСчёт: ' + score + '\nТочность: ' + acc + '%\nПромахи: ' + miss + '\nМакс. комбо: ' + combo, 18);
+			var t = new FlxText(x, 270, 520, head + (win ? '  ★' : '') + Lang.t('\n\nСчёт: ') + score + Lang.t('\nТочность: ') + acc + Lang.t('%\nПромахи: ') + miss + Lang.t('\nМакс. комбо: ') + combo, 18);
 			t.setFormat(font, 18, c, CENTER, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
 			t.borderSize = 3; t.cameras = [camOther]; t.alpha = 0;
 			add(t);
 			FlxTween.tween(t, {alpha: 1}, 0.4, {startDelay: 0.4});
 		}
-		card(80, 'ИГРОК 2 (Z X C V)', p2Score, a2, p2Misses, p2MaxCombo, 0xFF7DF9FF, p2Score > songScore);
-		card(FlxG.width - 600, 'ИГРОК 1 (стрелки)', songScore, a1, songMisses, p1MaxCombo, 0xFFFFE27A, songScore > p2Score);
+		card(80, Lang.t('ИГРОК 2 (Z X C V)'), p2Score, a2, p2Misses, p2MaxCombo, 0xFF7DF9FF, p2Score > songScore);
+		card(FlxG.width - 600, Lang.t('ИГРОК 1 (стрелки)'), songScore, a1, songMisses, p1MaxCombo, 0xFFFFE27A, songScore > p2Score);
 
 		for (i in 0...30)
 		{

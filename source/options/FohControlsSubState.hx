@@ -13,15 +13,15 @@ class FohControlsSubState extends MusicBeatSubstate
 {
 	// [header] or [label, save key]
 	var options:Array<Array<String>> = [
-		['НОТЫ'],
-		['Влево', 'note_left'], ['Вниз', 'note_down'], ['Вверх', 'note_up'], ['Вправо', 'note_right'],
-		['МЕНЮ'],
-		['Влево', 'ui_left'], ['Вниз', 'ui_down'], ['Вверх', 'ui_up'], ['Вправо', 'ui_right'],
-		['Выбрать', 'accept'], ['Назад', 'back'], ['Пауза', 'pause'], ['Перезапуск', 'reset'],
-		['ГРОМКОСТЬ'],
-		['Без звука', 'volume_mute'], ['Громче', 'volume_up'], ['Тише', 'volume_down'],
-		['ПРОЧЕЕ'],
-		['Сбросить всё по умолчанию', '#reset']
+		[Lang.t('НОТЫ')],
+		[Lang.t('Влево'), 'note_left'], [Lang.t('Вниз'), 'note_down'], [Lang.t('Вверх'), 'note_up'], [Lang.t('Вправо'), 'note_right'],
+		[Lang.t('МЕНЮ')],
+		[Lang.t('Влево'), 'ui_left'], [Lang.t('Вниз'), 'ui_down'], [Lang.t('Вверх'), 'ui_up'], [Lang.t('Вправо'), 'ui_right'],
+		[Lang.t('Выбрать'), 'accept'], [Lang.t('Назад'), 'back'], [Lang.t('Пауза'), 'pause'], [Lang.t('Перезапуск'), 'reset'],
+		[Lang.t('ГРОМКОСТЬ')],
+		[Lang.t('Без звука'), 'volume_mute'], [Lang.t('Громче'), 'volume_up'], [Lang.t('Тише'), 'volume_down'],
+		[Lang.t('ПРОЧЕЕ')],
+		[Lang.t('Сбросить всё по умолчанию'), '#reset']
 	];
 
 	var rows:Array<FlxText> = [];
@@ -50,15 +50,15 @@ class FohControlsSubState extends MusicBeatSubstate
 		bg.alpha = 0.92;
 		add(bg);
 
-		var title = new FlxText(40, 36, 0, 'КЛАВИШИ', 32);
+		var title = new FlxText(40, 36, 0, Lang.t('КЛАВИШИ'), 32);
 		title.setFormat(font, 32, FlxColor.WHITE, LEFT, FlxTextBorderStyle.SHADOW, 0xFF7A5CC4);
 		title.borderSize = 4;
 		add(title);
 
-		var colA = new FlxText(700, 98, 220, 'Клавиша 1', 12);
+		var colA = new FlxText(700, 98, 220, Lang.t('Клавиша 1'), 12);
 		colA.setFormat(font, 12, 0xFFA99FD0, CENTER);
 		add(colA);
-		var colB = new FlxText(940, 98, 220, 'Клавиша 2', 12);
+		var colB = new FlxText(940, 98, 220, Lang.t('Клавиша 2'), 12);
 		colB.setFormat(font, 12, 0xFFA99FD0, CENTER);
 		add(colB);
 
@@ -81,11 +81,11 @@ class FohControlsSubState extends MusicBeatSubstate
 		add(cursor);
 
 		hint = new FlxText(40, FlxG.height - 92, FlxG.width - 80,
-			'ВВЕРХ/ВНИЗ — действие   ВЛЕВО/ВПРАВО — клавиша 1/2\nENTER — назначить   DELETE — очистить   ESC — назад', 12);
+			Lang.t('ВВЕРХ/ВНИЗ — действие   ВЛЕВО/ВПРАВО — клавиша 1/2\nENTER — назначить   DELETE — очистить   ESC — назад'), 12);
 		hint.setFormat(font, 12, 0xFFCFC6F2, LEFT);
 		add(hint);
 
-		lastKey = new FlxText(40, FlxG.height - 130, FlxG.width - 80, 'Проверка: нажмите любую клавишу', 12);
+		lastKey = new FlxText(40, FlxG.height - 130, FlxG.width - 80, Lang.t('Проверка: нажмите любую клавишу'), 12);
 		lastKey.setFormat(font, 12, 0xFF7DF9B0, LEFT);
 		add(lastKey);
 
@@ -173,7 +173,7 @@ class FohControlsSubState extends MusicBeatSubstate
 		super.update(elapsed);
 		cursor.x = 58 + Math.sin(FlxG.game.ticks / 160) * 4;
 		var probe:Int = FlxG.keys.firstJustPressed();
-		if (probe > -1) lastKey.text = 'Проверка: игра видит клавишу «' + keyName(probe) + '» (код ' + probe + ')';
+		if (probe > -1) lastKey.text = Lang.t('Проверка: игра видит клавишу «') + keyName(probe) + Lang.t('» (код ') + probe + ')';
 
 		if (binding)
 		{
@@ -228,7 +228,7 @@ class FohControlsSubState extends MusicBeatSubstate
 				bindTimer = 0;
 				ClientPrefs.toggleVolumeKeys(false);
 				overlay.visible = overlayText.visible = true;
-				overlayText.text = 'Нажмите клавишу для «' + options[curSelected][0] + '»\n\nESC — отмена   DELETE — очистить';
+				overlayText.text = Lang.t('Нажмите клавишу для «') + options[curSelected][0] + Lang.t('»\n\nESC — отмена   DELETE — очистить');
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 			}
 		}

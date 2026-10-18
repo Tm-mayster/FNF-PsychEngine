@@ -264,7 +264,7 @@ class FreeplayState extends MusicBeatState
 		bottomBG.alpha = 0;
 		add(bottomBG);
 
-		var leText:String = "ПРОБЕЛ — послушать   CTRL — модификаторы   Q/E — скорость   TAB — играть вдвоём   R — сброс";
+		var leText:String = Lang.t("ПРОБЕЛ — послушать   CTRL — модификаторы   Q/E — скорость   TAB — играть вдвоём   R — сброс");
 		bottomString = leText;
 		var size:Int = 10;
 		bottomText = new FlxText(bottomBG.x, bottomBG.y + 7, FlxG.width, leText, size);
@@ -367,7 +367,7 @@ class FreeplayState extends MusicBeatState
 
 		if (!player.playingMusic)
 		{
-			scoreText.text = 'Рекорд: ' + lerpScore + '   (' + ratingSplit.join('.') + '%)';
+			scoreText.text = Lang.t('Рекорд: ') + lerpScore + '   (' + ratingSplit.join('.') + '%)';
 			positionHighscore();
 			
 			if(songs.length > 1)
@@ -711,12 +711,12 @@ class FreeplayState extends MusicBeatState
 		if (coopText == null) return;
 		if (PlayState.coopMode)
 		{
-			coopText.text = '★ ИГРАЕМ ВДВОЁМ ★\nИгрок 2: Z X C V      Игрок 1: стрелки\nTAB — играть одному';
+			coopText.text = Lang.t('★ ИГРАЕМ ВДВОЁМ ★\nИгрок 2: Z X C V      Игрок 1: стрелки\nTAB — играть одному');
 			coopBG.color = 0xFF2A1F5A;
 		}
 		else
 		{
-			coopText.text = 'TAB — играть вдвоём на одной клавиатуре\n(Z X C V против стрелок)';
+			coopText.text = Lang.t('TAB — играть вдвоём на одной клавиатуре\n(Z X C V против стрелок)');
 			coopText.color = 0xFFCFC6F2;
 			coopBG.color = FlxColor.WHITE;
 		}
@@ -742,16 +742,16 @@ class FreeplayState extends MusicBeatState
 		}
 
 		var r = function(v:Float) return Math.round(v * 10) / 10;
-		var scroll:String = 'Скролл: ' + ScrollUtil.label() + '   (Q / E)';
+		var scroll:String = Lang.t('Скролл: ') + ScrollUtil.label() + '   (Q / E)';
 		if (st[0] < 0)
 		{
-			statsText.text = 'Чарт не найден\n' + scroll;
+			statsText.text = Lang.t('Чарт не найден\n') + scroll;
 			statsText.color = 0xFFCFC6F2;
 			setStars(0);
 			return;
 		}
-		statsText.text = 'Звёзды: ' + r(st[3]) + '   Нот: ' + Std.int(st[0])
-			+ '\nNPS: ' + r(st[1]) + ' средн. / ' + r(st[2]) + ' пик'
+		statsText.text = Lang.t('Звёзды: ') + r(st[3]) + Lang.t('   Нот: ') + Std.int(st[0])
+			+ '\nNPS: ' + r(st[1]) + Lang.t(' средн. / ') + r(st[2]) + Lang.t(' пик')
 			+ '\n' + scroll;
 		statsText.color = FlxColor.WHITE;
 		setStars(st[3]);
@@ -764,11 +764,11 @@ class FreeplayState extends MusicBeatState
 			case 'SFC': '★ PERFECT FULL COMBO';
 			case 'GFC': '★ GREAT FULL COMBO';
 			case 'FC': '★ FULL COMBO';
-			case 'SDCB': 'Пройдено (меньше 10 промахов)';
-			case 'Clear': 'Пройдено';
-			default: 'На этой сложности ещё не пройдено';
+			case 'SDCB': Lang.t('Пройдено (меньше 10 промахов)');
+			case 'Clear': Lang.t('Пройдено');
+			default: Lang.t('На этой сложности ещё не пройдено');
 		};
-		if (bestHere != null) clearBadge.text += '\nЛучшее: ' + PlayState.FOH_DIFFS[Std.int(Math.min(bestHere, PlayState.FOH_DIFFS.length - 1))].toUpperCase();
+		if (bestHere != null) clearBadge.text += Lang.t('\nЛучшее: ') + PlayState.FOH_DIFFS[Std.int(Math.min(bestHere, PlayState.FOH_DIFFS.length - 1))].toUpperCase();
 		clearBadge.color = switch (rank) { case 'SFC': 0xFFFFE27A; case 'GFC': 0xFF7DF9FF; case 'FC': 0xFFC77DFF; case null: 0xFF6E6690; default: 0xFFCFC6F2; };
 		clearBadge.alpha = 1;
 	}
@@ -822,7 +822,7 @@ class FreeplayState extends MusicBeatState
 		}
 		var pct = seen.length > 0 ? Math.floor(pts / seen.length * 100) : 0;
 		FlxG.save.data.fohProgress = pct;
-		progressText.text = 'Прогресс игры: ' + pct + '%' + (pct >= 100 ? '  ★ ПРОЙДЕНО!' : '');
+		progressText.text = Lang.t('Прогресс игры: ') + pct + '%' + (pct >= 100 ? Lang.t('  ★ ПРОЙДЕНО!') : '');
 	}
 
 	function animateStars(elapsed:Float)

@@ -79,6 +79,8 @@ import states.TitleState;
 	public var safeFrames:Float = 10.0;
 	/** Field of Hopes: hit window preset — fnf (stock Psych / FNF), soft, strict */
 	public var hitPreset:String = 'fnf';
+	/** Field of Hopes language code ('' = not chosen yet -> detected from the system) */
+	public var fohLang:String = '';
 	public var guitarHeroSustains:Bool = true;
 	public var discordRPC:Bool = true;
 	public var loadingScreen:Bool = true;
@@ -223,6 +225,8 @@ class ClientPrefs {
 			FlxG.save.data.fohHitPresetMigrated = true;
 		}
 		applyOD();
+		if (data.fohLang == null || data.fohLang.length == 0) data.fohLang = Lang.detectDefault();
+		Lang.load(data.fohLang);
 		// Field of Hopes: earlier auto-offset could drift far away -> reset once to the safe default
 		if (FlxG.save.data.fohOffsetReset2 != true)
 		{

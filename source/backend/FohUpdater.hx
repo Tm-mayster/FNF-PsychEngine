@@ -206,7 +206,7 @@ class FohUpdater
 					{
 						// one retry, bypassing any cache
 						data = fetch(BASE + encodePath(p) + '?nocache=' + Std.string(Date.now().getTime()));
-						if (Sha1.make(data).toHex() != f.h) throw 'файл не совпал с новой версией: ' + p + '\n(возможно, вышла ещё более новая сборка — нажмите R)';
+						if (Sha1.make(data).toHex() != f.h) throw Lang.t('файл не совпал с новой версией: ') + p + Lang.t('\n(возможно, вышла ещё более новая сборка — нажмите R)');
 					}
 					var target = local(p);
 					var dir = Path.directory(target);

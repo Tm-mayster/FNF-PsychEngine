@@ -47,10 +47,10 @@ class CreditsState extends MusicBeatState
 			["Psych Engine", "", "Psych Engine by Shadow Mario, Riveren & contributors;\nFriday Night Funkin' by the Funkin' Crew. Press ENTER to open.", "https://github.com/ShadowMario/FNF-PsychEngine", "444444"],
 			[""],
 			["Support"],
-			["Donate TM Mayster", "", "Поддержать автора мода Field of Hopes (TM Mayster). ENTER — открыть ссылку.", MOD_DONATE_URL, "FFAA3C"],
-			["Donate Funkin Crew", "", "Поддержать создателей Friday Night Funkin' (официальная страница игры на itch.io с донатом). ENTER — открыть.", "https://ninja-muffin24.itch.io/funkin", "C77DFF"],
-			["Donate Psych Engine", "", "Поддержать разработчиков Psych Engine — Ko-fi Shadow Mario (главный программист движка). ENTER — открыть.", "https://ko-fi.com/shadowmario", "444444"],
-			["Buy DELTARUNE", "", "Поддержать Toby Fox — купить DELTARUNE, музыку которой мы используем. ENTER — открыть.", "https://deltarune.com", "7A5CC4"]
+			["Donate TM Mayster", "", Lang.t("Поддержать автора мода Field of Hopes (TM Mayster). ENTER — открыть ссылку."), MOD_DONATE_URL, "FFAA3C"],
+			["Donate Funkin Crew", "", Lang.t("Поддержать создателей Friday Night Funkin' (официальная страница игры на itch.io с донатом). ENTER — открыть."), "https://ninja-muffin24.itch.io/funkin", "C77DFF"],
+			["Donate Psych Engine", "", Lang.t("Поддержать разработчиков Psych Engine — Ko-fi Shadow Mario (главный программист движка). ENTER — открыть."), "https://ko-fi.com/shadowmario", "444444"],
+			["Buy DELTARUNE", "", Lang.t("Поддержать Toby Fox — купить DELTARUNE, музыку которой мы используем. ENTER — открыть."), "https://deltarune.com", "7A5CC4"]
 		];
 		
 		for(i in defaultList)
@@ -219,7 +219,7 @@ class CreditsState extends MusicBeatState
 			}
 		}
 
-		descText.text = creditsStuff[curSelected][2];
+		descText.text = Lang.t(creditsStuff[curSelected][2]);
 		if(descText.text.trim().length > 0)
 		{
 			descText.visible = descBox.visible = true;

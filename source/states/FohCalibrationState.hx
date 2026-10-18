@@ -37,14 +37,14 @@ class FohCalibrationState extends MusicBeatState
 		shade.alpha = 0.6;
 		add(shade);
 
-		var title = new FlxText(40, 36, 0, 'КАЛИБРОВКА ПО ПЕСНЕ', 28);
+		var title = new FlxText(40, 36, 0, Lang.t('КАЛИБРОВКА ПО ПЕСНЕ'), 28);
 		title.setFormat(font, 28, FlxColor.WHITE, LEFT, FlxTextBorderStyle.SHADOW, 0xFF7A5CC4);
 		title.borderSize = 4;
 		add(title);
 
 		var how = new FlxText(40, 100, FlxG.width - 80,
-			'Играет «Ember». Нажимайте любую клавишу ровно в такт ударам музыки — слушайте звук, а не смотрите на фонарь.\n'
-			+ 'Первые ' + WARMUP + ' нажатия не считаются. Нужно хотя бы 16.', 14);
+			Lang.t('Играет «Ember». Нажимайте любую клавишу ровно в такт ударам музыки — слушайте звук, а не смотрите на фонарь.\n')
+			+ Lang.t('Первые ') + WARMUP + Lang.t(' нажатия не считаются. Нужно хотя бы 16.'), 14);
 		how.setFormat(font, 14, 0xFFCFC6F2, LEFT);
 		MainMenuState.leading(how, 7);
 		add(how);
@@ -76,7 +76,7 @@ class FohCalibrationState extends MusicBeatState
 		add(info);
 
 		result = new FlxText(40, FlxG.height - 92, FlxG.width - 80,
-			'ENTER — сохранить   R — начать заново   ESC — выйти без сохранения', 12);
+			Lang.t('ENTER — сохранить   R — начать заново   ESC — выйти без сохранения'), 12);
 		result.setFormat(font, 12, 0xFFCFC6F2, CENTER);
 		add(result);
 
@@ -107,10 +107,10 @@ class FohCalibrationState extends MusicBeatState
 		var med = Math.round(median());
 		var sign = med > 0 ? '+' : '';
 		if (taps.length == 0)
-			info.text = 'Нажатий: ' + count + '\nТекущая задержка: ' + ClientPrefs.data.noteOffset + ' мс';
+			info.text = Lang.t('Нажатий: ') + count + Lang.t('\nТекущая задержка: ') + ClientPrefs.data.noteOffset + Lang.t(' мс');
 		else
-			info.text = 'Нажатий: ' + taps.length + '   Вы попадаете: ' + sign + med + ' мс (разброс ±' + Math.round(spread()) + ')\n'
-				+ (taps.length < 16 ? 'Продолжайте...' : 'Готово! ENTER — сохранить задержку ' + sign + med + ' мс');
+			info.text = Lang.t('Нажатий: ') + taps.length + Lang.t('   Вы попадаете: ') + sign + med + Lang.t(' мс (разброс ±') + Math.round(spread()) + ')\n'
+				+ (taps.length < 16 ? Lang.t('Продолжайте...') : Lang.t('Готово! ENTER — сохранить задержку ') + sign + med + Lang.t(' мс'));
 		for (i in 0...KEEP)
 		{
 			var b = bars[i];

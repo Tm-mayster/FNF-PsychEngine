@@ -25,7 +25,7 @@ class FohUpdateState extends MusicBeatState
 		shade.alpha = 0.7;
 		add(shade);
 
-		title = new FlxText(40, 60, FlxG.width - 80, 'ОБНОВЛЕНИЕ ИГРЫ', 32);
+		title = new FlxText(40, 60, FlxG.width - 80, Lang.t('ОБНОВЛЕНИЕ ИГРЫ'), 32);
 		title.setFormat(font, 32, 0xFFFFCF5A, CENTER, FlxTextBorderStyle.SHADOW, 0xFF7A5CC4);
 		title.borderSize = 4;
 		add(title);
@@ -51,7 +51,7 @@ class FohUpdateState extends MusicBeatState
 	}
 
 	static function mb(b:Float):String
-		return Std.string(Math.round(b / 1048576 * 10) / 10) + ' МБ';
+		return Std.string(Math.round(b / 1048576 * 10) / 10) + Lang.t(' МБ');
 
 	override function update(elapsed:Float)
 	{
@@ -61,36 +61,36 @@ class FohUpdateState extends MusicBeatState
 		switch (s)
 		{
 			case 'checking':
-				info.text = 'Проверяю, есть ли новая версия...';
-				hint.text = 'ESC — назад';
+				info.text = Lang.t('Проверяю, есть ли новая версия...');
+				hint.text = Lang.t('ESC — назад');
 			case 'available':
 				FohUpdater.scan();
 			case 'scanning':
-				info.text = 'Сравниваю файлы с новой версией...\n' + FohUpdater.current;
-				hint.text = 'ESC — назад';
+				info.text = Lang.t('Сравниваю файлы с новой версией...\n') + FohUpdater.current;
+				hint.text = Lang.t('ESC — назад');
 			case 'none':
-				info.text = 'У вас последняя версия (сборка ' + FohUpdater.localBuild + ').';
-				hint.text = 'ESC — назад';
+				info.text = Lang.t('У вас последняя версия (сборка ') + FohUpdater.localBuild + ').';
+				hint.text = Lang.t('ESC — назад');
 			case 'ready':
 				if (FohUpdater.fileCount == 0)
-					info.text = 'Все файлы уже свежие.\nENTER — перезапустить игру на новой версии';
+					info.text = Lang.t('Все файлы уже свежие.\nENTER — перезапустить игру на новой версии');
 				else
-					info.text = 'Новая версия: сборка ' + FohUpdater.remoteBuild + '  (у вас: ' + (FohUpdater.localBuild > 0 ? Std.string(FohUpdater.localBuild) : '?') + ')\n\n'
-						+ 'Нужно скачать: ' + FohUpdater.fileCount + ' файл(ов), ' + mb(FohUpdater.totalBytes);
-				hint.text = 'ENTER — скачать и установить     ESC — позже';
+					info.text = Lang.t('Новая версия: сборка ') + FohUpdater.remoteBuild + Lang.t('  (у вас: ') + (FohUpdater.localBuild > 0 ? Std.string(FohUpdater.localBuild) : '?') + ')\n\n'
+						+ Lang.t('Нужно скачать: ') + FohUpdater.fileCount + Lang.t(' файл(ов), ') + mb(FohUpdater.totalBytes);
+				hint.text = Lang.t('ENTER — скачать и установить     ESC — позже');
 			case 'downloading':
 				var k = FohUpdater.totalBytes > 0 ? FohUpdater.doneBytes / FohUpdater.totalBytes : 0;
 				bar.scale.x = k;
-				info.text = 'Скачиваю... ' + FohUpdater.filesDone + ' / ' + FohUpdater.fileCount + '   ' + mb(FohUpdater.doneBytes) + ' из ' + mb(FohUpdater.totalBytes)
+				info.text = Lang.t('Скачиваю... ') + FohUpdater.filesDone + ' / ' + FohUpdater.fileCount + '   ' + mb(FohUpdater.doneBytes) + Lang.t(' из ') + mb(FohUpdater.totalBytes)
 					+ '\n\n' + FohUpdater.current;
-				hint.text = 'Не закрывайте игру';
+				hint.text = Lang.t('Не закрывайте игру');
 			case 'done':
 				bar.scale.x = 1;
-				info.text = 'Готово! Обновление установлено.';
-				hint.text = 'ENTER — перезапустить игру';
+				info.text = Lang.t('Готово! Обновление установлено.');
+				hint.text = Lang.t('ENTER — перезапустить игру');
 			case 'error':
-				info.text = 'Не получилось обновиться:\n' + FohUpdater.error + '\n\nПроверьте интернет и попробуйте ещё раз.';
-				hint.text = 'R — повторить     ESC — назад';
+				info.text = Lang.t('Не получилось обновиться:\n') + FohUpdater.error + Lang.t('\n\nПроверьте интернет и попробуйте ещё раз.');
+				hint.text = Lang.t('R — повторить     ESC — назад');
 			default:
 		}
 

@@ -28,7 +28,7 @@ class OptionsState extends MusicBeatState
 {
 	public static var menuBG:FlxSprite;
 	public static var onPlayState:Bool = false;
-	static var curSelected:Int = 1;
+	static var curSelected:Int = 0;
 
 	var items:Array<FohSetting> = [];
 	var rows:Array<FlxText> = [];
@@ -48,50 +48,51 @@ class OptionsState extends MusicBeatState
 	function build()
 	{
 		items = [
-			{kind: 'header', label: 'ИГРА'},
-			{kind: 'scrolltype', label: 'Режим скролла', desc: 'osu!mania: скорость 1–40, как в osu! (время ноты на экране = 11485 / скорость мс).\nC-mod (Etterna): постоянная скорость C100–C2000.\nМножитель x: старый режим FNF, умножает скорость песни.'},
-			{kind: 'scroll', label: 'Скорость скролла', desc: 'ВЛЕВО/ВПРАВО — изменить. В osu!mania шаг 1, в C-mod шаг 10, в множителе 0.05. Скорость одинакова во всех песнях (кроме режима x).'},
-			{kind: 'bool', label: 'Ноты сверху вниз', field: 'downScroll', desc: 'Стрелки внизу экрана, ноты падают сверху.'},
-			{kind: 'bool', label: 'Стрелки по центру', field: 'middleScroll', desc: 'Ваши стрелки посередине экрана.'},
-			{kind: 'bool', label: 'Стрелки противника', field: 'opponentStrums', desc: 'Показывать ноты противника.'},
-			{kind: 'bool', label: 'Свободные нажатия', field: 'ghostTapping', desc: 'Нажатие без ноты не считается промахом.'},
-			{kind: 'bool', label: 'Отключить сброс (R)', field: 'noReset', desc: 'Клавиша сброса не перезапускает песню.'},
-			{kind: 'num', label: 'Громкость щелчка', field: 'hitsoundVolume', min: 0, max: 1, step: 0.1, decimals: 1, desc: 'Звук при попадании по ноте. 0 — выключен.',
+			{kind: 'lang', label: 'Язык / Language', desc: Lang.t('Язык игры. Новые языки добавляются файлом lang/<код>.txt в папке мода — без программирования.')},
+			{kind: 'header', label: Lang.t('ИГРА')},
+			{kind: 'scrolltype', label: Lang.t('Режим скролла'), desc: Lang.t('osu!mania: скорость 1–40, как в osu! (время ноты на экране = 11485 / скорость мс).\nC-mod (Etterna): постоянная скорость C100–C2000.\nМножитель x: старый режим FNF, умножает скорость песни.')},
+			{kind: 'scroll', label: Lang.t('Скорость скролла'), desc: Lang.t('ВЛЕВО/ВПРАВО — изменить. В osu!mania шаг 1, в C-mod шаг 10, в множителе 0.05. Скорость одинакова во всех песнях (кроме режима x).')},
+			{kind: 'bool', label: Lang.t('Ноты сверху вниз'), field: 'downScroll', desc: Lang.t('Стрелки внизу экрана, ноты падают сверху.')},
+			{kind: 'bool', label: Lang.t('Стрелки по центру'), field: 'middleScroll', desc: Lang.t('Ваши стрелки посередине экрана.')},
+			{kind: 'bool', label: Lang.t('Стрелки противника'), field: 'opponentStrums', desc: Lang.t('Показывать ноты противника.')},
+			{kind: 'bool', label: Lang.t('Свободные нажатия'), field: 'ghostTapping', desc: Lang.t('Нажатие без ноты не считается промахом.')},
+			{kind: 'bool', label: Lang.t('Отключить сброс (R)'), field: 'noReset', desc: Lang.t('Клавиша сброса не перезапускает песню.')},
+			{kind: 'num', label: Lang.t('Громкость щелчка'), field: 'hitsoundVolume', min: 0, max: 1, step: 0.1, decimals: 1, desc: Lang.t('Звук при попадании по ноте. 0 — выключен.'),
 				after: function() { FlxG.sound.play(Paths.sound('hitsound'), ClientPrefs.data.hitsoundVolume); }},
-			{kind: 'list', label: 'Строгость попаданий', field: 'hitPreset', values: ['fnf', 'soft', 'strict'], names: ['Как в FNF', 'Мягкая', 'Строгая'],
-				desc: 'Как в FNF — обычные окна Friday Night Funkin\' и Psych-модов (Sick ±45 мс, Good ±90, Bad ±135).\nМягкая — для новичков. Строгая — для тех, кто играет в osu!mania / Etterna.',
+			{kind: 'list', label: Lang.t('Строгость попаданий'), field: 'hitPreset', values: ['fnf', 'soft', 'strict'], names: [Lang.t('Как в FNF'), Lang.t('Мягкая'), Lang.t('Строгая')],
+				desc: Lang.t('Как в FNF — обычные окна Friday Night Funkin\' и Psych-модов (Sick ±45 мс, Good ±90, Bad ±135).\nМягкая — для новичков. Строгая — для тех, кто играет в osu!mania / Etterna.'),
 				after: function() { ClientPrefs.applyOD(); }},
 
-			{kind: 'header', label: 'ЗВУК И ЗАДЕРЖКА'},
-			{kind: 'open', label: 'Калибровка задержки', target: 'offset', desc: 'Играет песня — нажимайте в такт, и игра сама подберёт задержку.'},
-			{kind: 'bool', label: 'Автоподстройка задержки', field: 'autoOffset', desc: 'После каждой песни игра смотрит, раньше или позже вы нажимаете, и сама подправляет задержку. Калибровка не нужна.'},
-			{kind: 'num', label: 'Задержка нот', field: 'noteOffset', min: -500, max: 500, step: 1, decimals: 0, suffix: ' мс', desc: 'Сдвиг всех нот. Плюс — ноты позже, минус — раньше.'},
-			{kind: 'bool', label: 'Пауза при сворачивании', field: 'autoPause', desc: 'Игра останавливается, когда окно не активно.',
+			{kind: 'header', label: Lang.t('ЗВУК И ЗАДЕРЖКА')},
+			{kind: 'open', label: Lang.t('Калибровка задержки'), target: 'offset', desc: Lang.t('Играет песня — нажимайте в такт, и игра сама подберёт задержку.')},
+			{kind: 'bool', label: Lang.t('Автоподстройка задержки'), field: 'autoOffset', desc: Lang.t('После каждой песни игра смотрит, раньше или позже вы нажимаете, и сама подправляет задержку. Калибровка не нужна.')},
+			{kind: 'num', label: Lang.t('Задержка нот'), field: 'noteOffset', min: -500, max: 500, step: 1, decimals: 0, suffix: Lang.t(' мс'), desc: Lang.t('Сдвиг всех нот. Плюс — ноты позже, минус — раньше.')},
+			{kind: 'bool', label: Lang.t('Пауза при сворачивании'), field: 'autoPause', desc: Lang.t('Игра останавливается, когда окно не активно.'),
 				after: function() { FlxG.autoPause = ClientPrefs.data.autoPause; }},
 
-			{kind: 'header', label: 'УПРАВЛЕНИЕ'},
-			{kind: 'open', label: 'Клавиши', target: 'controls', desc: 'Назначить клавиши. Работают и при русской раскладке: , . ; [ ] и буквы — по месту на клавиатуре.'},
-			{kind: 'bool', label: 'Геймпад', field: 'gamepadEnabled', desc: 'Принимать ввод с геймпада. Выключено по умолчанию: подключённый или виртуальный контроллер (Steam, драйверы) может сам «нажимать» кнопки и отключать клавиатуру в игре.'},
-			{kind: 'list', label: 'Вид нот', field: 'noteSkin', values: ['Default', 'Circles', 'Diamonds', 'Bars'],
-				names: ['Стрелки', 'Круги', 'Ромбы', 'Полосы'], desc: 'Форма нот: классические стрелки FNF, круги, ромбы или полосы как в osu!mania / Etterna. Цвета настраиваются ниже.'},
-			{kind: 'open', label: 'Цвета нот', target: 'colors', desc: 'Настроить цвета стрелок (экран редактора на английском).'},
+			{kind: 'header', label: Lang.t('УПРАВЛЕНИЕ')},
+			{kind: 'open', label: Lang.t('Клавиши'), target: 'controls', desc: Lang.t('Назначить клавиши. Работают и при русской раскладке: , . ; [ ] и буквы — по месту на клавиатуре.')},
+			{kind: 'bool', label: Lang.t('Геймпад'), field: 'gamepadEnabled', desc: Lang.t('Принимать ввод с геймпада. Выключено по умолчанию: подключённый или виртуальный контроллер (Steam, драйверы) может сам «нажимать» кнопки и отключать клавиатуру в игре.')},
+			{kind: 'list', label: Lang.t('Вид нот'), field: 'noteSkin', values: ['Default', 'Circles', 'Diamonds', 'Bars'],
+				names: [Lang.t('Стрелки'), Lang.t('Круги'), Lang.t('Ромбы'), Lang.t('Полосы')], desc: Lang.t('Форма нот: классические стрелки FNF, круги, ромбы или полосы как в osu!mania / Etterna. Цвета настраиваются ниже.')},
+			{kind: 'open', label: Lang.t('Цвета нот'), target: 'colors', desc: Lang.t('Настроить цвета стрелок (экран редактора на английском).')},
 
-			{kind: 'header', label: 'ЭКРАН'},
-			{kind: 'bool', label: 'Счётчик FPS', field: 'showFPS', desc: 'Показывать частоту кадров в углу.',
+			{kind: 'header', label: Lang.t('ЭКРАН')},
+			{kind: 'bool', label: Lang.t('Счётчик FPS'), field: 'showFPS', desc: Lang.t('Показывать частоту кадров в углу.'),
 				after: function() { if (Main.fpsVar != null) Main.fpsVar.visible = ClientPrefs.data.showFPS; }},
-			{kind: 'fps', label: 'Частота кадров', field: 'framerate', desc: 'Ограничение FPS. 240–360 — минимальная задержка без нагрузки. «Без ограничений» грузит процессор и может вызывать заикание звука.'},
-			{kind: 'bool', label: 'Вспышки', field: 'flashing', desc: 'Мигающие эффекты. Выключите, если они мешают.'},
-			{kind: 'bool', label: 'Приближение камеры', field: 'camZooms', desc: 'Камера пульсирует в такт.'},
-			{kind: 'bool', label: 'Скрыть интерфейс', field: 'hideHud', desc: 'Убрать полоску здоровья, счёт и прочее.'},
-			{kind: 'list', label: 'Таймер песни', field: 'timeBarType', values: ['Time Left', 'Time Elapsed', 'Song Name', 'Disabled'],
-				names: ['Осталось', 'Прошло', 'Название', 'Выключен'], desc: 'Что показывать на полоске времени.'},
-			{kind: 'num', label: 'Прозрачность здоровья', field: 'healthBarAlpha', min: 0, max: 1, step: 0.1, decimals: 1, desc: 'Видимость полоски здоровья.'},
-			{kind: 'num', label: 'Брызги нот', field: 'splashAlpha', min: 0, max: 1, step: 0.1, decimals: 1, desc: 'Яркость эффекта при точном попадании. 0 — выключены.'},
-			{kind: 'bool', label: 'Счёт пульсирует', field: 'scoreZoom', desc: 'Текст счёта увеличивается при попадании.'},
-			{kind: 'bool', label: 'Комбо стопкой', field: 'comboStacking', desc: 'Оценки складываются друг на друга.'},
-			{kind: 'bool', label: 'Низкое качество', field: 'lowQuality', desc: 'Меньше деталей фона, быстрее на слабых ПК.'},
-			{kind: 'bool', label: 'Шейдеры', field: 'shaders', desc: 'Визуальные эффекты. Выключите на слабых ПК.'},
-			{kind: 'bool', label: 'Сглаживание', field: 'antialiasing', desc: 'Сглаживание обычной графики (пиксель-арт мода не размывается).'},
+			{kind: 'fps', label: Lang.t('Частота кадров'), field: 'framerate', desc: Lang.t('Ограничение FPS. 240–360 — минимальная задержка без нагрузки. «Без ограничений» грузит процессор и может вызывать заикание звука.')},
+			{kind: 'bool', label: Lang.t('Вспышки'), field: 'flashing', desc: Lang.t('Мигающие эффекты. Выключите, если они мешают.')},
+			{kind: 'bool', label: Lang.t('Приближение камеры'), field: 'camZooms', desc: Lang.t('Камера пульсирует в такт.')},
+			{kind: 'bool', label: Lang.t('Скрыть интерфейс'), field: 'hideHud', desc: Lang.t('Убрать полоску здоровья, счёт и прочее.')},
+			{kind: 'list', label: Lang.t('Таймер песни'), field: 'timeBarType', values: ['Time Left', 'Time Elapsed', 'Song Name', 'Disabled'],
+				names: [Lang.t('Осталось'), Lang.t('Прошло'), Lang.t('Название'), Lang.t('Выключен')], desc: Lang.t('Что показывать на полоске времени.')},
+			{kind: 'num', label: Lang.t('Прозрачность здоровья'), field: 'healthBarAlpha', min: 0, max: 1, step: 0.1, decimals: 1, desc: Lang.t('Видимость полоски здоровья.')},
+			{kind: 'num', label: Lang.t('Брызги нот'), field: 'splashAlpha', min: 0, max: 1, step: 0.1, decimals: 1, desc: Lang.t('Яркость эффекта при точном попадании. 0 — выключены.')},
+			{kind: 'bool', label: Lang.t('Счёт пульсирует'), field: 'scoreZoom', desc: Lang.t('Текст счёта увеличивается при попадании.')},
+			{kind: 'bool', label: Lang.t('Комбо стопкой'), field: 'comboStacking', desc: Lang.t('Оценки складываются друг на друга.')},
+			{kind: 'bool', label: Lang.t('Низкое качество'), field: 'lowQuality', desc: Lang.t('Меньше деталей фона, быстрее на слабых ПК.')},
+			{kind: 'bool', label: Lang.t('Шейдеры'), field: 'shaders', desc: Lang.t('Визуальные эффекты. Выключите на слабых ПК.')},
+			{kind: 'bool', label: Lang.t('Сглаживание'), field: 'antialiasing', desc: Lang.t('Сглаживание обычной графики (пиксель-арт мода не размывается).')},
 		];
 	}
 
@@ -121,7 +122,7 @@ class OptionsState extends MusicBeatState
 		descBG.alpha = 0.78;
 		add(descBG);
 
-		var title = new FlxText(40, 36, 0, 'НАСТРОЙКИ', 32);
+		var title = new FlxText(40, 36, 0, Lang.t('НАСТРОЙКИ'), 32);
 		title.setFormat(font(), 32, FlxColor.WHITE, LEFT, FlxTextBorderStyle.SHADOW, 0xFF7A5CC4);
 		title.borderSize = 4;
 		add(title);
@@ -152,11 +153,11 @@ class OptionsState extends MusicBeatState
 		add(descText);
 
 		var hint = new FlxText(40, FlxG.height - 92, FlxG.width - 80,
-			'ВВЕРХ/ВНИЗ — выбор   ВЛЕВО/ВПРАВО — изменить\nENTER — переключить/открыть   ESC — назад', 12);
+			Lang.t('ВВЕРХ/ВНИЗ — выбор   ВЛЕВО/ВПРАВО — изменить\nENTER — переключить/открыть   ESC — назад'), 12);
 		hint.setFormat(font(), 12, 0xFFCFC6F2, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
 		add(hint);
 
-		if (curSelected >= items.length || items[curSelected].kind == 'header') curSelected = 1;
+		if (curSelected >= items.length || items[curSelected].kind == 'header') curSelected = 0;
 		refresh();
 		ClientPrefs.saveSettings();
 		super.create();
@@ -167,7 +168,7 @@ class OptionsState extends MusicBeatState
 		switch (it.kind)
 		{
 			case 'bool':
-				return Reflect.getProperty(ClientPrefs.data, it.field) == true ? 'ВКЛ' : 'ВЫКЛ';
+				return Reflect.getProperty(ClientPrefs.data, it.field) == true ? Lang.t('ВКЛ') : Lang.t('ВЫКЛ');
 			case 'num':
 				var v:Float = Reflect.getProperty(ClientPrefs.data, it.field);
 				var p = Math.pow(10, it.decimals);
@@ -177,15 +178,17 @@ class OptionsState extends MusicBeatState
 				var cur:String = Reflect.getProperty(ClientPrefs.data, it.field);
 				var idx = it.values.indexOf(cur);
 				return '< ' + (idx >= 0 ? it.names[idx] : cur) + ' >';
+			case 'lang':
+				return '< ' + Lang.nameOf(Lang.current) + ' >';
 			case 'scroll':
 				return '< ' + ScrollUtil.valueText() + ' >';
 			case 'scrolltype':
 				return '< ' + ScrollUtil.typeName() + ' >';
 			case 'open':
-				return 'ОТКРЫТЬ';
+				return Lang.t('ОТКРЫТЬ');
 			case 'fps':
 				var f:Int = ClientPrefs.data.framerate;
-				return '< ' + (f >= 1000 ? 'БЕЗ ОГРАНИЧ.' : Std.string(f)) + ' >';
+				return '< ' + (f >= 1000 ? Lang.t('БЕЗ ОГРАНИЧ.') : Std.string(f)) + ' >';
 		}
 		return '';
 	}
@@ -211,7 +214,7 @@ class OptionsState extends MusicBeatState
 		cursor.y = rows[curSelected].y;
 		var it = items[curSelected];
 		descText.text = it.label.toUpperCase() + '\n\n' + (it.desc != null ? it.desc : '')
-			+ (it.field == 'hitPreset' ? '\n\nСейчас: ' + ClientPrefs.odWindowsText() : '');
+			+ (it.field == 'hitPreset' ? Lang.t('\n\nСейчас: ') + ClientPrefs.odWindowsText() : '');
 	}
 
 	function move(dir:Int)
@@ -241,6 +244,18 @@ class OptionsState extends MusicBeatState
 				Reflect.setProperty(ClientPrefs.data, it.field, it.values[idx]);
 			case 'bool':
 				Reflect.setProperty(ClientPrefs.data, it.field, !(Reflect.getProperty(ClientPrefs.data, it.field) == true));
+			case 'lang':
+				var langs = Lang.list();
+				var idx = 0;
+				for (i in 0...langs.length) if (langs[i][0] == Lang.current) idx = i;
+				idx = FlxMath.wrap(idx + dir, 0, langs.length - 1);
+				ClientPrefs.data.fohLang = langs[idx][0];
+				Lang.load(ClientPrefs.data.fohLang);
+				ClientPrefs.saveSettings();
+				FlxG.sound.play(Paths.sound('scrollMenu'), 0.5);
+				// rebuild the screen in the new language
+				MusicBeatState.switchState(new OptionsState());
+				return;
 			case 'scroll':
 				ScrollUtil.change(dir);
 			case 'fps':

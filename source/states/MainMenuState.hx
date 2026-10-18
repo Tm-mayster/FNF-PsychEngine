@@ -57,20 +57,20 @@ class MainMenuState extends MusicBeatState
 	function buildEntries()
 	{
 		entries = [
-			{id: 'story_mode', label: 'Сюжет', desc: 'Пройти недели по порядку: песни идут одна за другой, счёт суммируется.'},
-			{id: 'freeplay', label: 'Свободная игра', desc: 'Любая песня и любая сложность. Видно звёзды, NPS и ваш лучший результат.\n\nПрогресс игры: ' + (FlxG.save.data.fohProgress != null ? FlxG.save.data.fohProgress : 0) + '%\n100% = все песни пройдены на Hard или выше (точность любая).'},
-			{id: 'coop', label: 'Вдвоём (2 игрока)', desc: 'Двое на одной клавиатуре, без настроек.\n\nИгрок 2 (слева, за противника): Z X C V\nИгрок 1 (справа, за Люмена): стрелки\n\nПолоска здоровья — перетягивание каната, в конце показывается победитель. Выбор песни — как в свободной игре.'},
-			{id: 'scroll', label: '', desc: 'ВЛЕВО/ВПРАВО — изменить скорость.\nСкорость одинаковая во всех песнях.\nENTER — сменить режим:\n• osu!mania 1–40 (как в osu!; больше = быстрее);\n• C-mod как в Etterna.'},
-			{id: 'calibrate', label: 'Калибровка задержки', desc: 'Играет песня — нажимайте в такт, и игра сама вычислит задержку вашего звука и клавиатуры.'},
-			{id: 'options', label: 'Настройки', desc: 'Управление, графика, звук и игровые параметры.'},
-			#if ACHIEVEMENTS_ALLOWED {id: 'achievements', label: 'Достижения', desc: 'Награды за пройденные песни и особые условия.'}, #end
-			#if windows {id: 'update', label: 'Обновление', desc: 'Скачать новую версию игры прямо отсюда — загружаются только изменённые файлы.'}, #end
-			{id: 'credits', label: 'Титры', desc: 'Авторы мода, движка и музыки.'}
+			{id: 'story_mode', label: Lang.t('Сюжет'), desc: Lang.t('Пройти недели по порядку: песни идут одна за другой, счёт суммируется.')},
+			{id: 'freeplay', label: Lang.t('Свободная игра'), desc: Lang.t('Любая песня и любая сложность. Видно звёзды, NPS и ваш лучший результат.\n\nПрогресс игры: ') + (FlxG.save.data.fohProgress != null ? FlxG.save.data.fohProgress : 0) + Lang.t('%\n100% = все песни пройдены на Hard или выше (точность любая).')},
+			{id: 'coop', label: Lang.t('Вдвоём (2 игрока)'), desc: Lang.t('Двое на одной клавиатуре, без настроек.\n\nИгрок 2 (слева, за противника): Z X C V\nИгрок 1 (справа, за Люмена): стрелки\n\nПолоска здоровья — перетягивание каната, в конце показывается победитель. Выбор песни — как в свободной игре.')},
+			{id: 'scroll', label: '', desc: Lang.t('ВЛЕВО/ВПРАВО — изменить скорость.\nСкорость одинаковая во всех песнях.\nENTER — сменить режим:\n• osu!mania 1–40 (как в osu!; больше = быстрее);\n• C-mod как в Etterna.')},
+			{id: 'calibrate', label: Lang.t('Калибровка задержки'), desc: Lang.t('Играет песня — нажимайте в такт, и игра сама вычислит задержку вашего звука и клавиатуры.')},
+			{id: 'options', label: Lang.t('Настройки'), desc: Lang.t('Управление, графика, звук и игровые параметры.')},
+			#if ACHIEVEMENTS_ALLOWED {id: 'achievements', label: Lang.t('Достижения'), desc: Lang.t('Награды за пройденные песни и особые условия.')}, #end
+			#if windows {id: 'update', label: Lang.t('Обновление'), desc: Lang.t('Скачать новую версию игры прямо отсюда — загружаются только изменённые файлы.')}, #end
+			{id: 'credits', label: Lang.t('Титры'), desc: Lang.t('Авторы мода, движка и музыки.')}
 		];
 	}
 
 	function scrollLabel():String
-		return 'Скролл: < ' + ScrollUtil.label() + ' >';
+		return Lang.t('Скролл: < ') + ScrollUtil.label() + ' >';
 
 	override function create()
 	{
@@ -114,7 +114,7 @@ class MainMenuState extends MusicBeatState
 		title.borderSize = 4;
 		add(title);
 
-		var sub:FlxText = new FlxText(42, 90, 0, 'Лумен против Сэра Перо', 14);
+		var sub:FlxText = new FlxText(42, 90, 0, Lang.t('Лумен против Сэра Перо'), 14);
 		sub.setFormat(menuFont(), 14, 0xFFFFCF5A, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
 		add(sub);
 
@@ -152,7 +152,7 @@ class MainMenuState extends MusicBeatState
 		}
 
 		hintText = new FlxText(40, FlxG.height - 58, FlxG.width - 80,
-			'ВВЕРХ/ВНИЗ — выбор   ENTER — открыть   ESC — назад\nМышь: наведите и щёлкните, колесо — листать', 12);
+			Lang.t('ВВЕРХ/ВНИЗ — выбор   ENTER — открыть   ESC — назад\nМышь: наведите и щёлкните, колесо — листать'), 12);
 		hintText.setFormat(menuFont(), 12, 0xFFCFC6F2, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
 		hintText.visible = false; // Field of Hopes: no control hints on screen, the menu explains itself
 
@@ -197,9 +197,9 @@ class MainMenuState extends MusicBeatState
 		var e = entries[curSelected];
 		var extra:String = '';
 		if (e.id == 'scroll')
-			extra = '\n\nСейчас: ' + ScrollUtil.typeName() + ', ' + ScrollUtil.valueText();
+			extra = Lang.t('\n\nСейчас: ') + ScrollUtil.typeName() + ', ' + ScrollUtil.valueText();
 		if (e.id == 'calibrate')
-			extra = '\n\nТекущая задержка: ' + ClientPrefs.data.noteOffset + ' мс';
+			extra = Lang.t('\n\nТекущая задержка: ') + ClientPrefs.data.noteOffset + Lang.t(' мс');
 		descText.text = e.label.length > 0 ? e.label.toUpperCase() + '\n\n' + e.desc + extra : e.desc + extra;
 	}
 
@@ -300,8 +300,8 @@ class MainMenuState extends MusicBeatState
 			updateMarked = true;
 			for (e in entries) if (e.id == 'update')
 			{
-				e.label = 'Обновление ★';
-				e.desc = 'Вышла новая версия игры (сборка ' + backend.FohUpdater.remoteBuild + '). ENTER — скачать прямо из игры, только изменённые файлы.';
+				e.label = Lang.t('Обновление ★');
+				e.desc = Lang.t('Вышла новая версия игры (сборка ') + backend.FohUpdater.remoteBuild + Lang.t('). ENTER — скачать прямо из игры, только изменённые файлы.');
 			}
 			refresh();
 		}
