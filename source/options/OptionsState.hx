@@ -71,7 +71,7 @@ class OptionsState extends MusicBeatState
 
 			{kind: 'header', label: 'УПРАВЛЕНИЕ'},
 			{kind: 'open', label: 'Клавиши', target: 'controls', desc: 'Назначить клавиши. Работают и при русской раскладке: , . ; [ ] и буквы — по месту на клавиатуре.'},
-			{kind: 'open', label: 'Цвета нот', target: 'colors', desc: 'Настроить цвета стрелок.'},
+			{kind: 'open', label: 'Цвета нот', target: 'colors', desc: 'Настроить цвета стрелок (экран редактора на английском).'},
 
 			{kind: 'header', label: 'ЭКРАН'},
 			{kind: 'bool', label: 'Счётчик FPS', field: 'showFPS', desc: 'Показывать частоту кадров в углу.',
@@ -282,7 +282,7 @@ class OptionsState extends MusicBeatState
 				FlxG.sound.play(Paths.sound('confirmMenu'), 0.6);
 				switch (it.target)
 				{
-					case 'controls': openSubState(new options.ControlsSubState());
+					case 'controls': openSubState(new options.FohControlsSubState());
 					case 'colors': openSubState(new options.NotesColorSubState());
 					case 'offset':
 						ClientPrefs.saveSettings();
