@@ -143,11 +143,12 @@ class MainMenuState extends MusicBeatState
 		hintText = new FlxText(40, FlxG.height - 58, FlxG.width - 80,
 			'ВВЕРХ/ВНИЗ — выбор   ENTER — открыть   ESC — назад\nМышь: наведите и щёлкните, колесо — листать', 12);
 		hintText.setFormat(menuFont(), 12, 0xFFCFC6F2, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
-		add(hintText);
+		hintText.visible = false; // Field of Hopes: no control hints on screen, the menu explains itself
 
 		var ver:FlxText = new FlxText(0, 8, FlxG.width - 12,
-			'Mod v' + modVersion + ' | Psych Engine v' + psychEngineVersion + " | FNF v" + Application.current.meta.get('version'), 12);
-		ver.setFormat(Paths.font("vcr.ttf"), 14, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			'v' + modVersion, 12);
+		ver.setFormat(menuFont(), 10, 0xFFCFC6F2, RIGHT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+		ver.alpha = 0.5;
 		add(ver);
 
 		refresh();
