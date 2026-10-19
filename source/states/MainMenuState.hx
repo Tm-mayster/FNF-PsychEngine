@@ -65,6 +65,7 @@ class MainMenuState extends MusicBeatState
 			{id: 'options', label: Lang.t('Настройки'), desc: Lang.t('Управление, графика, звук и игровые параметры.')},
 			#if ACHIEVEMENTS_ALLOWED {id: 'achievements', label: Lang.t('Достижения'), desc: Lang.t('Награды за пройденные песни и особые условия.')}, #end
 			#if windows {id: 'update', label: Lang.t('Обновление'), desc: Lang.t('Скачать новую версию игры прямо отсюда — загружаются только изменённые файлы.')}, #end
+			{id: 'lang', label: '', desc: 'Язык игры / Game language\n\nВЛЕВО/ВПРАВО или ENTER — сменить.\nLEFT/RIGHT or ENTER — change.'},
 			{id: 'credits', label: Lang.t('Титры'), desc: Lang.t('Авторы мода, движка и музыки.')}
 		];
 	}
@@ -189,7 +190,7 @@ class MainMenuState extends MusicBeatState
 		{
 			var e = entries[i];
 			var t = labels[i];
-			t.text = (e.id == 'scroll') ? scrollLabel() : e.label;
+			t.text = (e.id == 'scroll') ? scrollLabel() : (e.id == 'lang' ? Lang.t('Язык') + ': < ' + Lang.nameOf(Lang.current) + ' >' : e.label);
 			t.color = (i == curSelected) ? 0xFFFFCF5A : 0xFFCFC6F2;
 			t.x = (i == curSelected) ? 100 : 90;
 		}
@@ -208,6 +209,21 @@ class MainMenuState extends MusicBeatState
 		curSelected = FlxMath.wrap(curSelected + change, 0, entries.length - 1);
 		if (change != 0) FlxG.sound.play(Paths.sound('scrollMenu'));
 		refresh();
+	}
+
+	function changeLang(dir:Int)
+	{
+		var langs = Lang.list();
+		var idx = 0;
+		for (i in 0...langs.length) if (langs[i][0] == Lang.current) idx = i;
+		idx = FlxMath.wrap(idx + dir, 0, langs.length - 1);
+		ClientPrefs.data.fohLang = langs[idx][0];
+		Lang.load(ClientPrefs.data.fohLang);
+		ClientPrefs.saveSettings();
+		FlxG.sound.play(Paths.sound('scrollMenu'), 0.6);
+		// rebuild the menu in the new language, keeping the cursor on this item
+		selectedSomethin = true;
+		MusicBeatState.switchState(new MainMenuState());
 	}
 
 	function changeScroll(dir:Int)
@@ -235,6 +251,11 @@ class MainMenuState extends MusicBeatState
 			if (controls.UI_DOWN_P) changeItem(1);
 			if (FlxG.mouse.wheel != 0) changeItem(-FlxG.mouse.wheel);
 
+			if (entries[curSelected].id == 'lang')
+			{
+				if (controls.UI_LEFT_P) changeLang(-1);
+				else if (controls.UI_RIGHT_P) changeLang(1);
+			}
 			var isScroll:Bool = entries[curSelected].id == 'scroll';
 			if (isScroll)
 			{
@@ -315,6 +336,11 @@ class MainMenuState extends MusicBeatState
 		if (option == 'scroll')
 		{
 			toggleScrollType();
+			return;
+		}
+		if (option == 'lang')
+		{
+			changeLang(1);
 			return;
 		}
 
