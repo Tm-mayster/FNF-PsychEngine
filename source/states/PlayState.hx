@@ -1353,6 +1353,31 @@ class PlayState extends MusicBeatState
 		var sectionsData:Array<SwagSection> = PlayState.SONG.notes;
 		var ghostNotesCaught:Int = 0;
 		var daBpm:Float = Conductor.bpm;
+
+		// Field of Hopes co-op: both players get exactly the same notes (player 1's chart is copied to player 2)
+		if (coopMode)
+		{
+			var mirrored:Array<SwagSection> = [];
+			for (sec in sectionsData)
+			{
+				var c:SwagSection = Reflect.copy(sec);
+				var arr:Array<Dynamic> = [];
+				for (n in sec.sectionNotes)
+				{
+					var row:Array<Dynamic> = n;
+					if (row[1] < totalColumns)
+					{
+						arr.push(row);
+						var m:Array<Dynamic> = row.copy();
+						m[1] = row[1] + totalColumns;
+						arr.push(m);
+					}
+				}
+				c.sectionNotes = arr;
+				mirrored.push(c);
+			}
+			sectionsData = mirrored;
+		}
 	
 		for (section in sectionsData)
 		{
