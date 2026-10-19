@@ -71,7 +71,7 @@ class OptionsState extends MusicBeatState
 
 			{kind: 'header', label: Lang.t('УПРАВЛЕНИЕ')},
 			{kind: 'open', label: Lang.t('Клавиши'), target: 'controls', desc: Lang.t('Назначить клавиши. Работают и при русской раскладке: , . ; [ ] и буквы — по месту на клавиатуре.')},
-			{kind: 'bool', label: Lang.t('Геймпад'), field: 'gamepadEnabled', desc: Lang.t('Принимать ввод с геймпада. Выключено по умолчанию: подключённый или виртуальный контроллер (Steam, драйверы) может сам «нажимать» кнопки и отключать клавиатуру в игре.')},
+			{kind: 'open', label: Lang.t('Геймпады и контроллеры'), target: 'pads', desc: Lang.t('Геймпад, гитара или барабаны для одного или двух игроков: кто на чём играет и какие кнопки на каких дорожках. Клавиатура при этом продолжает работать.')},
 			{kind: 'list', label: Lang.t('Вид нот'), field: 'noteSkin', values: ['Default', 'Circles', 'Diamonds', 'Bars'],
 				names: [Lang.t('Стрелки'), Lang.t('Круги'), Lang.t('Ромбы'), Lang.t('Полосы')], desc: Lang.t('Форма нот: классические стрелки FNF, круги, ромбы или полосы как в osu!mania / Etterna. Цвета настраиваются ниже.')},
 			{kind: 'open', label: Lang.t('Цвета нот'), target: 'colors', desc: Lang.t('Настроить цвета стрелок (экран редактора на английском).')},
@@ -296,6 +296,7 @@ class OptionsState extends MusicBeatState
 				switch (it.target)
 				{
 					case 'controls': openSubState(new options.FohControlsSubState());
+					case 'pads': openSubState(new options.FohPadSubState());
 					case 'colors': openSubState(new options.NotesColorSubState());
 					case 'offset':
 						ClientPrefs.saveSettings();

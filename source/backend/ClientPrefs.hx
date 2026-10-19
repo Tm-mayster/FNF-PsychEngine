@@ -9,7 +9,12 @@ import states.TitleState;
 // Add a variable here and it will get automatically saved
 @:structInit class SaveVariables {
 	public var autoOffset:Bool = false; // Field of Hopes: tune note offset from your hits after each song
-	public var gamepadEnabled:Bool = false; // Field of Hopes: ignore gamepads unless turned on
+	public var gamepadEnabled:Bool = false; // Field of Hopes: ignore gamepads in MENUS unless turned on
+	// Field of Hopes: in-song gamepads / guitars / drums (see FohPads)
+	public var padDevP1:String = 'auto';
+	public var padDevP2:String = 'auto';
+	public var padBindsP1:Array<Array<Int>> = null;
+	public var padBindsP2:Array<Array<Int>> = null;
 	public var downScroll:Bool = false;
 	public var middleScroll:Bool = false;
 	public var opponentStrums:Bool = true;

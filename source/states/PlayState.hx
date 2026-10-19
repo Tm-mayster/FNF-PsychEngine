@@ -6,6 +6,7 @@ import backend.WeekData;
 import backend.Song;
 import backend.Rating;
 import backend.InputFormatter;
+import backend.FohPads;
 
 import flixel.FlxBasic;
 import flixel.FlxObject;
@@ -1740,11 +1741,12 @@ class PlayState extends MusicBeatState
 		}
 
 		// Field of Hopes: in co-op the pause key must be HELD (an accidental Enter shouldn't stop the duel)
-		var wantPause:Bool = controls.PAUSE;
+		updatePads();
+		var wantPause:Bool = controls.PAUSE || FohPads.pauseButton(padsP1, JUST_PRESSED);
 		if (coopMode)
 		{
 			wantPause = false;
-			if (controls.pressed('pause') && startedCountdown && canPause)
+			if ((controls.pressed('pause') || FohPads.pauseButton(padsP1, PRESSED) || FohPads.pauseButton(padsP2, PRESSED)) && startedCountdown && canPause)
 			{
 				pauseHold += elapsed;
 				showPauseHold(pauseHold / PAUSE_HOLD_TIME);
@@ -2733,6 +2735,37 @@ class PlayState extends MusicBeatState
 	public var p2MaxCombo:Int = 0;
 	public var p1MaxCombo:Int = 0;
 
+	// ---- gamepads / guitars / drums (FohPads) ----
+	var padsP1:Array<flixel.input.gamepad.FlxGamepad> = [];
+	var padsP2:Array<flixel.input.gamepad.FlxGamepad> = [];
+
+	function updatePads()
+	{
+		padsP1 = FohPads.padsFor(1, coopMode);
+		padsP2 = coopMode ? FohPads.padsFor(2, true) : [];
+		if (paused || !generatedMusic) return;
+		for (i in 0...4)
+		{
+			if (!cpuControlled)
+			{
+				if (FohPads.lane(padsP1, 1, i, JUST_PRESSED)) keyPressed(i);
+				else if (FohPads.lane(padsP1, 1, i, JUST_RELEASED) && !p1KeyboardHeld(i)) keyReleased(i);
+			}
+			if (coopMode)
+			{
+				if (FohPads.lane(padsP2, 2, i, JUST_PRESSED)) p2KeyPressed(i);
+				else if (FohPads.lane(padsP2, 2, i, JUST_RELEASED) && !FlxG.keys.checkStatus(COOP_P2[i], PRESSED)) p2KeyReleased(i);
+			}
+		}
+	}
+
+	function p1KeyboardHeld(i:Int):Bool
+	{
+		if (coopMode) return FlxG.keys.checkStatus(COOP_P1[i], PRESSED);
+		var kb:Array<FlxKey> = Controls.instance.keyboardBinds[keysArray[i]];
+		return kb != null && FlxG.keys.anyPressed(kb);
+	}
+
 	function p2KeyPressed(key:Int)
 	{
 		if (paused || inCutscene || key < 0 || key > 3 || !generatedMusic || endingSong || !startedCountdown) return;
@@ -2773,7 +2806,7 @@ class PlayState extends MusicBeatState
 		{
 			if (n == null || n.mustPress || !n.isSustainNote || n.ignoreNote || n.wasGoodHit || n.tooLate || !n.canBeHit) continue;
 			if (n.prevNote != null && !n.prevNote.wasGoodHit) continue;
-			if (FlxG.keys.checkStatus(COOP_P2[n.noteData], PRESSED)) p2NoteHit(n);
+			if (FlxG.keys.checkStatus(COOP_P2[n.noteData], PRESSED) || FohPads.lane(padsP2, 2, n.noteData, PRESSED)) p2NoteHit(n);
 		}
 	}
 
@@ -2824,7 +2857,7 @@ class PlayState extends MusicBeatState
 	{
 		if (pauseHoldText == null)
 		{
-			pauseHoldText = new FlxText(0, FlxG.height * 0.42, FlxG.width, Lang.t('Удерживайте ENTER — пауза'), 16);
+			pauseHoldText = new FlxText(0, FlxG.height * 0.42, FlxG.width, Lang.t('Удерживайте ENTER / START — пауза'), 16);
 			pauseHoldText.setFormat(states.MainMenuState.menuFont(), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
 			pauseHoldText.borderSize = 3;
 			pauseHoldText.cameras = [camOther];
@@ -2892,8 +2925,17 @@ class PlayState extends MusicBeatState
 	}
 
 	/** shows which keys play which lane, during the countdown */
+	function padHint(pads:Array<flixel.input.gamepad.FlxGamepad>, player:Int, laneId:Int):String
+	{
+		if (pads.length == 0) return '';
+		var codes = FohPads.binds(player)[laneId];
+		return (codes != null && codes.length > 0) ? '\n' + FohPads.codeName(codes[0]) : '';
+	}
+
 	function showKeyHints()
 	{
+		padsP1 = FohPads.padsFor(1, coopMode);
+		padsP2 = coopMode ? FohPads.padsFor(2, true) : [];
 		var font = states.MainMenuState.menuFont();
 		var hints:Array<FlxText> = [];
 		var down = ClientPrefs.data.downScroll;
@@ -2920,19 +2962,19 @@ class PlayState extends MusicBeatState
 		for (i in 0...playerStrums.length)
 		{
 			var label:String;
-			if (coopMode) label = InputFormatter.getKeyName(COOP_P1[i]);
+			if (coopMode) label = InputFormatter.getKeyName(COOP_P1[i]) + padHint(padsP1, 1, i);
 			else
 			{
 				var names:Array<String> = [];
 				var binds:Array<FlxKey> = Controls.instance.keyboardBinds[keysArray[i]];
 				if (binds != null) for (b in binds) if (b != NONE && names.length < 2) names.push(InputFormatter.getKeyName(b));
-				label = names.join('\n');
+				label = names.join('\n') + padHint(padsP1, 1, i);
 			}
 			addHint(playerStrums.members[i], label, 0xFFFFE27A);
 		}
 		if (coopMode)
 		{
-			for (i in 0...opponentStrums.length) addHint(opponentStrums.members[i], InputFormatter.getKeyName(COOP_P2[i]), 0xFF7DF9FF);
+			for (i in 0...opponentStrums.length) addHint(opponentStrums.members[i], InputFormatter.getKeyName(COOP_P2[i]) + padHint(padsP2, 2, i), 0xFF7DF9FF);
 			header(opponentStrums, Lang.t('ИГРОК 2'), 0xFF7DF9FF);
 			header(playerStrums, Lang.t('ИГРОК 1'), 0xFFFFE27A);
 		}
@@ -3207,7 +3249,6 @@ class PlayState extends MusicBeatState
 		}
 		var key:Int = getKeyFromEvent(keysArray, eventKey);
 
-		if (!controls.controllerMode)
 		{
 			#if debug
 			//Prevents crash specifically on debug without needing to try catch shit
@@ -3301,7 +3342,7 @@ class PlayState extends MusicBeatState
 			return;
 		}
 		var key:Int = getKeyFromEvent(keysArray, eventKey);
-		if(!controls.controllerMode && key > -1) keyReleased(key);
+		if(key > -1) keyReleased(key);
 	}
 
 	private function keyReleased(key:Int)
@@ -3344,25 +3385,24 @@ class PlayState extends MusicBeatState
 		var releaseArray:Array<Bool> = [];
 		for (i in 0...keysArray.length)
 		{
+			var padHold:Bool = FohPads.lane(padsP1, 1, i, PRESSED);
 			if (coopMode)
 			{
-				holdArray.push(FlxG.keys.checkStatus(COOP_P1[i], PRESSED));
+				holdArray.push(FlxG.keys.checkStatus(COOP_P1[i], PRESSED) || padHold);
 				pressArray.push(false);
 				releaseArray.push(false);
 				continue;
 			}
 			var key = keysArray[i];
-			holdArray.push(controls.pressed(key));
-			pressArray.push(controls.justPressed(key));
-			releaseArray.push(controls.justReleased(key));
+			// keyboard presses come from key events, gamepads from updatePads()
+			var kb:Array<FlxKey> = Controls.instance.keyboardBinds[key];
+			holdArray.push((kb != null && FlxG.keys.anyPressed(kb)) || padHold);
+			pressArray.push(false);
+			releaseArray.push(kb != null && FlxG.keys.anyJustReleased(kb));
 		}
 		if (coopMode) p2HoldCheck();
 
 		// TO DO: Find a better way to handle controller inputs, this should work for now
-		if(controls.controllerMode && pressArray.contains(true))
-			for (i in 0...pressArray.length)
-				if(pressArray[i] && strumsBlocked[i] != true)
-					keyPressed(i);
 
 		if (startedCountdown && !inCutscene && !boyfriend.stunned && generatedMusic)
 		{
@@ -3392,7 +3432,7 @@ class PlayState extends MusicBeatState
 		}
 
 		// TO DO: Find a better way to handle controller inputs, this should work for now
-		if((controls.controllerMode || strumsBlocked.contains(true)) && releaseArray.contains(true))
+		if(strumsBlocked.contains(true) && releaseArray.contains(true))
 			for (i in 0...releaseArray.length)
 				if(releaseArray[i] || strumsBlocked[i] == true)
 					keyReleased(i);

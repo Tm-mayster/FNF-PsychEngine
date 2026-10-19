@@ -324,8 +324,11 @@ class FreeplayState extends MusicBeatState
 	var holdTime:Float = 0;
 
 	var stopMusicPlay:Bool = false;
+	var padBadgeTimer:Float = 0;
 	override function update(elapsed:Float)
 	{
+		padBadgeTimer += elapsed;
+		if (padBadgeTimer > 1) { padBadgeTimer = 0; if (PlayState.coopMode) updateCoopBadge(); }
 		animateStars(elapsed);
 		if (diffAura != null && diffAura.visible)
 		{
@@ -706,6 +709,16 @@ class FreeplayState extends MusicBeatState
 		if (PlayState.coopMode)
 		{
 			coopText.text = Lang.t('★ ИГРАЕМ ВДВОЁМ ★\nИгрок 2: A S D F\nИгрок 1: K L ; \'');
+			// show which gamepad goes to whom (changes live when a pad is plugged in)
+			var pads = backend.FohPads.activePads();
+			var lines = coopText.text.split('\n');
+			for (n in 1...3)
+			{
+				var mine = backend.FohPads.padsFor(n, true);
+				if (mine.length > 0 && lines.length > 3 - n)
+					lines[3 - n] += ' + ' + Lang.t('геймпад ') + (pads.indexOf(mine[0]) + 1);
+			}
+			coopText.text = lines.join('\n');
 			coopBG.color = 0xFF2A1F5A;
 		}
 	}
