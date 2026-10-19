@@ -196,8 +196,17 @@ class ClientPrefs {
 		// starving the audio thread). Builds 0.3 defaulted to 1000, which could stutter audio.
 		if(FlxG.save.data.framerate == null || FlxG.save.data.fohFpsMigrated != true) {
 			final refreshRate:Int = FlxG.stage.application.window.displayMode.refreshRate;
-			data.framerate = Std.int(FlxMath.bound(refreshRate * 2, 120, 360));
+			data.framerate = Std.int(FlxMath.bound(refreshRate, 60, 360));
 			FlxG.save.data.fohFpsMigrated = true;
+			FlxG.save.data.fohFpsRefresh = true;
+		}
+		// Field of Hopes: frame rate = monitor refresh rate (even frame pacing = smooth arrows, no judder)
+		if (FlxG.save.data.fohFpsRefresh != true)
+		{
+			var hz:Int = FlxG.stage.application.window.displayMode.refreshRate;
+			if (hz < 60 || hz > 360) hz = 60;
+			data.framerate = hz;
+			FlxG.save.data.fohFpsRefresh = true;
 		}
 		#end
 
@@ -228,11 +237,18 @@ class ClientPrefs {
 		applyOD();
 		if (data.fohLang == null || data.fohLang.length == 0) data.fohLang = Lang.detectDefault();
 		Lang.load(data.fohLang);
+		// Field of Hopes: the audio buffer grew from ~12 ms to ~35 ms -> move notes later by the same amount, once
+		if (FlxG.save.data.fohAudioBuf512 != true)
+		{
+			if (FlxG.save.data.fohOffsetReset2 == true) data.noteOffset += 23;
+			FlxG.save.data.fohAudioBuf512 = true;
+		}
 		// Field of Hopes: earlier auto-offset could drift far away -> reset once to the safe default
 		if (FlxG.save.data.fohOffsetReset2 != true)
 		{
-			data.noteOffset = 20;
+			data.noteOffset = 43;
 			FlxG.save.data.fohOffsetReset2 = true;
+			FlxG.save.data.fohAudioBuf512 = true;
 		}
 		// Field of Hopes: compensate the remaining audio output delay once (~20 ms with the low-latency audio config)
 		if (FlxG.save.data.fohOffsetMigrated != true)

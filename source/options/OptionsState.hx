@@ -79,7 +79,7 @@ class OptionsState extends MusicBeatState
 			{kind: 'header', label: Lang.t('ЭКРАН')},
 			{kind: 'bool', label: Lang.t('Счётчик FPS'), field: 'showFPS', desc: Lang.t('Показывать частоту кадров в углу.'),
 				after: function() { if (Main.fpsVar != null) Main.fpsVar.visible = ClientPrefs.data.showFPS; }},
-			{kind: 'fps', label: Lang.t('Частота кадров'), field: 'framerate', desc: Lang.t('Ограничение FPS. 240–360 — минимальная задержка без нагрузки. «Без ограничений» грузит процессор и может вызывать заикание звука.')},
+			{kind: 'fps', label: Lang.t('Частота кадров'), field: 'framerate', desc: Lang.t('Лучше всего — частота вашего монитора (60, 144, 165…): стрелки летят ровно, без рывков. Больше — стрелки могут дёргаться, «Без ограничений» грузит процессор.')},
 			{kind: 'bool', label: Lang.t('Вспышки'), field: 'flashing', desc: Lang.t('Мигающие эффекты. Выключите, если они мешают.')},
 			{kind: 'bool', label: Lang.t('Приближение камеры'), field: 'camZooms', desc: Lang.t('Камера пульсирует в такт.')},
 			{kind: 'bool', label: Lang.t('Скрыть интерфейс'), field: 'hideHud', desc: Lang.t('Убрать полоску здоровья, счёт и прочее.')},

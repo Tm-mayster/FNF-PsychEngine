@@ -73,7 +73,6 @@
 Счётчик FPS => FPS counter
 Показывать частоту кадров в углу. => Show the frame rate in the corner.
 Частота кадров => Frame rate
-Ограничение FPS. 240–360 — минимальная задержка без нагрузки. «Без ограничений» грузит процессор и может вызывать заикание звука. => FPS limit. 240–360 — lowest delay without load. “Unlimited” loads the CPU and may make the sound stutter.
 Вспышки => Flashing lights
 Мигающие эффекты. Выключите, если они мешают. => Flashing effects. Turn off if they bother you.
 Приближение камеры => Camera zooms
@@ -247,3 +246,5 @@ R — повторить     ESC — назад => R — retry     ESC — back
 Своя у каждой песни: скорость, которую задал автор песни (x1), её можно умножить, например x0.8 медленнее, x1.2 быстрее.\nosu!mania 1–40: одна скорость во всех песнях, как в osu!.\nC-mod (Etterna): постоянная скорость C100–C2000. => Per song: the speed the song's author set (x1); you can multiply it, e.g. x0.8 slower, x1.2 faster.\nosu!mania 1–40: one speed for every song, like osu!.\nC-mod (Etterna): constant speed C100–C2000.
 ВЛЕВО/ВПРАВО — изменить. В режиме песни шаг x0.05, в osu!mania шаг 1, в C-mod шаг 10. => LEFT/RIGHT — change. Step x0.05 in per-song mode, 1 in osu!mania, 10 in C-mod.
 Своя у каждой песни => Per song
+
+Лучше всего — частота вашего монитора (60, 144, 165…): стрелки летят ровно, без рывков. Больше — стрелки могут дёргаться, «Без ограничений» грузит процессор. => Best: your monitor's refresh rate (60, 144, 165…) — arrows move evenly, without judder. Higher can make them stutter; “Unlimited” loads the CPU.
