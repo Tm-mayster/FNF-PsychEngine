@@ -251,3 +251,4 @@ R — повторить     ESC — назад => R — retry     ESC — back
 Язык => Language
 Выход => Quit
 Закрыть игру. => Close the game.
+Удерживайте ENTER — пауза => Hold ENTER to pause

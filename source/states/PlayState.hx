@@ -1714,7 +1714,20 @@ class PlayState extends MusicBeatState
 			botplayTxt.alpha = 1 - Math.sin((Math.PI * botplaySine) / 180);
 		}
 
-		if (controls.PAUSE && startedCountdown && canPause)
+		// Field of Hopes: in co-op the pause key must be HELD (an accidental Enter shouldn't stop the duel)
+		var wantPause:Bool = controls.PAUSE;
+		if (coopMode)
+		{
+			wantPause = false;
+			if (controls.pressed('pause') && startedCountdown && canPause)
+			{
+				pauseHold += elapsed;
+				showPauseHold(pauseHold / PAUSE_HOLD_TIME);
+				if (pauseHold >= PAUSE_HOLD_TIME) { wantPause = true; pauseHold = 0; showPauseHold(0); }
+			}
+			else if (pauseHold > 0) { pauseHold = 0; showPauseHold(0); }
+		}
+		if (wantPause && startedCountdown && canPause)
 		{
 			var ret:Dynamic = callOnScripts('onPause', null, true);
 			if(ret != LuaUtils.Function_Stop) {
@@ -2776,6 +2789,29 @@ class PlayState extends MusicBeatState
 		var anim = singAnimations[Std.int(Math.abs(Math.min(singAnimations.length - 1, note.noteData)))] + 'miss';
 		if (dad != null && dad.hasAnimation(anim)) dad.playAnim(anim, true);
 		updateScore(true, false);
+	}
+
+	static inline var PAUSE_HOLD_TIME:Float = 0.7;
+	var pauseHold:Float = 0;
+	var pauseHoldText:FlxText;
+	var pauseHoldBar:FlxSprite;
+	function showPauseHold(k:Float)
+	{
+		if (pauseHoldText == null)
+		{
+			pauseHoldText = new FlxText(0, FlxG.height * 0.42, FlxG.width, Lang.t('Удерживайте ENTER — пауза'), 16);
+			pauseHoldText.setFormat(states.MainMenuState.menuFont(), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
+			pauseHoldText.borderSize = 3;
+			pauseHoldText.cameras = [camOther];
+			add(pauseHoldText);
+			pauseHoldBar = new FlxSprite(FlxG.width / 2 - 150, FlxG.height * 0.42 + 30).makeGraphic(300, 8, 0xFFFFCF5A);
+			pauseHoldBar.origin.x = 0;
+			pauseHoldBar.cameras = [camOther];
+			add(pauseHoldBar);
+		}
+		var vis = k > 0.02;
+		pauseHoldText.visible = pauseHoldBar.visible = vis;
+		pauseHoldBar.scale.x = Math.min(1, k);
 	}
 
 	function strumCenter(group:FlxTypedGroup<StrumNote>):Float
