@@ -1,0 +1,41 @@
+{
+ "songs": [
+  [
+   "inkblot",
+   "quill",
+   [
+    122,
+    92,
+    214
+   ]
+  ],
+  [
+   "starfall",
+   "quill",
+   [
+    122,
+    92,
+    214
+   ]
+  ]
+ ],
+ "storyName": "Ink Night",
+ "weekName": "Ink Night",
+ "freeplayColor": [
+  122,
+  92,
+  214
+ ],
+ "weekCharacters": [
+  "quill",
+  "lumen",
+  ""
+ ],
+ "weekBackground": "inkwell",
+ "weekBefore": "",
+ "startUnlocked": true,
+ "hiddenUntilUnlocked": false,
+ "hideStoryMode": false,
+ "hideFreeplay": false,
+ "difficulties": "Easy, Normal, Hard, Expert, Insane"
+}

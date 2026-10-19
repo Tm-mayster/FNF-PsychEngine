@@ -1,0 +1,32 @@
+{
+ "songs": [
+  [
+   "lightbreaker",
+   "nox",
+   [
+    199,
+    125,
+    255
+   ]
+  ]
+ ],
+ "storyName": "Finale: Lightbreaker",
+ "weekName": "FINALE",
+ "freeplayColor": [
+  199,
+  125,
+  255
+ ],
+ "weekCharacters": [
+  "nox",
+  "lumen",
+  ""
+ ],
+ "weekBackground": "rift",
+ "weekBefore": "",
+ "startUnlocked": true,
+ "hiddenUntilUnlocked": false,
+ "hideStoryMode": false,
+ "hideFreeplay": false,
+ "difficulties": "Hard, Expert, Insane, Omega"
+}

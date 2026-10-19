@@ -1,0 +1,11 @@
+{
+ "name": "Field of Hopes",
+ "description": "Lumen vs Sir Quill on the Starlit Glade.\n5 difficulties: Easy -> Insane.\nMusic: Toby Fox (DELTARUNE).",
+ "color": [
+  122,
+  92,
+  214
+ ],
+ "restart": true,
+ "runsGlobally": true
+}

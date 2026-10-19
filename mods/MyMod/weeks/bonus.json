@@ -1,0 +1,32 @@
+{
+ "songs": [
+  [
+   "the-last-dance",
+   "umbra",
+   [
+    199,
+    125,
+    255
+   ]
+  ]
+ ],
+ "storyName": "Bonus",
+ "weekName": "Bonus",
+ "freeplayColor": [
+  199,
+  125,
+  255
+ ],
+ "weekCharacters": [
+  "umbra",
+  "lumen",
+  ""
+ ],
+ "weekBackground": "eclipse",
+ "weekBefore": "",
+ "startUnlocked": true,
+ "hiddenUntilUnlocked": false,
+ "hideStoryMode": false,
+ "hideFreeplay": false,
+ "difficulties": "Easy, Normal, Hard, Expert, Insane"
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="byte.png">
+	<SubTexture name="byte idle0000" x="0" y="0" width="384" height="552"/>
+	<SubTexture name="byte idle0001" x="386" y="0" width="384" height="552"/>
+	<SubTexture name="byte singLEFT0000" x="772" y="0" width="384" height="552"/>
+	<SubTexture name="byte singLEFT0001" x="1158" y="0" width="384" height="552"/>
+	<SubTexture name="byte singDOWN0000" x="1544" y="0" width="384" height="552"/>
+	<SubTexture name="byte singDOWN0001" x="1930" y="0" width="384" height="552"/>
+	<SubTexture name="byte singUP0000" x="2316" y="0" width="384" height="552"/>
+	<SubTexture name="byte singUP0001" x="2702" y="0" width="384" height="552"/>
+	<SubTexture name="byte singRIGHT0000" x="0" y="554" width="384" height="552"/>
+	<SubTexture name="byte singRIGHT0001" x="386" y="554" width="384" height="552"/>
+</TextureAtlas>

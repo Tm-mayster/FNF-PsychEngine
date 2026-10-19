@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="lantern.png">
+	<SubTexture name="lantern bob0000" x="0" y="0" width="10" height="16"/>
+	<SubTexture name="lantern bob0001" x="12" y="0" width="10" height="16"/>
+	<SubTexture name="lantern bob0002" x="24" y="0" width="10" height="16"/>
+	<SubTexture name="lantern bob0003" x="36" y="0" width="10" height="16"/>
+</TextureAtlas>

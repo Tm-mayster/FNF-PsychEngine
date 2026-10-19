@@ -1,0 +1,25 @@
+{
+ "titlex": 20,
+ "titley": 40,
+ "startx": 250,
+ "starty": 600,
+ "gfx": 760,
+ "gfy": 120,
+ "backgroundSprite": "titleBG",
+ "bpm": 100,
+ "animation": "lumen title",
+ "dance_left": [
+  0,
+  1,
+  2,
+  3
+ ],
+ "dance_right": [
+  4,
+  5,
+  6,
+  7
+ ],
+ "idle": false,
+ "image": "lumenTitle"
+}

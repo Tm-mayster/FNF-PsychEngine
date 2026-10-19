@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="menu_wisp.png">
+	<SubTexture name="wisp idle0000" x="0" y="0" width="208" height="296"/>
+	<SubTexture name="wisp idle0001" x="210" y="0" width="208" height="296"/>
+	<SubTexture name="wisp confirm0000" x="420" y="0" width="208" height="296"/>
+	<SubTexture name="wisp confirm0001" x="630" y="0" width="208" height="296"/>
+</TextureAtlas>

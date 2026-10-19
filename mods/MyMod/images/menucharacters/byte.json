@@ -1,0 +1,12 @@
+{
+ "image": "menu_byte",
+ "position": [
+  -30,
+  -50
+ ],
+ "scale": 1,
+ "idle_anim": "byte idle",
+ "confirm_anim": "byte confirm",
+ "flipX": false,
+ "antialiasing": false
+}

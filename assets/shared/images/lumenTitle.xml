@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="lumenTitle.png">
+	<SubTexture name="lumen title0000" x="0" y="0" width="352" height="464"/>
+	<SubTexture name="lumen title0001" x="354" y="0" width="352" height="464"/>
+	<SubTexture name="lumen title0002" x="708" y="0" width="352" height="464"/>
+	<SubTexture name="lumen title0003" x="1062" y="0" width="352" height="464"/>
+	<SubTexture name="lumen title0004" x="0" y="466" width="352" height="464"/>
+	<SubTexture name="lumen title0005" x="354" y="466" width="352" height="464"/>
+	<SubTexture name="lumen title0006" x="708" y="466" width="352" height="464"/>
+	<SubTexture name="lumen title0007" x="1062" y="466" width="352" height="464"/>
+</TextureAtlas>

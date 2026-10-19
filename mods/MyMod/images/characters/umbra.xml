@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="umbra.png">
+	<SubTexture name="umbra idle0000" x="0" y="0" width="288" height="396"/>
+	<SubTexture name="umbra idle0001" x="290" y="0" width="288" height="396"/>
+	<SubTexture name="umbra singLEFT0000" x="580" y="0" width="288" height="396"/>
+	<SubTexture name="umbra singLEFT0001" x="870" y="0" width="288" height="396"/>
+	<SubTexture name="umbra singDOWN0000" x="1160" y="0" width="288" height="396"/>
+	<SubTexture name="umbra singDOWN0001" x="1450" y="0" width="288" height="396"/>
+	<SubTexture name="umbra singUP0000" x="1740" y="0" width="288" height="396"/>
+	<SubTexture name="umbra singUP0001" x="2030" y="0" width="288" height="396"/>
+	<SubTexture name="umbra singRIGHT0000" x="0" y="398" width="288" height="396"/>
+	<SubTexture name="umbra singRIGHT0001" x="290" y="398" width="288" height="396"/>
+</TextureAtlas>

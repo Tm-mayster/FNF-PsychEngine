@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="rook.png">
+	<SubTexture name="rook idle0000" x="0" y="0" width="504" height="624"/>
+	<SubTexture name="rook idle0001" x="506" y="0" width="504" height="624"/>
+	<SubTexture name="rook singLEFT0000" x="1012" y="0" width="504" height="624"/>
+	<SubTexture name="rook singLEFT0001" x="1518" y="0" width="504" height="624"/>
+	<SubTexture name="rook singDOWN0000" x="2024" y="0" width="504" height="624"/>
+	<SubTexture name="rook singDOWN0001" x="2530" y="0" width="504" height="624"/>
+	<SubTexture name="rook singUP0000" x="3036" y="0" width="504" height="624"/>
+	<SubTexture name="rook singUP0001" x="3542" y="0" width="504" height="624"/>
+	<SubTexture name="rook singRIGHT0000" x="0" y="626" width="504" height="624"/>
+	<SubTexture name="rook singRIGHT0001" x="506" y="626" width="504" height="624"/>
+</TextureAtlas>

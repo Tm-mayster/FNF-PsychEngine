@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="fohAura.png">
+	<SubTexture name="aura0000" x="0" y="0" width="160" height="224"/>
+	<SubTexture name="aura0001" x="162" y="0" width="160" height="224"/>
+	<SubTexture name="aura0002" x="324" y="0" width="160" height="224"/>
+	<SubTexture name="aura0003" x="486" y="0" width="160" height="224"/>
+	<SubTexture name="aura0004" x="0" y="226" width="160" height="224"/>
+	<SubTexture name="aura0005" x="162" y="226" width="160" height="224"/>
+	<SubTexture name="aura0006" x="324" y="226" width="160" height="224"/>
+	<SubTexture name="aura0007" x="486" y="226" width="160" height="224"/>
+</TextureAtlas>

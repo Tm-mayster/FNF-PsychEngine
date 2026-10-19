@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="lumen_dead.png">
+	<SubTexture name="lumen dead firstDeath0000" x="0" y="0" width="312" height="420"/>
+	<SubTexture name="lumen dead firstDeath0001" x="314" y="0" width="312" height="420"/>
+	<SubTexture name="lumen dead firstDeath0002" x="628" y="0" width="312" height="420"/>
+	<SubTexture name="lumen dead firstDeath0003" x="942" y="0" width="312" height="420"/>
+	<SubTexture name="lumen dead firstDeath0004" x="1256" y="0" width="312" height="420"/>
+	<SubTexture name="lumen dead firstDeath0005" x="1570" y="0" width="312" height="420"/>
+	<SubTexture name="lumen dead firstDeath0006" x="1884" y="0" width="312" height="420"/>
+	<SubTexture name="lumen dead firstDeath0007" x="2198" y="0" width="312" height="420"/>
+	<SubTexture name="lumen dead deathLoop0000" x="0" y="422" width="312" height="420"/>
+	<SubTexture name="lumen dead deathLoop0001" x="314" y="422" width="312" height="420"/>
+	<SubTexture name="lumen dead deathLoop0002" x="628" y="422" width="312" height="420"/>
+	<SubTexture name="lumen dead deathLoop0003" x="942" y="422" width="312" height="420"/>
+	<SubTexture name="lumen dead deathConfirm0000" x="1256" y="422" width="312" height="420"/>
+	<SubTexture name="lumen dead deathConfirm0001" x="1570" y="422" width="312" height="420"/>
+	<SubTexture name="lumen dead deathConfirm0002" x="1884" y="422" width="312" height="420"/>
+	<SubTexture name="lumen dead deathConfirm0003" x="2198" y="422" width="312" height="420"/>
+	<SubTexture name="lumen dead deathConfirm0004" x="0" y="844" width="312" height="420"/>
+	<SubTexture name="lumen dead deathConfirm0005" x="314" y="844" width="312" height="420"/>
+</TextureAtlas>

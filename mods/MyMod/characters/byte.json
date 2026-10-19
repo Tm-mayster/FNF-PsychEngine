@@ -1,0 +1,79 @@
+{
+ "animations": [
+  {
+   "anim": "idle",
+   "name": "byte idle",
+   "fps": 8,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singLEFT",
+   "name": "byte singLEFT",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singDOWN",
+   "name": "byte singDOWN",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singUP",
+   "name": "byte singUP",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  },
+  {
+   "anim": "singRIGHT",
+   "name": "byte singRIGHT",
+   "fps": 12,
+   "loop": false,
+   "indices": [],
+   "offsets": [
+    0,
+    0
+   ]
+  }
+ ],
+ "no_antialiasing": true,
+ "image": "characters/byte",
+ "position": [
+  -24,
+  66
+ ],
+ "healthicon": "byte",
+ "flip_x": false,
+ "healthbar_colors": [
+  56,
+  255,
+  176
+ ],
+ "camera_position": [
+  70,
+  40
+ ],
+ "sing_duration": 4,
+ "scale": 1,
+ "vocals_file": ""
+}

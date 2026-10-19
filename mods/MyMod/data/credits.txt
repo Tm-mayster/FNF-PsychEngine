@@ -1,0 +1,6 @@
+Field of Hopes
+TM Mayster::lumen-pixel::Автор мода: идея, геймплей, недели и подбор музыки. Персонажи Лумен, Сэр Перо, Огонёк, Ладья, Байт и Умбра, пять сцен и песни Ember, Wick, Inkblot, Starfall::https://github.com/Tm-mayster::FFAA3C
+
+Music
+Toby Fox::quill-pixel::Музыка DELTARUNE (главы 1-2)::https://deltarune.com::7A5CC4
+MARETU::::Музыка: THE LAST DANCE::::DC3C5A

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="prop.png">
+	<SubTexture name="eclipse prop0000" x="0" y="0" width="10" height="16"/>
+	<SubTexture name="eclipse prop0001" x="12" y="0" width="10" height="16"/>
+	<SubTexture name="eclipse prop0002" x="24" y="0" width="10" height="16"/>
+	<SubTexture name="eclipse prop0003" x="36" y="0" width="10" height="16"/>
+</TextureAtlas>
