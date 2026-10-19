@@ -67,6 +67,7 @@ class MainMenuState extends MusicBeatState
 			#if windows {id: 'update', label: Lang.t('Обновление'), desc: Lang.t('Скачать новую версию игры прямо отсюда — загружаются только изменённые файлы.')}, #end
 			{id: 'lang', label: '', desc: 'Язык игры / Game language\n\nВЛЕВО/ВПРАВО или ENTER — сменить.\nLEFT/RIGHT or ENTER — change.'},
 			{id: 'credits', label: Lang.t('Титры'), desc: Lang.t('Авторы мода, движка и музыки.')}
+			#if sys , {id: 'exit', label: Lang.t('Выход'), desc: Lang.t('Закрыть игру.')} #end
 		];
 	}
 
@@ -121,7 +122,7 @@ class MainMenuState extends MusicBeatState
 
 		for (i in 0...entries.length)
 		{
-			var t:FlxText = new FlxText(90, 160 + i * 42, 0, '', 18);
+			var t:FlxText = new FlxText(90, 150 + i * 40, 0, '', 18);
 			t.setFormat(menuFont(), 18, 0xFFCFC6F2, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF0B0614);
 			t.borderSize = 2;
 			labels.push(t);
@@ -377,6 +378,11 @@ class MainMenuState extends MusicBeatState
 				#end
 				case 'credits':
 					MusicBeatState.switchState(new CreditsState());
+				#if sys
+				case 'exit':
+					ClientPrefs.saveSettings();
+					Sys.exit(0);
+				#end
 				case 'update':
 					MusicBeatState.switchState(new FohUpdateState());
 				case 'options':

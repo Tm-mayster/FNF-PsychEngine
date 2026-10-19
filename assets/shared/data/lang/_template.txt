@@ -249,3 +249,5 @@ R — повторить     ESC — назад => R — retry     ESC — back
 
 Лучше всего — частота вашего монитора (60, 144, 165…): стрелки летят ровно, без рывков. Больше — стрелки могут дёргаться, «Без ограничений» грузит процессор. => Best: your monitor's refresh rate (60, 144, 165…) — arrows move evenly, without judder. Higher can make them stutter; “Unlimited” loads the CPU.
 Язык => Language
+Выход => Quit
+Закрыть игру. => Close the game.
